@@ -1,0 +1,61 @@
+{
+  "summary": "Draft analyzed against competitor-derived recommendations.",
+  "score_breakdown": {
+    "topical_coverage": 96.0,
+    "structure": 75.0,
+    "intent_alignment": 71.47,
+    "naturalness_penalty": 2.56,
+    "redundancy_penalty": 0.0,
+    "title_meta": 100.0,
+    "overall": 83.91,
+    "reasons": [
+      "Missing 2 recommended phrases/concepts.",
+      "Score is heuristic for content quality guidance, not a ranking predictor."
+    ]
+  },
+  "frontmatter_suggestions": {
+    "title": "Pickleball Paddles: How to Choose the Right One",
+    "description": "Pickleball Paddles: How to Choose the Right One with key details, viewing context, related entities, and questions to answer for commercial investigation search intent.",
+    "tags": [
+      "pickleball-paddles",
+      "pickleball-central",
+      "recess-pickleball",
+      "pickleball-superstore",
+      "selkirk-sport",
+      "volair-pickleball",
+      "dick-s-sporting-goods",
+      "amazon-best-sellers"
+    ],
+    "draft": true
+  },
+  "source_urls": [
+    "https://pickleballcentral.com/paddles/all-pickleball-paddles/",
+    "https://www.recesspickleball.com/collections/paddles",
+    "https://pickleballsuperstore.com/collections/paddles",
+    "https://www.selkirk.com/collections/pickleball-paddles",
+    "https://volair.com/collections/paddles",
+    "https://www.dickssportinggoods.com/f/pickleball-paddles-1225551-1",
+    "https://www.amazon.com/Best-Sellers-Pickle-Ball-Equipment/zgbs/sporting-goods/13287931",
+    "https://www.pickleheads.com/pickleball-gear/pickleball-paddles",
+    "https://www.justpaddles.com/products/",
+    "https://www.reddit.com/r/Pickleball/comments/1mp6vmy/which_pickleball_paddle_brand_offers_the_best/"
+  ],
+  "missing_topics": [],
+  "overused_terms": [],
+  "recommended_outline_changes": [
+    "## Best pickleball paddles at a glance",
+    "## How to choose a pickleball paddle",
+    "## Paddle weight and swing weight",
+    "## Paddle shape and sweet spot",
+    "## Control vs power",
+    "## Materials, spin, and feel",
+    "## Beginner, intermediate, and advanced paddles",
+    "## Where to buy pickleball paddles",
+    "## Pickleball paddle FAQ"
+  ],
+  "suggested_title_meta": [
+    "Pickleball Paddles: How to Choose the Right One",
+    "Best Pickleball Paddles: A Practical Buying Guide",
+    "How to Choose a Pickleball Paddle for Your Game"
+  ]
+}

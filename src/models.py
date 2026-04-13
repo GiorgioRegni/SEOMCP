@@ -46,6 +46,7 @@ class CompetitorAnalysis:
     recommended_subtopics: list[str]
     weak_source_warning: bool = False
     warnings: list[str] = field(default_factory=list)
+    source_urls: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -84,6 +85,7 @@ class ContentBrief:
     questions_to_answer: list[str]
     phrases_to_use_naturally: list[str]
     warnings: list[str] = field(default_factory=list)
+    source_urls: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -131,6 +133,14 @@ class YourTextGuruPositioningResult:
     count: int
     sites: list[PositionedSite]
     warnings: list[str] = field(default_factory=list)
+
+
+@dataclass
+class MarkdownDocument:
+    frontmatter_format: str | None
+    frontmatter: dict[str, Any] = field(default_factory=dict)
+    raw_frontmatter: str = ""
+    body: str = ""
 
 
 

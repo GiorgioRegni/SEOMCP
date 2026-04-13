@@ -1,0 +1,189 @@
+{
+  "source_urls": [
+    "https://lorileebeltman.com/pickleball-lessons-for-beginners/",
+    "https://crushyard.com/lessons/",
+    "https://www.pickleandsocialgwinnett.com/lessons-calendar.aspx",
+    "https://luckyshotspickleball.com/lets-learn/",
+    "https://dilldinkers.com/clinics-lessons/",
+    "https://www.cincinnatipickleball.com/lessons",
+    "https://oldsaybrookct.myrec.com/info/activities/program_details.aspx?ProgramID=29872",
+    "https://www.nycpickleball.com/lessons"
+  ],
+  "competitor_analysis": {
+    "query": "pickleball lesson",
+    "page_count": 6,
+    "median_word_count": 340,
+    "word_count_range": [
+      218,
+      1533
+    ],
+    "common_headings": [
+      "lessons",
+      "private lessons",
+      "group lessons",
+      "learn with our pros",
+      "for all ages and levels",
+      "faq",
+      "locations",
+      "book a lesson",
+      "clinics and lessons",
+      "beginner lessons",
+      "lesson calendar",
+      "meet the pros"
+    ],
+    "recommended_phrases": [
+      "pickleball lessons",
+      "pickleball lesson",
+      "private lessons",
+      "group lessons",
+      "beginner lesson",
+      "lesson calendar",
+      "clinics and lessons",
+      "teaching pro",
+      "teaching professionals",
+      "skill levels",
+      "book a lesson",
+      "all ages and levels",
+      "beginner clinic",
+      "court positioning",
+      "doubles basics",
+      "footwork",
+      "grip",
+      "shot selection",
+      "PPR certified",
+      "coach"
+    ],
+    "recommended_entities": [
+      "Pickleball Lessons",
+      "Private Lessons",
+      "Group Lessons",
+      "Beginner Lessons",
+      "Clinics and Lessons",
+      "Lesson Calendar",
+      "Teaching Professionals",
+      "PPR Certified",
+      "Coach",
+      "Court Positioning",
+      "Footwork",
+      "Doubles Basics",
+      "Shot Selection",
+      "Drills"
+    ],
+    "recommended_subtopics": [
+      "what a pickleball lesson covers",
+      "private vs group lessons",
+      "beginner lessons and clinics",
+      "what to bring to your first lesson",
+      "how to choose a coach or program",
+      "lesson calendar and booking",
+      "lesson pricing and value",
+      "drills and fundamentals",
+      "FAQ"
+    ],
+    "weak_source_warning": false,
+    "warnings": [
+      "Some lesson providers use dynamic calendars or booking widgets, so treat schedule details as examples of format rather than permanent claims.",
+      "The source set is a mix of private clubs, local programs, and a beginner lesson article. Use it for topic coverage and structure, not exact pricing or availability."
+    ],
+    "source_urls": [
+      "https://lorileebeltman.com/pickleball-lessons-for-beginners/",
+      "https://crushyard.com/lessons/",
+      "https://www.pickleandsocialgwinnett.com/lessons-calendar.aspx",
+      "https://luckyshotspickleball.com/lets-learn/",
+      "https://dilldinkers.com/clinics-lessons/",
+      "https://www.cincinnatipickleball.com/lessons",
+      "https://oldsaybrookct.myrec.com/info/activities/program_details.aspx?ProgramID=29872",
+      "https://www.nycpickleball.com/lessons"
+    ]
+  },
+  "content_brief": {
+    "primary_query": "pickleball lesson",
+    "likely_intent": "Informational",
+    "target_word_count_range": [
+      1200,
+      1700
+    ],
+    "candidate_titles": [
+      "Pickleball Lessons: What Beginners Should Expect",
+      "Pickleball Lesson Guide for Beginners",
+      "How to Choose the Right Pickleball Lesson"
+    ],
+    "suggested_outline": [
+      "## What a pickleball lesson covers",
+      "## Private vs group lessons",
+      "## Beginner lessons and clinics",
+      "## What to bring to your first lesson",
+      "## How to choose a coach or program",
+      "## Lesson calendars, booking, and scheduling",
+      "## Lesson pricing and value",
+      "## Drills and fundamentals to practice",
+      "## Pickleball lesson FAQ"
+    ],
+    "recommended_concepts_entities": [
+      "Pickleball Lessons",
+      "Private Lessons",
+      "Group Lessons",
+      "Beginner Lessons",
+      "Clinics and Lessons",
+      "Lesson Calendar",
+      "Teaching Professionals",
+      "PPR Certified",
+      "Coach",
+      "Court Positioning",
+      "Footwork",
+      "Doubles Basics",
+      "Shot Selection",
+      "Drills",
+      "skill levels",
+      "book a lesson",
+      "lesson pricing",
+      "value"
+    ],
+    "questions_to_answer": [
+      "What does a pickleball lesson cover?",
+      "Should I book a private lesson or a group lesson?",
+      "What should a beginner bring to a lesson?",
+      "How do I choose a good coach or program?",
+      "How much do pickleball lessons usually cost?",
+      "What drills should beginners practice after a lesson?",
+      "How do lesson calendars and booking usually work?"
+    ],
+    "phrases_to_use_naturally": [
+      "pickleball lessons",
+      "pickleball lesson",
+      "private lessons",
+      "group lessons",
+      "beginner lesson",
+      "lesson calendar",
+      "clinics and lessons",
+      "teaching pro",
+      "teaching professionals",
+      "skill levels",
+      "book a lesson",
+      "all ages and levels",
+      "beginner clinic",
+      "court positioning",
+      "doubles basics",
+      "footwork",
+      "grip",
+      "shot selection",
+      "PPR certified",
+      "coach"
+    ],
+    "warnings": [
+      "The source set is mostly promotional and program pages, so keep claims general unless a detail is clearly supported.",
+      "Avoid making hard promises about class quality, exact schedules, or pricing.",
+      "Use the page set to build a practical guide, not a location directory."
+    ],
+    "source_urls": [
+      "https://lorileebeltman.com/pickleball-lessons-for-beginners/",
+      "https://crushyard.com/lessons/",
+      "https://www.pickleandsocialgwinnett.com/lessons-calendar.aspx",
+      "https://luckyshotspickleball.com/lets-learn/",
+      "https://dilldinkers.com/clinics-lessons/",
+      "https://www.cincinnatipickleball.com/lessons",
+      "https://oldsaybrookct.myrec.com/info/activities/program_details.aspx?ProgramID=29872",
+      "https://www.nycpickleball.com/lessons"
+    ]
+  }
+}

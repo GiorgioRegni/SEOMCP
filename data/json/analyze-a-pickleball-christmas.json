@@ -1,0 +1,57 @@
+{
+  "summary": "Draft analyzed against competitor-derived recommendations.",
+  "score_breakdown": {
+    "topical_coverage": 100.0,
+    "structure": 100.0,
+    "intent_alignment": 24.44,
+    "naturalness_penalty": 0.0,
+    "redundancy_penalty": 0.0,
+    "title_meta": 100.0,
+    "overall": 81.11,
+    "reasons": [
+      "Score is heuristic for content quality guidance, not a ranking predictor."
+    ]
+  },
+  "frontmatter_suggestions": {
+    "title": "A Pickleball Christmas: Cast, Plot, Release, and Where to Watch",
+    "description": "A Pickleball Christmas: Cast, Plot, Release, and Where to Watch with key details, viewing context, related entities, and questions to answer for mixed search intent.",
+    "tags": [
+      "a-pickleball-christmas",
+      "lifetime",
+      "imdb",
+      "prime-video",
+      "rotten-tomatoes",
+      "letterboxd",
+      "google-play",
+      "reddit"
+    ],
+    "draft": true
+  },
+  "source_urls": [
+    "https://www.imdb.com/title/tt38712686/",
+    "https://www.mylifetime.com/movies/a-pickleball-christmas",
+    "https://www.reddit.com/r/Pickleball/comments/1psqvma/a_pickleball_christmas_2025_by_lifetime/",
+    "https://www.facebook.com/lifetime/videos/a-pickleball-christmas-trailer/1619353099228476/",
+    "https://www.primevideo.com/detail/A-Pickleball-Christmas/0NQD480MA9VDQ0KOQO5GN3D9JP",
+    "https://www.rottentomatoes.com/m/a_pickleball_christmas",
+    "https://www.facebook.com/groups/thekitchenPB/posts/2316739958840370/",
+    "https://play.google.com/store/movies/details/A_Pickleball_Christmas?id=aQfNm_F1ypI.P&hl=en_US",
+    "https://letterboxd.com/film/a-pickleball-christmas/",
+    "https://www.thedinkpickleball.com/lifetime-made-a-pickleball-movie-and-no-one-in-it-can-actually-play-pickleball/"
+  ],
+  "missing_topics": [],
+  "overused_terms": [],
+  "recommended_outline_changes": [
+    "## Overview",
+    "## Release and platform details",
+    "## Synopsis and trailer",
+    "## Reaction and reception",
+    "## Why it matters to pickleball audiences",
+    "## FAQ"
+  ],
+  "suggested_title_meta": [
+    "A Pickleball Christmas: Cast, Plot, Release, and Where to Watch",
+    "A Pickleball Christmas Explained: What the Movie Is and Where It Streams",
+    "A Pickleball Christmas Guide: Synopsis, Trailer, Reviews, and Viewing Options"
+  ]
+}

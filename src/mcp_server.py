@@ -5,12 +5,20 @@ import sys
 
 from .analyze import analyze_draft
 from .brief import build_brief
-from .main import run_pipeline
+from .main import resolve_content_context, run_pipeline
 from .models import SEORequest, to_dict
 from .rewrite import rewrite_draft
 from .feedback import optimize_draft
 from .yourtextguru import scrape_positioned_sites
 from .browser_session import launch_chrome
+from .markdown_doc import (
+    build_frontmatter_suggestions,
+    h1_from_body,
+    parse_markdown_document,
+    render_markdown_document,
+    title_from_document,
+    update_hugo_seo_fields,
+)
 
 
 """
@@ -30,43 +38,69 @@ def build_seo_brief(payload: dict) -> dict:
         top_n=payload.get("top_n", 8),
     )
     _, comp, brief = run_pipeline(req)
-    return {"competitor_analysis": to_dict(comp), "content_brief": to_dict(brief)}
+    return {"source_urls": brief.source_urls, "competitor_analysis": to_dict(comp), "content_brief": to_dict(brief)}
 
 
 def analyze_seo_draft(payload: dict) -> dict:
     req = SEORequest(query=payload["query"], urls=payload.get("urls", []), top_n=payload.get("top_n", 8))
-    _, comp, brief = run_pipeline(req)
-    draft = payload.get("draft_markdown", "")
-    analysis = analyze_draft(draft, req.query, comp, payload.get("title"), payload.get("h1"))
+    urls = ",".join(req.urls) if req.urls else None
+    comp, brief = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
+    draft_doc = parse_markdown_document(payload.get("draft_markdown", ""))
+    title = payload.get("title") or title_from_document(draft_doc)
+    h1 = payload.get("h1") or h1_from_body(draft_doc.body)
+    analysis = analyze_draft(draft_doc.body, req.query, comp, title, h1)
     return {
         "summary": "Draft analyzed.",
         "draft_analysis": to_dict(analysis),
         "brief": to_dict(brief),
+        "frontmatter_suggestions": build_frontmatter_suggestions(brief),
+        "source_urls": brief.source_urls,
     }
 
 
 def rewrite_seo_draft(payload: dict) -> dict:
     req = SEORequest(query=payload["query"], urls=payload.get("urls", []), top_n=payload.get("top_n", 8))
-    _, comp, brief = run_pipeline(req)
-    draft = payload.get("draft_markdown", "")
-    analysis = analyze_draft(draft, req.query, comp, payload.get("title"), payload.get("h1"))
-    rewritten = rewrite_draft(draft, brief, analysis)
-    return to_dict(rewritten)
+    urls = ",".join(req.urls) if req.urls else None
+    comp, brief = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
+    draft_doc = parse_markdown_document(payload.get("draft_markdown", ""))
+    title = payload.get("title") or title_from_document(draft_doc)
+    h1 = payload.get("h1") or h1_from_body(draft_doc.body)
+    analysis = analyze_draft(draft_doc.body, req.query, comp, title, h1)
+    rewritten = rewrite_draft(draft_doc.body, brief, analysis)
+    draft_doc.body = rewritten.revised_draft
+    if payload.get("update_frontmatter", False):
+        draft_doc = update_hugo_seo_fields(draft_doc, brief, overwrite=True)
+    result = to_dict(rewritten)
+    result["revised_draft"] = render_markdown_document(draft_doc)
+    result["frontmatter_suggestions"] = build_frontmatter_suggestions(brief)
+    result["source_urls"] = brief.source_urls
+    return result
 
 
 def optimize_seo_draft(payload: dict) -> dict:
     req = SEORequest(query=payload["query"], urls=payload.get("urls", []), top_n=payload.get("top_n", 8))
-    _, comp, brief = run_pipeline(req)
+    urls = ",".join(req.urls) if req.urls else None
+    comp, brief = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
+    draft_doc = parse_markdown_document(payload.get("draft_markdown", ""))
+    title = payload.get("title") or title_from_document(draft_doc)
+    h1 = payload.get("h1") or h1_from_body(draft_doc.body)
     result = optimize_draft(
         req.query,
-        payload.get("draft_markdown", ""),
+        draft_doc.body,
         comp,
         brief,
         iterations=payload.get("iterations", 3),
-        title=payload.get("title"),
-        h1=payload.get("h1"),
+        title=title,
+        h1=h1,
     )
-    return to_dict(result)
+    draft_doc.body = result.final_draft
+    if payload.get("update_frontmatter", False):
+        draft_doc = update_hugo_seo_fields(draft_doc, brief, overwrite=True)
+    response = to_dict(result)
+    response["final_draft"] = render_markdown_document(draft_doc)
+    response["frontmatter_suggestions"] = build_frontmatter_suggestions(brief)
+    response["source_urls"] = brief.source_urls
+    return response
 
 
 def launch_chrome_profile(payload: dict) -> dict:

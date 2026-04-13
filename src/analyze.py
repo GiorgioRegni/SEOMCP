@@ -31,10 +31,11 @@ def _entities_heuristic(text: str) -> list[str]:
     return list(entities)
 
 
-def analyze_competitors(query: str, pages: list[PageData]) -> CompetitorAnalysis:
+def analyze_competitors(query: str, pages: list[PageData], source_urls: list[str] | None = None) -> CompetitorAnalysis:
     word_counts = [p.word_count for p in pages if p.word_count > 0]
+    source_urls = source_urls or [p.url for p in pages]
     if not word_counts:
-        return CompetitorAnalysis(query, 0, 0, (0, 0), [], [], [], [], True, ["No usable pages found."])
+        return CompetitorAnalysis(query, 0, 0, (0, 0), [], [], [], [], True, ["No usable pages found."], source_urls)
 
     headings = Counter()
     full_text = []
@@ -79,6 +80,7 @@ def analyze_competitors(query: str, pages: list[PageData]) -> CompetitorAnalysis
         recommended_subtopics=list(dict.fromkeys(subtopics))[:20],
         weak_source_warning=weak,
         warnings=warnings,
+        source_urls=source_urls,
     )
 
 

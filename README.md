@@ -93,11 +93,19 @@ python3 -m src.main brief \
 python -m src.main analyze --query "pickleball rules" --draft examples/draft.md --urls "https://usapickleball.org/what-is-pickleball/official-rules/"
 ```
 
+Drafts may include Hugo YAML (`---`) or TOML (`+++`) front matter. Analysis excludes front matter from scoring and uses front matter `title` as title context when `--title` is omitted.
+
+When `--urls` is omitted, `analyze`, `rewrite`, and `optimize` automatically reuse `data/json/brief-<query>.json` if it exists. You can also pass a specific saved brief with `--brief path/to/brief.json`.
+
 ### Rewrite a draft
 
 ```bash
 python -m src.main rewrite --query "pickleball rules" --draft examples/draft.md --urls "https://usapickleball.org/what-is-pickleball/official-rules/"
 ```
+
+By default, rewrite and optimize preserve existing Hugo front matter and rewrite only the body. Pass `--update-frontmatter` to update managed SEO fields: `title`, `description`, `tags`, and `draft`.
+
+Pass `--output examples/revised-article.md` to also write the revised markdown to a file for diffing/review.
 
 ### Generate a first draft from a saved brief
 
@@ -106,6 +114,8 @@ python3 -m src.main draft \
   --brief data/json/brief-a-pickleball-christmas.json \
   --output examples/a-pickleball-christmas-draft.md
 ```
+
+New drafts emit YAML front matter by default. Use `--frontmatter-format toml` for TOML or `--frontmatter-format none` for body-only markdown.
 
 ### Optimize draft iteratively
 
@@ -171,6 +181,8 @@ Authenticated browser-backed keyword service example:
 ```json
 {"tool":"get_yourtextguru_positioned_sites","input":{"keyword":"a pickleball christmas","limit":10,"lang":"en_us","profile_dir":"data/chrome/yourtextguru"}}
 ```
+
+For `rewrite_seo_draft` and `optimize_seo_draft`, pass `"update_frontmatter": true` to update Hugo SEO fields. Otherwise front matter is preserved and only the markdown body is revised.
 
 Supported tools:
 

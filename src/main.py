@@ -7,7 +7,7 @@ from typing import Optional
 import typer
 
 from .analyze import analyze_competitors, analyze_draft
-from .brief import build_brief
+from .brief import build_brief, load_saved_brief
 from .extract import extract_main_content
 from .fetch import extract_basic_metadata, fetch_html, is_junk_url
 from .feedback import optimize_draft
@@ -17,6 +17,14 @@ from .score import score_draft
 from .serp import collect_serp_urls
 from .browser_session import DEFAULT_CDP_PORT, DEFAULT_PROFILE_DIR, DEFAULT_START_URL, launch_chrome
 from .draft import generate_draft_from_brief, load_brief
+from .markdown_doc import (
+    build_frontmatter_suggestions,
+    h1_from_body,
+    parse_markdown_document,
+    render_markdown_document,
+    title_from_document,
+    update_hugo_seo_fields,
+)
 from .yourtextguru import scrape_positioned_sites
 from .utils import JSON_CACHE, dump_json, ensure_dirs, load_text, normalize_url, slugify
 
@@ -41,9 +49,25 @@ def run_pipeline(req: SEORequest) -> tuple:
         except Exception as exc:  # noqa: BLE001
             typer.echo(f"warn: failed to fetch {url}: {exc}", err=True)
 
-    comp = analyze_competitors(req.query, pages)
+    comp = analyze_competitors(req.query, pages, source_urls=urls)
     brief = build_brief(req.query, comp)
     return pages, comp, brief
+
+
+def resolve_content_context(query: str, top_n: int, urls: Optional[str] = None,
+                            brief_path: Optional[str] = None) -> tuple:
+    if urls:
+        req = SEORequest(query=query, urls=urls.split(","), top_n=top_n)
+        _, comp, seo_brief = run_pipeline(req)
+        return comp, seo_brief
+
+    path = Path(brief_path) if brief_path else JSON_CACHE / f"brief-{slugify(query)}.json"
+    if path.exists():
+        return load_saved_brief(path)
+
+    req = SEORequest(query=query, urls=[], top_n=top_n)
+    _, comp, seo_brief = run_pipeline(req)
+    return comp, seo_brief
 
 
 @app.command()
@@ -57,7 +81,7 @@ def brief(
     ensure_dirs()
     req = SEORequest(query=query, geo=geo, language=language, urls=(urls.split(",") if urls else []), top_n=top_n)
     _, comp, seo_brief = run_pipeline(req)
-    payload = {"competitor_analysis": to_dict(comp), "content_brief": to_dict(seo_brief)}
+    payload = {"source_urls": seo_brief.source_urls, "competitor_analysis": to_dict(comp), "content_brief": to_dict(seo_brief)}
     out = JSON_CACHE / f"brief-{slugify(query)}.json"
     dump_json(out, payload)
     typer.echo(json.dumps(payload, indent=2))
@@ -68,19 +92,23 @@ def analyze(
     query: str = typer.Option(...),
     draft: str = typer.Option(..., help="Path to markdown draft"),
     urls: Optional[str] = typer.Option(None),
+    brief_path: Optional[str] = typer.Option(None, "--brief", help="Saved brief JSON. Defaults to data/json/brief-<query>.json when URLs are omitted."),
     title: Optional[str] = None,
     h1: Optional[str] = None,
     top_n: int = 8,
 ) -> None:
     ensure_dirs()
-    req = SEORequest(query=query, title=title, h1=h1, urls=(urls.split(",") if urls else []), top_n=top_n)
-    _, comp, seo_brief = run_pipeline(req)
-    draft_md = load_text(draft)
-    draft_analysis = analyze_draft(draft_md, query, comp, title=title, h1=h1)
+    comp, seo_brief = resolve_content_context(query, top_n, urls=urls, brief_path=brief_path)
+    draft_doc = parse_markdown_document(load_text(draft))
+    effective_title = title or title_from_document(draft_doc)
+    effective_h1 = h1 or h1_from_body(draft_doc.body)
+    draft_analysis = analyze_draft(draft_doc.body, query, comp, title=effective_title, h1=effective_h1)
     score = score_draft(comp, draft_analysis)
     payload = {
         "summary": "Draft analyzed against competitor-derived recommendations.",
         "score_breakdown": to_dict(score),
+        "frontmatter_suggestions": build_frontmatter_suggestions(seo_brief),
+        "source_urls": seo_brief.source_urls,
         "missing_topics": draft_analysis.missing_subtopics,
         "overused_terms": draft_analysis.overused_terms,
         "recommended_outline_changes": seo_brief.suggested_outline,
@@ -96,22 +124,35 @@ def rewrite(
     query: str = typer.Option(...),
     draft: str = typer.Option(...),
     urls: Optional[str] = typer.Option(None),
+    brief_path: Optional[str] = typer.Option(None, "--brief", help="Saved brief JSON. Defaults to data/json/brief-<query>.json when URLs are omitted."),
     title: Optional[str] = None,
     h1: Optional[str] = None,
     top_n: int = 8,
+    update_frontmatter: bool = typer.Option(False, help="Update Hugo SEO fields in front matter."),
+    output: Optional[str] = typer.Option(None, "--output", "-o", help="Optional path for revised markdown."),
 ) -> None:
-    req = SEORequest(query=query, title=title, h1=h1, urls=(urls.split(",") if urls else []), top_n=top_n)
-    _, comp, seo_brief = run_pipeline(req)
-    draft_md = load_text(draft)
-    draft_analysis = analyze_draft(draft_md, query, comp, title=title, h1=h1)
-    result = rewrite_draft(draft_md, seo_brief, draft_analysis)
+    comp, seo_brief = resolve_content_context(query, top_n, urls=urls, brief_path=brief_path)
+    draft_doc = parse_markdown_document(load_text(draft))
+    effective_title = title or title_from_document(draft_doc)
+    effective_h1 = h1 or h1_from_body(draft_doc.body)
+    draft_analysis = analyze_draft(draft_doc.body, query, comp, title=effective_title, h1=effective_h1)
+    result = rewrite_draft(draft_doc.body, seo_brief, draft_analysis)
+    draft_doc.body = result.revised_draft
+    if update_frontmatter:
+        draft_doc = update_hugo_seo_fields(draft_doc, seo_brief, overwrite=True)
+    revised_draft = render_markdown_document(draft_doc)
+    if output:
+        Path(output).parent.mkdir(parents=True, exist_ok=True)
+        Path(output).write_text(revised_draft, encoding="utf-8")
     payload = {
         "summary": "Draft rewritten from SEO brief and gap analysis.",
-        "revised_draft": result.revised_draft,
+        "revised_draft": revised_draft,
         "change_log": result.change_log,
         "what_was_added": result.added_items,
         "what_was_removed": result.removed_items,
         "warnings": result.warnings,
+        "frontmatter_suggestions": build_frontmatter_suggestions(seo_brief),
+        "source_urls": seo_brief.source_urls,
     }
     out = JSON_CACHE / f"rewrite-{slugify(query)}.json"
     dump_json(out, payload)
@@ -123,20 +164,33 @@ def optimize(
     query: str = typer.Option(...),
     draft: str = typer.Option(...),
     urls: Optional[str] = typer.Option(None),
+    brief_path: Optional[str] = typer.Option(None, "--brief", help="Saved brief JSON. Defaults to data/json/brief-<query>.json when URLs are omitted."),
     iterations: int = 3,
     title: Optional[str] = None,
     h1: Optional[str] = None,
     top_n: int = 8,
+    update_frontmatter: bool = typer.Option(False, help="Update Hugo SEO fields in front matter."),
+    output: Optional[str] = typer.Option(None, "--output", "-o", help="Optional path for revised markdown."),
 ) -> None:
-    req = SEORequest(query=query, title=title, h1=h1, urls=(urls.split(",") if urls else []), top_n=top_n)
-    _, comp, seo_brief = run_pipeline(req)
-    draft_md = load_text(draft)
-    result = optimize_draft(query, draft_md, comp, seo_brief, iterations=iterations, title=title, h1=h1)
+    comp, seo_brief = resolve_content_context(query, top_n, urls=urls, brief_path=brief_path)
+    draft_doc = parse_markdown_document(load_text(draft))
+    effective_title = title or title_from_document(draft_doc)
+    effective_h1 = h1 or h1_from_body(draft_doc.body)
+    result = optimize_draft(query, draft_doc.body, comp, seo_brief, iterations=iterations, title=effective_title, h1=effective_h1)
+    draft_doc.body = result.final_draft
+    if update_frontmatter:
+        draft_doc = update_hugo_seo_fields(draft_doc, seo_brief, overwrite=True)
+    revised_draft = render_markdown_document(draft_doc)
+    if output:
+        Path(output).parent.mkdir(parents=True, exist_ok=True)
+        Path(output).write_text(revised_draft, encoding="utf-8")
     payload = {
         "summary": result.summary,
         "score_breakdown": {"initial": to_dict(result.initial_score), "final": to_dict(result.final_score)},
         "iterations": [to_dict(i) for i in result.iterations],
-        "revised_draft": result.final_draft,
+        "revised_draft": revised_draft,
+        "frontmatter_suggestions": build_frontmatter_suggestions(seo_brief),
+        "source_urls": seo_brief.source_urls,
         "recommended_outline_changes": seo_brief.suggested_outline,
         "suggested_title_meta": seo_brief.candidate_titles,
     }
@@ -190,9 +244,10 @@ def yourtextguru_positioned_sites(
 def draft(
     brief_path: str = typer.Option(..., "--brief", help="Path to a saved brief JSON file."),
     output: Optional[str] = typer.Option(None, "--output", "-o", help="Optional markdown output path."),
+    frontmatter_format: str = typer.Option("yaml", help="Front matter format: yaml, toml, or none."),
 ) -> None:
     brief_obj = load_brief(brief_path)
-    draft_md = generate_draft_from_brief(brief_obj)
+    draft_md = generate_draft_from_brief(brief_obj, frontmatter_format=frontmatter_format)
     if output:
         Path(output).parent.mkdir(parents=True, exist_ok=True)
         Path(output).write_text(draft_md, encoding="utf-8")

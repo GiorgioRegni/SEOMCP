@@ -14,6 +14,18 @@
     "weak_source_warning": true,
     "warnings": [
       "No usable pages found. Brief generated from supplied URL titles only."
+    ],
+    "source_urls": [
+      "https://www.imdb.com/title/tt38712686/",
+      "https://www.mylifetime.com/movies/a-pickleball-christmas",
+      "https://www.reddit.com/r/Pickleball/comments/1psqvma/a_pickleball_christmas_2025_by_lifetime/",
+      "https://www.facebook.com/lifetime/videos/a-pickleball-christmas-trailer/1619353099228476/",
+      "https://www.primevideo.com/detail/A-Pickleball-Christmas/0NQD480MA9VDQ0KOQO5GN3D9JP",
+      "https://www.rottentomatoes.com/m/a_pickleball_christmas",
+      "https://www.facebook.com/groups/thekitchenPB/posts/2316739958840370/",
+      "https://play.google.com/store/movies/details/A_Pickleball_Christmas?id=aQfNm_F1ypI.P&hl=en_US",
+      "https://letterboxd.com/film/a-pickleball-christmas/",
+      "https://www.thedinkpickleball.com/lifetime-made-a-pickleball-movie-and-no-one-in-it-can-actually-play-pickleball/"
     ]
   },
   "content_brief": {
@@ -80,6 +92,30 @@
     ],
     "warnings": [
       "No usable pages found. Brief generated from supplied URL titles only."
+    ],
+    "source_urls": [
+      "https://www.imdb.com/title/tt38712686/",
+      "https://www.mylifetime.com/movies/a-pickleball-christmas",
+      "https://www.reddit.com/r/Pickleball/comments/1psqvma/a_pickleball_christmas_2025_by_lifetime/",
+      "https://www.facebook.com/lifetime/videos/a-pickleball-christmas-trailer/1619353099228476/",
+      "https://www.primevideo.com/detail/A-Pickleball-Christmas/0NQD480MA9VDQ0KOQO5GN3D9JP",
+      "https://www.rottentomatoes.com/m/a_pickleball_christmas",
+      "https://www.facebook.com/groups/thekitchenPB/posts/2316739958840370/",
+      "https://play.google.com/store/movies/details/A_Pickleball_Christmas?id=aQfNm_F1ypI.P&hl=en_US",
+      "https://letterboxd.com/film/a-pickleball-christmas/",
+      "https://www.thedinkpickleball.com/lifetime-made-a-pickleball-movie-and-no-one-in-it-can-actually-play-pickleball/"
     ]
-  }
+  },
+  "source_urls": [
+    "https://www.imdb.com/title/tt38712686/",
+    "https://www.mylifetime.com/movies/a-pickleball-christmas",
+    "https://www.reddit.com/r/Pickleball/comments/1psqvma/a_pickleball_christmas_2025_by_lifetime/",
+    "https://www.facebook.com/lifetime/videos/a-pickleball-christmas-trailer/1619353099228476/",
+    "https://www.primevideo.com/detail/A-Pickleball-Christmas/0NQD480MA9VDQ0KOQO5GN3D9JP",
+    "https://www.rottentomatoes.com/m/a_pickleball_christmas",
+    "https://www.facebook.com/groups/thekitchenPB/posts/2316739958840370/",
+    "https://play.google.com/store/movies/details/A_Pickleball_Christmas?id=aQfNm_F1ypI.P&hl=en_US",
+    "https://letterboxd.com/film/a-pickleball-christmas/",
+    "https://www.thedinkpickleball.com/lifetime-made-a-pickleball-movie-and-no-one-in-it-can-actually-play-pickleball/"
+  ]
 }

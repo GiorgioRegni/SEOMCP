@@ -1,0 +1,56 @@
+{
+  "summary": "Draft analyzed against competitor-derived recommendations.",
+  "score_breakdown": {
+    "topical_coverage": 90.0,
+    "structure": 100.0,
+    "intent_alignment": 58.23,
+    "naturalness_penalty": 4.48,
+    "redundancy_penalty": 0.0,
+    "title_meta": 100.0,
+    "overall": 81.58,
+    "reasons": [
+      "Missing 5 recommended phrases/concepts.",
+      "Score is heuristic for content quality guidance, not a ranking predictor."
+    ]
+  },
+  "frontmatter_suggestions": {
+    "title": "Pickleball Brackets: How Tournament Draws Work",
+    "description": "Pickleball Brackets: How Tournament Draws Work with key details, viewing context, related entities, and questions to answer for informational search intent.",
+    "tags": [
+      "pickleball-brackets",
+      "pickleballtournaments-com",
+      "pickleballbrackets-com",
+      "pickleball-leagues",
+      "ppa-tour",
+      "usa-pickleball",
+      "round-robin",
+      "single-elimination"
+    ],
+    "draft": true
+  },
+  "source_urls": [
+    "https://pickleballtournaments.com/search",
+    "https://pickleballleagues.com/",
+    "https://ppatour.com/",
+    "https://www.pb5star.com/a/blog/tournament-time-everything-you-need-to-know-about-pickleball-brackets",
+    "https://pickleballbrackets.com/ptoc.aspx?eid=3692157a-7dbf-45c1-a449-0a19923fb90b",
+    "https://www.visitfairgrounds.com/blog/the-ultimate-guide-to-pickleball-brackets-for-beginners"
+  ],
+  "missing_topics": [],
+  "overused_terms": [],
+  "recommended_outline_changes": [
+    "## What pickleball brackets are",
+    "## Common pickleball bracket formats",
+    "## Single elimination, double elimination, and round robin",
+    "## Seeding, skill divisions, and age divisions",
+    "## How to read a pickleball tournament bracket",
+    "## What happens after you lose",
+    "## Schedules, live results, and tournament platforms",
+    "## Pickleball bracket FAQ"
+  ],
+  "suggested_title_meta": [
+    "Pickleball Brackets: How Tournament Draws Work",
+    "Pickleball Brackets Explained for Beginners",
+    "How to Read and Use Pickleball Tournament Brackets"
+  ]
+}

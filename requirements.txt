@@ -7,3 +7,6 @@ scikit-learn>=1.5.0
 nltk>=3.9
 mcp>=1.0.0
 playwright>=1.45.0
+PyYAML>=6.0
+tomli>=2.0
+tomli-w>=1.0

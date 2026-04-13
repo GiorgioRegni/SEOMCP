@@ -96,6 +96,18 @@
     "warnings": [
       "https://theburrowmn.com/pickleballrules: weak_structure",
       "https://santamonicapickleballclub.org/official-usapa-rules: weak_structure"
+    ],
+    "source_urls": [
+      "https://usapickleball.org/rules/",
+      "https://www.pickleballengland.org/rules/",
+      "https://picklehaus.com/the-ultimate-guide-to-pickleball-rules-tips-and-techniques/",
+      "https://recsports.msu.edu/activity-rules/pickleball-rules",
+      "https://www.bigapplerecsports.com/pages/pickleball-rules",
+      "https://theburrowmn.com/pickleballrules",
+      "https://santamonicapickleballclub.org/official-usapa-rules",
+      "https://usapickleball.org/docs/rules/USAP-Official-Rulebook.pdf",
+      "https://www.zogsports.com/rules/pickleball-rules/",
+      "https://www.reddit.com/r/Pickleball/comments/1ef6k90/really_great_animated_guide_to_the_pickleball/"
     ]
   },
   "content_brief": {
@@ -181,6 +193,30 @@
     "warnings": [
       "https://theburrowmn.com/pickleballrules: weak_structure",
       "https://santamonicapickleballclub.org/official-usapa-rules: weak_structure"
+    ],
+    "source_urls": [
+      "https://usapickleball.org/rules/",
+      "https://www.pickleballengland.org/rules/",
+      "https://picklehaus.com/the-ultimate-guide-to-pickleball-rules-tips-and-techniques/",
+      "https://recsports.msu.edu/activity-rules/pickleball-rules",
+      "https://www.bigapplerecsports.com/pages/pickleball-rules",
+      "https://theburrowmn.com/pickleballrules",
+      "https://santamonicapickleballclub.org/official-usapa-rules",
+      "https://usapickleball.org/docs/rules/USAP-Official-Rulebook.pdf",
+      "https://www.zogsports.com/rules/pickleball-rules/",
+      "https://www.reddit.com/r/Pickleball/comments/1ef6k90/really_great_animated_guide_to_the_pickleball/"
     ]
-  }
+  },
+  "source_urls": [
+    "https://usapickleball.org/rules/",
+    "https://www.pickleballengland.org/rules/",
+    "https://picklehaus.com/the-ultimate-guide-to-pickleball-rules-tips-and-techniques/",
+    "https://recsports.msu.edu/activity-rules/pickleball-rules",
+    "https://www.bigapplerecsports.com/pages/pickleball-rules",
+    "https://theburrowmn.com/pickleballrules",
+    "https://santamonicapickleballclub.org/official-usapa-rules",
+    "https://usapickleball.org/docs/rules/USAP-Official-Rulebook.pdf",
+    "https://www.zogsports.com/rules/pickleball-rules/",
+    "https://www.reddit.com/r/Pickleball/comments/1ef6k90/really_great_animated_guide_to_the_pickleball/"
+  ]
 }

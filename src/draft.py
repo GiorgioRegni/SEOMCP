@@ -1,26 +1,15 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
-from typing import Any
 
+from .brief import load_saved_brief
+from .markdown_doc import build_hugo_document
 from .models import ContentBrief
 
 
 def load_brief(path: str | Path) -> ContentBrief:
-    payload: dict[str, Any] = json.loads(Path(path).read_text(encoding="utf-8"))
-    brief_payload = payload.get("content_brief", payload)
-    return ContentBrief(
-        primary_query=brief_payload["primary_query"],
-        likely_intent=brief_payload.get("likely_intent", "Mixed"),
-        target_word_count_range=tuple(brief_payload.get("target_word_count_range", (700, 1200))),
-        candidate_titles=brief_payload.get("candidate_titles", []),
-        suggested_outline=brief_payload.get("suggested_outline", []),
-        recommended_concepts_entities=brief_payload.get("recommended_concepts_entities", []),
-        questions_to_answer=brief_payload.get("questions_to_answer", []),
-        phrases_to_use_naturally=brief_payload.get("phrases_to_use_naturally", []),
-        warnings=brief_payload.get("warnings", []),
-    )
+    _, brief = load_saved_brief(path)
+    return brief
 
 
 def _heading_text(markdown_heading: str) -> str:
@@ -72,7 +61,7 @@ def _paragraph_for_section(section: str, brief: ContentBrief) -> str:
     )
 
 
-def generate_draft_from_brief(brief: ContentBrief) -> str:
+def generate_draft_body_from_brief(brief: ContentBrief) -> str:
     title = brief.candidate_titles[0] if brief.candidate_titles else brief.primary_query.title()
     lines = [f"# {title}", ""]
 
@@ -113,3 +102,8 @@ def generate_draft_from_brief(brief: ContentBrief) -> str:
         ])
 
     return "\n".join(lines).strip() + "\n"
+
+
+def generate_draft_from_brief(brief: ContentBrief, frontmatter_format: str = "yaml") -> str:
+    body = generate_draft_body_from_brief(brief)
+    return build_hugo_document(brief, body, frontmatter_format)

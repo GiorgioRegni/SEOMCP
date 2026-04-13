@@ -1,0 +1,59 @@
+{
+  "summary": "Draft analyzed against competitor-derived recommendations.",
+  "score_breakdown": {
+    "topical_coverage": 80.0,
+    "structure": 62.5,
+    "intent_alignment": 0.0,
+    "naturalness_penalty": 0.0,
+    "redundancy_penalty": 0.0,
+    "title_meta": 50.0,
+    "overall": 50.5,
+    "reasons": [
+      "Missing 7 recommended phrases/concepts.",
+      "Score is heuristic for content quality guidance, not a ranking predictor."
+    ]
+  },
+  "frontmatter_suggestions": {
+    "title": "Pickleball Lessons: What Beginners Should Expect",
+    "description": "Pickleball Lessons: What Beginners Should Expect with key details, viewing context, related entities, and questions to answer for informational search intent.",
+    "tags": [
+      "pickleball-lesson",
+      "pickleball-lessons",
+      "private-lessons",
+      "group-lessons",
+      "beginner-lessons",
+      "clinics-and-lessons",
+      "lesson-calendar",
+      "teaching-professionals"
+    ],
+    "draft": true
+  },
+  "source_urls": [
+    "https://lorileebeltman.com/pickleball-lessons-for-beginners/",
+    "https://crushyard.com/lessons/",
+    "https://www.pickleandsocialgwinnett.com/lessons-calendar.aspx",
+    "https://luckyshotspickleball.com/lets-learn/",
+    "https://dilldinkers.com/clinics-lessons/",
+    "https://www.cincinnatipickleball.com/lessons",
+    "https://oldsaybrookct.myrec.com/info/activities/program_details.aspx?ProgramID=29872",
+    "https://www.nycpickleball.com/lessons"
+  ],
+  "missing_topics": [],
+  "overused_terms": [],
+  "recommended_outline_changes": [
+    "## What a pickleball lesson covers",
+    "## Private vs group lessons",
+    "## Beginner lessons and clinics",
+    "## What to bring to your first lesson",
+    "## How to choose a coach or program",
+    "## Lesson calendars, booking, and scheduling",
+    "## Lesson pricing and value",
+    "## Drills and fundamentals to practice",
+    "## Pickleball lesson FAQ"
+  ],
+  "suggested_title_meta": [
+    "Pickleball Lessons: What Beginners Should Expect",
+    "Pickleball Lesson Guide for Beginners",
+    "How to Choose the Right Pickleball Lesson"
+  ]
+}
