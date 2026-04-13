@@ -1,0 +1,85 @@
+{
+  "competitor_analysis": {
+    "query": "a pickleball christmas",
+    "page_count": 0,
+    "median_word_count": 0,
+    "word_count_range": [
+      0,
+      0
+    ],
+    "common_headings": [],
+    "recommended_phrases": [],
+    "recommended_entities": [],
+    "recommended_subtopics": [],
+    "weak_source_warning": true,
+    "warnings": [
+      "No usable pages found. Brief generated from supplied URL titles only."
+    ]
+  },
+  "content_brief": {
+    "primary_query": "a pickleball christmas",
+    "likely_intent": "Mixed",
+    "target_word_count_range": [
+      700,
+      1200
+    ],
+    "candidate_titles": [
+      "A Pickleball Christmas: Cast, Plot, Release, and Where to Watch",
+      "A Pickleball Christmas Explained: What the Movie Is and Where It Streams",
+      "A Pickleball Christmas Guide: Synopsis, Trailer, Reviews, and Viewing Options"
+    ],
+    "suggested_outline": [
+      "## Overview",
+      "## Release and platform details",
+      "## Synopsis and trailer",
+      "## Reaction and reception",
+      "## Why it matters to pickleball audiences",
+      "## FAQ"
+    ],
+    "recommended_concepts_entities": [
+      "A Pickleball Christmas",
+      "Lifetime",
+      "IMDb",
+      "Prime Video",
+      "Rotten Tomatoes",
+      "Letterboxd",
+      "Google Play",
+      "Reddit",
+      "Facebook",
+      "The Dink",
+      "holiday movie",
+      "TV movie",
+      "trailer",
+      "release",
+      "streaming",
+      "review",
+      "pickleball community"
+    ],
+    "questions_to_answer": [
+      "What is A Pickleball Christmas?",
+      "Where can people watch A Pickleball Christmas?",
+      "Is it an official Lifetime release?",
+      "What is the movie about?",
+      "What is the tone of the film?",
+      "How have pickleball fans reacted?",
+      "Is the sport portrayal likely to feel authentic?"
+    ],
+    "phrases_to_use_naturally": [
+      "A Pickleball Christmas",
+      "Lifetime movie",
+      "holiday romance",
+      "pickleball-themed movie",
+      "trailer",
+      "where to watch",
+      "release details",
+      "viewer reaction",
+      "pickleball community",
+      "Christmas movie",
+      "first look",
+      "film listing"
+    ],
+    "warnings": [
+      "No usable pages found. Brief generated from supplied URL titles only."
+    ]
+  }
+}

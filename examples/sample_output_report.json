@@ -1,0 +1,52 @@
+{
+  "summary": "Optimized in 1 iteration(s). Score moved from 36.2 to 36.6.",
+  "score_breakdown": {
+    "initial": {
+      "topical_coverage": 100.0,
+      "structure": 0.0,
+      "intent_alignment": 4.78,
+      "naturalness_penalty": 0.0,
+      "redundancy_penalty": 0.0,
+      "title_meta": 0.0,
+      "overall": 36.19,
+      "reasons": [
+        "Heading coverage is lower than top competitors.",
+        "Title/H1 has weak alignment with primary query.",
+        "Score is heuristic for content quality guidance, not a ranking predictor."
+      ]
+    },
+    "final": {
+      "topical_coverage": 100.0,
+      "structure": 0.0,
+      "intent_alignment": 6.56,
+      "naturalness_penalty": 0.0,
+      "redundancy_penalty": 0.0,
+      "title_meta": 0.0,
+      "overall": 36.64,
+      "reasons": [
+        "Heading coverage is lower than top competitors.",
+        "Title/H1 has weak alignment with primary query.",
+        "Score is heuristic for content quality guidance, not a ranking predictor."
+      ]
+    }
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "score_before": 36.19,
+      "score_after": 36.64,
+      "delta": 0.45,
+      "analysis_summary": {
+        "missing_topics_after": 0,
+        "overused_terms_after": []
+      }
+    }
+  ],
+  "revised_draft": "# Pickleball Basics\n\nPickleball is a paddle sport. This short draft explains a few basics and the scoring idea.\n\n## Court Setup\nA court has a net and service areas.\n\n## Scoring Basics\nYou can only score when serving.\n\n## Common Mistakes\nPlayers often hit into the kitchen zone by mistake.\n\n\n## Practical Steps\n1. Start with clear definitions.\n2. Explain key rules/concepts.\n3. Cover common mistakes and edge cases.\n",
+  "recommended_outline_changes": [],
+  "suggested_title_meta": [
+    "Pickleball Rules: Complete Guide",
+    "Pickleball Rules Explained Step by Step",
+    "Practical Pickleball Rules Guide for Beginners"
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "summary": "Draft analyzed against competitor-derived recommendations.",
+  "score_breakdown": {
+    "topical_coverage": 37.5,
+    "structure": 12.5,
+    "intent_alignment": 0.0,
+    "naturalness_penalty": 0.0,
+    "redundancy_penalty": 0.0,
+    "title_meta": 0.0,
+    "overall": 15.62,
+    "reasons": [
+      "Missing 20 recommended phrases/concepts.",
+      "Heading coverage is lower than top competitors.",
+      "Draft is missing 12 likely subtopics/questions.",
+      "Title/H1 has weak alignment with primary query.",
+      "Score is heuristic for content quality guidance, not a ranking predictor."
+    ]
+  },
+  "missing_topics": [
+    "wheelchair rules",
+    "rulebook revisions & changes",
+    "rules summary",
+    "basic rules overview",
+    "the serve",
+    "service sequence",
+    "two bounce rule",
+    "non-volley zone",
+    "line calls",
+    "volley",
+    "team",
+    "2024"
+  ],
+  "overused_terms": [],
+  "recommended_outline_changes": [
+    "## Wheelchair Rules",
+    "## Rulebook Revisions & Changes",
+    "## Rules Summary",
+    "## Basic Rules Overview",
+    "## The Serve",
+    "## Service Sequence",
+    "## Scoring",
+    "## Two Bounce Rule"
+  ],
+  "suggested_title_meta": [
+    "Pickleball Rules: Complete Guide",
+    "Pickleball Rules Explained Step by Step",
+    "Practical Pickleball Rules Guide for Beginners"
+  ]
+}
