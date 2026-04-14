@@ -4,11 +4,13 @@ import json
 import sys
 
 from .analyze import analyze_draft
-from .brief import build_brief
+from .content_qa import qa_markdown_content
+from .guidance import build_writer_guidance
 from .main import resolve_content_context, run_pipeline
 from .models import SEORequest, to_dict
 from .rewrite import rewrite_draft
 from .feedback import optimize_draft
+from .score import score_draft
 from .yourtextguru import scrape_positioned_sites
 from .browser_session import launch_chrome
 from .markdown_doc import (
@@ -37,38 +39,67 @@ def build_seo_brief(payload: dict) -> dict:
         urls=payload.get("urls", []),
         top_n=payload.get("top_n", 8),
     )
-    _, comp, brief, raw_comp, source_filtering = run_pipeline(req)
-    return {
+    _, comp, brief, raw_comp, source_filtering, fetch_results, noisy_terms_rejected = run_pipeline(req)
+    frontmatter_suggestions = build_frontmatter_suggestions(brief)
+    result = {
         "source_urls": brief.source_urls,
         "source_filtering": to_dict(source_filtering),
+        "fetch_results": [to_dict(item) for item in fetch_results],
+        "noisy_terms_rejected": noisy_terms_rejected,
         "raw_competitor_analysis": to_dict(raw_comp),
         "competitor_analysis": to_dict(comp),
         "content_brief": to_dict(brief),
     }
+    result["writer_guidance"] = build_writer_guidance(
+        query=req.query,
+        brief=brief,
+        source_filtering=source_filtering,
+        fetch_results=fetch_results,
+        frontmatter_suggestions=frontmatter_suggestions,
+        noisy_terms_rejected=noisy_terms_rejected,
+    )
+    return result
 
 
 def analyze_seo_draft(payload: dict) -> dict:
     req = SEORequest(query=payload["query"], urls=payload.get("urls", []), top_n=payload.get("top_n", 8))
     urls = ",".join(req.urls) if req.urls else None
-    comp, brief, source_filtering = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
+    comp, brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
     draft_doc = parse_markdown_document(payload.get("draft_markdown", ""))
     title = payload.get("title") or title_from_document(draft_doc)
     h1 = payload.get("h1") or h1_from_body(draft_doc.body)
     analysis = analyze_draft(draft_doc.body, req.query, comp, title, h1)
-    return {
+    score = score_draft(comp, analysis, brief=brief)
+    result = {
         "summary": "Draft analyzed.",
         "draft_analysis": to_dict(analysis),
+        "score_breakdown": to_dict(score),
         "brief": to_dict(brief),
         "frontmatter_suggestions": build_frontmatter_suggestions(brief, draft_doc),
         "source_urls": brief.source_urls,
         "source_filtering": to_dict(source_filtering),
+        "fetch_results": [to_dict(item) for item in fetch_results],
     }
+    result["writer_guidance"] = build_writer_guidance(
+        query=req.query,
+        brief=brief,
+        source_filtering=source_filtering,
+        fetch_results=fetch_results,
+        frontmatter_suggestions=result["frontmatter_suggestions"],
+        analysis={
+            "missing_topics": analysis.missing_subtopics,
+            "overused_terms": analysis.overused_terms,
+            "score_breakdown": result["score_breakdown"],
+        },
+        noisy_terms_rejected=noisy_terms_rejected,
+    )
+    return result
 
 
 def rewrite_seo_draft(payload: dict) -> dict:
     req = SEORequest(query=payload["query"], urls=payload.get("urls", []), top_n=payload.get("top_n", 8))
     urls = ",".join(req.urls) if req.urls else None
-    comp, brief, source_filtering = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
+    comp, brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
     draft_doc = parse_markdown_document(payload.get("draft_markdown", ""))
     title = payload.get("title") or title_from_document(draft_doc)
     h1 = payload.get("h1") or h1_from_body(draft_doc.body)
@@ -82,13 +113,23 @@ def rewrite_seo_draft(payload: dict) -> dict:
     result["frontmatter_suggestions"] = build_frontmatter_suggestions(brief, draft_doc)
     result["source_urls"] = brief.source_urls
     result["source_filtering"] = to_dict(source_filtering)
+    result["fetch_results"] = [to_dict(item) for item in fetch_results]
+    result["writer_guidance"] = build_writer_guidance(
+        query=req.query,
+        brief=brief,
+        source_filtering=source_filtering,
+        fetch_results=fetch_results,
+        frontmatter_suggestions=result["frontmatter_suggestions"],
+        analysis={"missing_topics": analysis.missing_subtopics, "overused_terms": analysis.overused_terms},
+        noisy_terms_rejected=noisy_terms_rejected,
+    )
     return result
 
 
 def optimize_seo_draft(payload: dict) -> dict:
     req = SEORequest(query=payload["query"], urls=payload.get("urls", []), top_n=payload.get("top_n", 8))
     urls = ",".join(req.urls) if req.urls else None
-    comp, brief, source_filtering = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
+    comp, brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
     draft_doc = parse_markdown_document(payload.get("draft_markdown", ""))
     title = payload.get("title") or title_from_document(draft_doc)
     h1 = payload.get("h1") or h1_from_body(draft_doc.body)
@@ -109,7 +150,25 @@ def optimize_seo_draft(payload: dict) -> dict:
     response["frontmatter_suggestions"] = build_frontmatter_suggestions(brief, draft_doc)
     response["source_urls"] = brief.source_urls
     response["source_filtering"] = to_dict(source_filtering)
+    response["fetch_results"] = [to_dict(item) for item in fetch_results]
+    response["writer_guidance"] = build_writer_guidance(
+        query=req.query,
+        brief=brief,
+        source_filtering=source_filtering,
+        fetch_results=fetch_results,
+        frontmatter_suggestions=response["frontmatter_suggestions"],
+        optimization=response,
+        noisy_terms_rejected=noisy_terms_rejected,
+    )
     return response
+
+
+def qa_seo_content(payload: dict) -> dict:
+    return qa_markdown_content(
+        payload["query"],
+        payload.get("draft_markdown", ""),
+        payload.get("noisy_terms", []),
+    )
 
 
 def launch_chrome_profile(payload: dict) -> dict:
@@ -139,6 +198,7 @@ TOOLS = {
     "analyze_seo_draft": analyze_seo_draft,
     "rewrite_seo_draft": rewrite_seo_draft,
     "optimize_seo_draft": optimize_seo_draft,
+    "qa_seo_content": qa_seo_content,
     "launch_chrome_profile": launch_chrome_profile,
     "get_yourtextguru_positioned_sites": get_yourtextguru_positioned_sites,
 }

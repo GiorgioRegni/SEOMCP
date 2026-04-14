@@ -51,6 +51,16 @@ class SourceFilteringResult:
 
 
 @dataclass
+class SourceFetchResult:
+    url: str
+    status: str
+    used_in_analysis: bool
+    error: str = ""
+    word_count: int = 0
+    quality_flags: list[str] = field(default_factory=list)
+
+
+@dataclass
 class CompetitorAnalysis:
     query: str
     page_count: int

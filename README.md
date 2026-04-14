@@ -1,14 +1,16 @@
 # seo-writer-skill (prototype)
 
-`seo-writer-skill` is a local, tool-assisted SEO writing prototype that:
+`seo-writer-skill` is a local, tool-assisted SEO guidance prototype that:
 
 1. Collects candidate competitor URLs (manual list in v1; pluggable provider abstraction).
 2. Fetches and caches pages from the open web.
 3. Extracts readable content and heading structure.
 4. Builds a practical content brief from common patterns.
 5. Analyzes a draft for coverage/structure/naturalness gaps.
-6. Produces a revised draft and iterative optimization loop.
+6. Produces scaffold revisions, writer guidance, and iterative optimization signals.
 7. Exposes both a CLI and a thin MCP-compatible JSON interface.
+
+The Python tools are not the final writer. They provide guidance, stats, source context, and QA for Codex or another MCP-consuming AI to write the actual publishable Hugo article.
 
 ---
 
@@ -25,8 +27,9 @@
   - Naturalness penalty
   - Redundancy penalty
   - Title/meta alignment
-- Generates a **content brief** and **rewrite guidance**.
+- Generates a **content brief**, **writer guidance**, and **rewrite guidance**.
 - Runs multi-pass optimization and stores iteration logs as JSON.
+- Runs final-content QA checks for scaffold text, internal metadata, noisy terms, and Hugo front matter.
 
 ## What it does **not** do
 
@@ -34,6 +37,7 @@
 - It does **not** use paid SEO APIs in v1.
 - It does **not** guarantee factual correctness of source pages.
 - It should **not** copy source text; it abstracts concepts.
+- It does **not** author final publishable prose by itself; generated markdown may be scaffold output for an AI writer loop.
 
 ---
 
@@ -68,6 +72,8 @@ pip install -r requirements.txt
 - `src/brief.py` – content brief generation.
 - `src/rewrite.py` – rewrite/gap-fill logic.
 - `src/feedback.py` – iterative optimization loop.
+- `src/guidance.py` – writer-facing guidance JSON for AI/MCP content loops.
+- `src/content_qa.py` – final markdown QA checks.
 - `src/mcp_server.py` – thin MCP-compatible JSON IO tool server.
 - `src/browser_session.py` – optional Chrome DevTools profile launcher for authenticated browser-backed tools.
 - `src/yourtextguru.py` – optional YourText.Guru scraper using the authenticated Chrome session.
@@ -80,7 +86,7 @@ pip install -r requirements.txt
 
 ## CLI usage
 
-### Build a Hugo post end to end
+### Build a Hugo guidance bundle
 
 ```bash
 python3 -m src.main build-post \
@@ -91,7 +97,9 @@ python3 -m src.main build-post \
   --iterations 3
 ```
 
-`build-post` filters noisy URLs, builds or reuses `data/json/brief-<query>.json`, creates the article if it does not exist, runs analysis, writes optimized markdown, and stores `data/json/report-<query>.json`.
+`build-post` filters noisy URLs, builds or reuses `data/json/brief-<query>.json`, creates a markdown scaffold if the article does not exist, runs analysis/optimization, writes scaffold-capable markdown outputs, writes `data/json/guidance-<query>.json`, runs content QA, and stores `data/json/report-<query>.json`.
+
+The markdown files from this command are inputs to the content loop. Review the guidance JSON and let Codex or another writer synthesize the final Hugo article.
 
 Source filtering is conservative by default. It excludes malformed URLs, social/profile pages, PDFs, forums, broad homepages, and marketplace/product listings unless you pass an explicit allow flag such as `--allow-forums`, `--allow-pdfs`, `--allow-social`, `--allow-marketplaces`, or `--allow-homepages`.
 
@@ -119,7 +127,7 @@ When `--urls` is omitted, `analyze`, `rewrite`, and `optimize` automatically reu
 python -m src.main rewrite --query "pickleball rules" --draft examples/draft.md --urls "https://usapickleball.org/what-is-pickleball/official-rules/"
 ```
 
-By default, rewrite and optimize preserve existing Hugo front matter and rewrite only the body. Pass `--update-frontmatter` to update managed SEO fields: `title`, `description`, `tags`, and `draft`.
+By default, rewrite and optimize preserve existing Hugo front matter and rewrite only the body. Output should be treated as scaffold/gap-fill guidance unless an editor has reviewed it. Pass `--update-frontmatter` to update managed SEO fields: `title`, `description`, `tags`, and `draft`.
 
 Pass `--output examples/revised-article.md` to also write the revised markdown to a file for diffing/review.
 
@@ -138,6 +146,16 @@ New drafts emit YAML front matter by default. Use `--frontmatter-format toml` fo
 ```bash
 python -m src.main optimize --query "pickleball rules" --draft examples/draft.md --iterations 3 --urls "https://usapickleball.org/what-is-pickleball/official-rules/"
 ```
+
+### QA final markdown before publishing
+
+```bash
+python3 -m src.main content-qa \
+  --query "pickleball rules" \
+  --draft examples/pickleball-rules.md
+```
+
+The QA command checks for scaffold phrases, internal workflow metadata, noisy extracted terms, suspicious repetition, and Hugo front matter issues. It writes `data/json/qa-<query>.json`.
 
 ### Authenticated YourText.Guru keyword service
 
@@ -206,6 +224,7 @@ Supported tools:
 - `analyze_seo_draft`
 - `rewrite_seo_draft`
 - `optimize_seo_draft`
+- `qa_seo_content`
 - `launch_chrome_profile`
 - `get_yourtextguru_positioned_sites`
 

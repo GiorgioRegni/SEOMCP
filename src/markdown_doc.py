@@ -13,6 +13,14 @@ from .models import ContentBrief, MarkdownDocument
 YAML_DELIMITER = "---"
 TOML_DELIMITER = "+++"
 SEO_FIELDS = {"title", "description", "tags", "draft"}
+NOISY_TAGS = {
+    "helpful-thanks",
+    "thanks-love",
+    "the-rest",
+    "table-of-contents",
+    "subscribe",
+    "footer",
+}
 
 
 def parse_markdown_document(markdown: str) -> MarkdownDocument:
@@ -158,4 +166,6 @@ def _tags_for_brief(brief: ContentBrief) -> list[str]:
 
 def _normalize_tag(value: str) -> str:
     tag = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    if tag in NOISY_TAGS:
+        return ""
     return tag[:48]

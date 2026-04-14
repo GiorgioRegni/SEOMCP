@@ -4,7 +4,7 @@ import json
 import re
 from pathlib import Path
 
-from .models import CompetitorAnalysis, ContentBrief, SourceFilteringResult, SourceUrlDecision
+from .models import CompetitorAnalysis, ContentBrief, SourceFetchResult, SourceFilteringResult, SourceUrlDecision
 
 
 def infer_intent(query: str) -> str:
@@ -31,6 +31,11 @@ NOISY_TERMS = {
     "subscribe to get the latest pickleball news",
     "table of contents",
     "footer",
+    "helpful thanks",
+    "thanks love",
+    "the rest",
+    "the people",
+    "bring the",
 }
 NOISY_TOKENS = {
     "presented",
@@ -50,6 +55,7 @@ NOISY_PATTERNS = (
     r"related articles",
     r"more .* news",
     r"subscribe .* latest",
+    r"\blet s\b",
 )
 MONTHS = {
     "january",
@@ -90,27 +96,36 @@ INTENT_HEADING_WORDS = {
 
 
 def curate_competitor_analysis(query: str, comp: CompetitorAnalysis) -> CompetitorAnalysis:
+    curated, _ = curate_competitor_analysis_with_rejections(query, comp)
+    return curated
+
+
+def curate_competitor_analysis_with_rejections(query: str, comp: CompetitorAnalysis) -> tuple[CompetitorAnalysis, list[str]]:
     query_terms = set(_tokens(query))
+    rejected: list[str] = []
 
     headings = _clean_list(
         comp.common_headings,
         query_terms=query_terms,
         keep_if_intent_heading=True,
         limit=12,
+        rejected=rejected,
     )
-    phrases = _clean_list(comp.recommended_phrases, query_terms=query_terms, limit=25, allow_weak_seed=True)
+    phrases = _clean_list(comp.recommended_phrases, query_terms=query_terms, limit=25, allow_weak_seed=True, rejected=rejected)
     entities = _clean_list(
         comp.recommended_entities,
         query_terms=query_terms,
         limit=20,
         keep_if_intent_heading=False,
         allow_weak_seed=True,
+        rejected=rejected,
     )
     subtopics = _clean_list(
         comp.recommended_subtopics,
         query_terms=query_terms,
         keep_if_intent_heading=True,
         limit=20,
+        rejected=rejected,
     )
 
     if not headings:
@@ -138,7 +153,7 @@ def curate_competitor_analysis(query: str, comp: CompetitorAnalysis) -> Competit
     if removed > 0:
         warnings.append(f"Curated noisy or transient extracted terms before building the writing brief ({removed} item(s)).")
 
-    return CompetitorAnalysis(
+    curated = CompetitorAnalysis(
         query=comp.query,
         page_count=comp.page_count,
         median_word_count=median,
@@ -151,6 +166,7 @@ def curate_competitor_analysis(query: str, comp: CompetitorAnalysis) -> Competit
         warnings=warnings,
         source_urls=comp.source_urls,
     )
+    return curated, sorted(set(rejected))
 
 
 def build_brief(query: str, comp: CompetitorAnalysis) -> ContentBrief:
@@ -212,6 +228,16 @@ def load_source_filtering(path: str | Path) -> SourceFilteringResult:
     return source_filtering_from_dict(payload.get("source_filtering", {}))
 
 
+def load_noisy_terms_rejected(path: str | Path) -> list[str]:
+    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    return payload.get("noisy_terms_rejected", [])
+
+
+def load_fetch_results(path: str | Path) -> list[SourceFetchResult]:
+    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    return [source_fetch_result_from_dict(item) for item in payload.get("fetch_results", [])]
+
+
 def competitor_analysis_from_dict(payload: dict) -> CompetitorAnalysis:
     return CompetitorAnalysis(
         query=payload.get("query", ""),
@@ -260,6 +286,17 @@ def source_decision_from_dict(payload: dict) -> SourceUrlDecision:
     )
 
 
+def source_fetch_result_from_dict(payload: dict) -> SourceFetchResult:
+    return SourceFetchResult(
+        url=payload.get("url", ""),
+        status=payload.get("status", ""),
+        used_in_analysis=payload.get("used_in_analysis", False),
+        error=payload.get("error", ""),
+        word_count=payload.get("word_count", 0),
+        quality_flags=payload.get("quality_flags", []),
+    )
+
+
 def _outline_heading_text(heading: str) -> str:
     return heading.lstrip("#").strip().lower()
 
@@ -275,6 +312,7 @@ def _clean_list(
     limit: int,
     keep_if_intent_heading: bool = True,
     allow_weak_seed: bool = False,
+    rejected: list[str] | None = None,
 ) -> list[str]:
     cleaned: list[str] = []
     seen: set[str] = set()
@@ -282,7 +320,11 @@ def _clean_list(
         if ":" in value:
             continue
         normalized = " ".join(_tokens(value))
-        if not normalized or normalized in seen or _is_noisy(normalized):
+        if not normalized or normalized in seen:
+            continue
+        if _is_noisy(normalized):
+            if rejected is not None:
+                rejected.append(value.strip())
             continue
         value_terms = set(normalized.split())
         has_query_overlap = bool(query_terms.intersection(value_terms))

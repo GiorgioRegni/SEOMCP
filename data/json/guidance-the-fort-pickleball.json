@@ -1,0 +1,262 @@
+{
+  "query": "the fort pickleball",
+  "role": "SEO guidance for an AI or human writer; not publishable prose.",
+  "likely_intent": "Mixed",
+  "target_word_count_range": [
+    400,
+    1215
+  ],
+  "source_summary": {
+    "included_count": 6,
+    "skipped_count": 4,
+    "fetched_count": 4,
+    "failed_count": 2,
+    "used_in_analysis_count": 3
+  },
+  "included_urls": [
+    "https://playthefort.com/",
+    "https://www.theapp.global/news/the-fort-established-hq",
+    "https://www.tripadvisor.com/Attraction_Review-g34227-d33257652-Reviews-The_Fort-Fort_Lauderdale_Broward_County_Florida.html",
+    "https://www.yelp.com/biz/the-fort-fort-lauderdale-4",
+    "https://www.youtube.com/watch?v=1Y8zyQpY-Z4",
+    "https://www.parks.fortlauderdale.gov/programs/pickleball"
+  ],
+  "skipped_urls": [
+    {
+      "url": "https://www.instagram.com/playthefort/?hl=en",
+      "normalized_url": "https://www.instagram.com/playthefort",
+      "category": "social_or_login_gated",
+      "included": false,
+      "reason": "Social/profile pages are noisy or login-gated."
+    },
+    {
+      "url": "https://www.facebook.com/playthefort/",
+      "normalized_url": "https://www.facebook.com/playthefort",
+      "category": "social_or_login_gated",
+      "included": false,
+      "reason": "Social/profile pages are noisy or login-gated."
+    },
+    {
+      "url": "https://fortathleticclub.com/courts-sports/pickleball/",
+      "normalized_url": "https://fortathleticclub.com/courts-sports/pickleball",
+      "category": "same_name_different_entity",
+      "included": false,
+      "reason": "Likely a different entity with overlapping query terms; keep only as a do-not-confuse source."
+    },
+    {
+      "url": "https://www.facebook.com/142411158959010/",
+      "normalized_url": "https://www.facebook.com/142411158959010",
+      "category": "social_or_login_gated",
+      "included": false,
+      "reason": "Social/profile pages are noisy or login-gated."
+    }
+  ],
+  "fetch_results": [
+    {
+      "url": "https://playthefort.com/",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 365,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.theapp.global/news/the-fort-established-hq",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 539,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.tripadvisor.com/Attraction_Review-g34227-d33257652-Reviews-The_Fort-Fort_Lauderdale_Broward_County_Florida.html",
+      "status": "failed",
+      "used_in_analysis": false,
+      "error": "403 Client Error: Forbidden for url: https://www.tripadvisor.com/Attraction_Review-g34227-d33257652-Reviews-The_Fort-Fort_Lauderdale_Broward_County_Florida.html",
+      "word_count": 0,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.yelp.com/biz/the-fort-fort-lauderdale-4",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 1215,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.youtube.com/watch?v=1Y8zyQpY-Z4",
+      "status": "fetched",
+      "used_in_analysis": false,
+      "error": "",
+      "word_count": 23,
+      "quality_flags": [
+        "thin_content",
+        "weak_structure"
+      ]
+    },
+    {
+      "url": "https://www.parks.fortlauderdale.gov/programs/pickleball",
+      "status": "failed",
+      "used_in_analysis": false,
+      "error": "403 Client Error: Forbidden for url: https://www.parks.fortlauderdale.gov/programs/pickleball",
+      "word_count": 0,
+      "quality_flags": []
+    }
+  ],
+  "do_not_confuse_sources": [
+    {
+      "url": "https://fortathleticclub.com/courts-sports/pickleball/",
+      "normalized_url": "https://fortathleticclub.com/courts-sports/pickleball",
+      "category": "same_name_different_entity",
+      "included": false,
+      "reason": "Likely a different entity with overlapping query terms; keep only as a do-not-confuse source."
+    }
+  ],
+  "recommended_coverage": {
+    "headings_to_consider": [
+      "## Welcome to the Fort",
+      "## get Your Free Intro to Pickleball",
+      "## Fort Pickleball",
+      "## get the Fort app",
+      "## Fort Links"
+    ],
+    "questions_to_answer": [
+      "What should readers know about welcome to the fort?",
+      "What should readers know about get your free intro to pickleball?",
+      "What should readers know about fort pickleball?",
+      "What should readers know about get the fort app?",
+      "What should readers know about pickleball?",
+      "What should readers know about fort?"
+    ],
+    "concepts_to_cover": [
+      "The Fort",
+      "South Florida",
+      "Florida Room",
+      "Fort Lauderdale",
+      "florida room",
+      "pickleball players",
+      "pickleball experience",
+      "south florida",
+      "fort lauderdale",
+      "pickleball club",
+      "pickleball courts",
+      "first pickleball",
+      "pickleball stadium",
+      "state-of-the-art facility"
+    ],
+    "phrases_to_use_naturally": [
+      "florida room",
+      "pickleball players",
+      "pickleball experience",
+      "south florida",
+      "fort lauderdale",
+      "pickleball club",
+      "pickleball courts",
+      "first pickleball",
+      "pickleball stadium",
+      "state-of-the-art facility"
+    ]
+  },
+  "terms_to_avoid": [
+    "Fort! Let’s",
+    "helpful thanks",
+    "table of contents",
+    "thanks love"
+  ],
+  "frontmatter_suggestions": {
+    "title": "The Fort Pickleball: Complete Guide",
+    "description": "A practical guide to the fort pickleball, including South Florida, Florida Room, Fort Lauderdale, and answers to common questions.",
+    "tags": [
+      "the-fort-pickleball",
+      "the-fort",
+      "south-florida",
+      "florida-room",
+      "fort-lauderdale",
+      "pickleball-players",
+      "pickleball-experience",
+      "pickleball-club"
+    ],
+    "draft": false
+  },
+  "editorial_checklist": [
+    "Use the JSON as guidance, not final prose.",
+    "Write original copy; do not copy large spans from sources.",
+    "Preserve Hugo front matter and custom fields unless explicitly updating SEO fields.",
+    "Remove scaffold phrases and internal workflow metadata before publishing.",
+    "Use noisy or blocked sources to limit claims, not as article copy.",
+    "Prefer reader usefulness and factual clarity over raising the heuristic score.",
+    "Run content QA before treating the markdown as final."
+  ],
+  "draft_gaps": {
+    "missing_topics": [],
+    "overused_terms": [
+      "fort"
+    ],
+    "score_breakdown": {
+      "topical_coverage": 98.0,
+      "structure": 60.0,
+      "intent_alignment": 11.76,
+      "naturalness_penalty": 4.08,
+      "redundancy_penalty": 2.5,
+      "title_meta": 100.0,
+      "overall": 62.66,
+      "reasons": [
+        "Missing 1 recommended phrases/concepts.",
+        "Possible keyword repetition in terms: fort.",
+        "Score is heuristic for content quality guidance, not a ranking predictor."
+      ]
+    }
+  },
+  "optimization_summary": {
+    "summary": "Optimized in 1 iteration(s). Score moved from 62.7 to 62.7.",
+    "score_breakdown": {
+      "initial": {
+        "topical_coverage": 98.0,
+        "structure": 60.0,
+        "intent_alignment": 11.76,
+        "naturalness_penalty": 4.08,
+        "redundancy_penalty": 2.5,
+        "title_meta": 100.0,
+        "overall": 62.66,
+        "reasons": [
+          "Missing 1 recommended phrases/concepts.",
+          "Possible keyword repetition in terms: fort.",
+          "Score is heuristic for content quality guidance, not a ranking predictor."
+        ]
+      },
+      "final": {
+        "topical_coverage": 98.0,
+        "structure": 60.0,
+        "intent_alignment": 11.76,
+        "naturalness_penalty": 4.08,
+        "redundancy_penalty": 2.5,
+        "title_meta": 100.0,
+        "overall": 62.66,
+        "reasons": [
+          "Missing 1 recommended phrases/concepts.",
+          "Possible keyword repetition in terms: fort.",
+          "Score is heuristic for content quality guidance, not a ranking predictor."
+        ]
+      }
+    },
+    "revision_notes": [
+      "No safe automatic body rewrite was needed; use the analysis JSON for manual editorial judgment."
+    ]
+  },
+  "content_qa": {
+    "passed": true,
+    "query": "the fort pickleball",
+    "issues": [],
+    "warnings": [],
+    "checks": {
+      "frontmatter_parseable": true,
+      "frontmatter_format": "yaml",
+      "word_count": 1520,
+      "scaffold_issue_count": 0,
+      "internal_metadata_issue_count": 0,
+      "noisy_term_warning_count": 0,
+      "repeated_terms": []
+    }
+  }
+}

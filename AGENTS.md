@@ -2,7 +2,7 @@
 
 ## Role
 
-This repo is a local SEO writing prototype for producing Hugo-ready markdown articles from a target keyword. When the user gives a keyword and asks for a post, guide, draft, optimization, or review, run the full SEO writing workflow unless they explicitly ask for only one step.
+This repo is a local SEO guidance prototype for helping an AI or human writer produce Hugo-ready markdown articles from a target keyword. The Python CLI/MCP tools provide source filtering, briefs, scoring, QA, and writer guidance; Codex or another MCP-consuming AI is the actual content writer.
 
 ## Default Keyword-To-Hugo Workflow
 
@@ -12,9 +12,9 @@ This repo is a local SEO writing prototype for producing Hugo-ready markdown art
    - Use user-provided URLs if available.
    - If URLs are not provided and a browser-authenticated keyword source is relevant, use the Chrome/YourText.Guru workflow documented in `README.md`.
    - Otherwise build the best available brief and clearly flag weak or missing source data.
-4. Generate or update a Hugo markdown draft:
+4. Generate or update a Hugo markdown scaffold when useful:
    - Default article path: `examples/<slug>.md`.
-   - If preserving an original article for review, write revised output to `examples/revised-<slug>.md`.
+   - If preserving an original article for review, write revised scaffold output to `examples/revised-<slug>.md`.
    - Use YAML front matter by default for new drafts.
 5. Analyze the article:
    - `python3 -m src.main analyze --query "<keyword>" --draft examples/<slug>.md`
@@ -25,6 +25,8 @@ This repo is a local SEO writing prototype for producing Hugo-ready markdown art
 7. Review the JSON outputs manually:
    - `data/json/analyze-<slug>.json`
    - `data/json/optimize-<slug>.json`
+   - `data/json/guidance-<slug>.json`
+   - `data/json/report-<slug>.json`
    - Treat scores as heuristic guidance, not ranking predictions.
 8. Treat generated markdown as scaffolding unless it already reads like a publishable article. The tools are allowed to produce outlines, gap-filling notes, and rough revised drafts; Codex is responsible for turning that material into final copy.
 9. Do an editorial synthesis pass before declaring the article finished:
@@ -41,6 +43,45 @@ This repo is a local SEO writing prototype for producing Hugo-ready markdown art
    - `frontmatter_suggestions`
    - `source_urls`
 11. When the user asks to build a post, the deliverable is the final edited Hugo markdown file, not merely the CLI-generated scaffold.
+12. Run content QA before treating markdown as final:
+   - `python3 -m src.main content-qa --query "<keyword>" --draft examples/<slug>.md`
+   - Address scaffold text, internal metadata, noisy extracted terms, and front matter warnings before publishing.
+
+## Stop Or Iterate Criteria
+
+Use two gates: content QA and editorial/SEO guidance.
+
+Content QA is the hard gate. Do not treat an article as final unless:
+
+- `content-qa` passes.
+- Hugo front matter parses.
+- No scaffold phrases remain.
+- No internal workflow metadata remains.
+- No noisy extracted terms appear in publishable copy.
+- `draft: true` is not present when the article is meant to publish.
+
+Use scores as iteration guidance, not as a final quality grade.
+
+Iterate again when:
+
+- `content-qa` fails.
+- Important `missing_topics`, `missing_entities`, or reader questions remain.
+- The article does not satisfy the likely search intent.
+- Headings miss useful sections from the guidance.
+- Front matter is generic or misleading.
+- Overused terms make the prose read repetitive.
+- The latest optimization improves the overall score by roughly 3-5+ points without hurting prose.
+
+Stop iterating when:
+
+- `content-qa` passes.
+- Missing topics are empty or only weak/noisy suggestions remain.
+- The article answers the main reader intent directly.
+- Front matter is publishable.
+- The latest optimizer pass gives little or no score improvement.
+- Manual reading says the article is useful, natural, and Hugo-ready.
+
+If the score improves but the prose gets worse, reject the change. If the score is mediocre but the article is useful, accurate, and QA-clean, prefer editorial judgment over the score.
 
 ## Hugo Front Matter Rules
 
@@ -76,6 +117,7 @@ This repo is a local SEO writing prototype for producing Hugo-ready markdown art
 - If `recommended_outline_changes` are useful, align headings naturally instead of adding duplicate sections.
 - If `overused_terms` flags a term, reduce repetition only when the prose actually reads repetitive.
 - Keep the author’s voice unless there is a clear readability or intent issue.
+- If results mix same-name entities, identify the target entity and keep mismatched entities only as "do not confuse with" context.
 
 ## Browser-Backed Keyword Sources
 
@@ -95,6 +137,7 @@ When completing a keyword-to-Hugo workflow, report:
 - Article path edited or generated.
 - Revised output path, if any.
 - Final analyze/optimize score summary.
+- Content QA pass/fail summary.
 - Whether front matter changed.
 - Any recommendations ignored and why.
 - Commands run.

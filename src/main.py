@@ -7,11 +7,20 @@ from typing import Optional
 import typer
 
 from .analyze import analyze_competitors, analyze_draft
-from .brief import build_brief, curate_competitor_analysis, load_saved_brief, load_source_filtering
+from .brief import (
+    build_brief,
+    curate_competitor_analysis_with_rejections,
+    load_fetch_results,
+    load_noisy_terms_rejected,
+    load_saved_brief,
+    load_source_filtering,
+)
+from .content_qa import qa_markdown_content
 from .extract import extract_main_content
 from .fetch import extract_basic_metadata, fetch_html
 from .feedback import optimize_draft
-from .models import SEORequest, SourceFilteringResult, to_dict
+from .guidance import build_writer_guidance
+from .models import SEORequest, SourceFetchResult, SourceFilteringResult, to_dict
 from .rewrite import rewrite_draft
 from .score import score_draft
 from .serp import collect_serp_urls
@@ -59,6 +68,7 @@ def run_pipeline(
     )
     seen: set[str] = set()
     pages = []
+    fetch_results: list[SourceFetchResult] = []
     for url in source_filtering.included:
         nurl = normalize_url(url)
         if nurl in seen:
@@ -68,38 +78,56 @@ def run_pipeline(
             html = fetch_html(url)
             page = extract_basic_metadata(url, html)
             page = extract_main_content(page, html)
-            if "thin_content" not in page.source_quality_flags:
+            used = "thin_content" not in page.source_quality_flags
+            fetch_results.append(SourceFetchResult(
+                url=url,
+                status="fetched",
+                used_in_analysis=used,
+                word_count=page.word_count,
+                quality_flags=page.source_quality_flags,
+            ))
+            if used:
                 pages.append(page)
         except Exception as exc:  # noqa: BLE001
+            fetch_results.append(SourceFetchResult(url=url, status="failed", used_in_analysis=False, error=str(exc)))
             typer.echo(f"warn: failed to fetch {url}: {exc}", err=True)
 
     raw_comp = analyze_competitors(req.query, pages, source_urls=source_filtering.included)
-    comp = curate_competitor_analysis(req.query, raw_comp)
+    comp, noisy_terms_rejected = curate_competitor_analysis_with_rejections(req.query, raw_comp)
     brief = build_brief(req.query, comp)
-    return pages, comp, brief, raw_comp, source_filtering
+    return pages, comp, brief, raw_comp, source_filtering, fetch_results, noisy_terms_rejected
 
 
 def resolve_content_context(query: str, top_n: int, urls: Optional[str] = None,
                             brief_path: Optional[str] = None) -> tuple:
     if urls:
         req = SEORequest(query=query, urls=_split_urls(urls), top_n=top_n)
-        _, comp, seo_brief, _, source_filtering = run_pipeline(req)
-        return comp, seo_brief, source_filtering
+        _, comp, seo_brief, _, source_filtering, fetch_results, noisy_terms_rejected = run_pipeline(req)
+        return comp, seo_brief, source_filtering, fetch_results, noisy_terms_rejected
 
     path = Path(brief_path) if brief_path else JSON_CACHE / f"brief-{slugify(query)}.json"
     if path.exists():
         comp, seo_brief = load_saved_brief(path)
-        return comp, seo_brief, load_source_filtering(path)
+        return comp, seo_brief, load_source_filtering(path), load_fetch_results(path), load_noisy_terms_rejected(path)
 
     req = SEORequest(query=query, urls=[], top_n=top_n)
-    _, comp, seo_brief, _, source_filtering = run_pipeline(req)
-    return comp, seo_brief, source_filtering
+    _, comp, seo_brief, _, source_filtering, fetch_results, noisy_terms_rejected = run_pipeline(req)
+    return comp, seo_brief, source_filtering, fetch_results, noisy_terms_rejected
 
 
-def brief_payload(comp, seo_brief, raw_comp=None, source_filtering: SourceFilteringResult | None = None) -> dict:
+def brief_payload(
+    comp,
+    seo_brief,
+    raw_comp=None,
+    source_filtering: SourceFilteringResult | None = None,
+    fetch_results: list[SourceFetchResult] | None = None,
+    noisy_terms_rejected: list[str] | None = None,
+) -> dict:
     return {
         "source_urls": seo_brief.source_urls,
         "source_filtering": to_dict(source_filtering or SourceFilteringResult(included=seo_brief.source_urls)),
+        "fetch_results": [to_dict(result) for result in (fetch_results or [])],
+        "noisy_terms_rejected": noisy_terms_rejected or [],
         "raw_competitor_analysis": to_dict(raw_comp or comp),
         "competitor_analysis": to_dict(comp),
         "content_brief": to_dict(seo_brief),
@@ -107,28 +135,43 @@ def brief_payload(comp, seo_brief, raw_comp=None, source_filtering: SourceFilter
 
 
 def analyze_payload(query: str, draft_path: str, comp, seo_brief, source_filtering: SourceFilteringResult,
-                    title: str | None = None, h1: str | None = None) -> dict:
+                    title: str | None = None, h1: str | None = None,
+                    fetch_results: list[SourceFetchResult] | None = None,
+                    noisy_terms_rejected: list[str] | None = None) -> dict:
     draft_doc = parse_markdown_document(load_text(draft_path))
     effective_title = title or title_from_document(draft_doc)
     effective_h1 = h1 or h1_from_body(draft_doc.body)
     draft_analysis = analyze_draft(draft_doc.body, query, comp, title=effective_title, h1=effective_h1)
     score = score_draft(comp, draft_analysis, brief=seo_brief)
-    return {
+    payload = {
         "summary": "Draft analyzed against competitor-derived recommendations.",
         "score_breakdown": to_dict(score),
         "frontmatter_suggestions": build_frontmatter_suggestions(seo_brief, draft_doc),
         "source_urls": seo_brief.source_urls,
         "source_filtering": to_dict(source_filtering),
+        "fetch_results": [to_dict(result) for result in (fetch_results or [])],
         "missing_topics": draft_analysis.missing_subtopics,
         "overused_terms": draft_analysis.overused_terms,
         "recommended_outline_changes": seo_brief.suggested_outline,
         "suggested_title_meta": seo_brief.candidate_titles,
     }
+    payload["writer_guidance"] = build_writer_guidance(
+        query=query,
+        brief=seo_brief,
+        source_filtering=source_filtering,
+        fetch_results=fetch_results,
+        frontmatter_suggestions=payload["frontmatter_suggestions"],
+        analysis=payload,
+        noisy_terms_rejected=noisy_terms_rejected,
+    )
+    return payload
 
 
 def optimize_payload(query: str, draft_path: str, comp, seo_brief, source_filtering: SourceFilteringResult,
                      iterations: int, title: str | None = None, h1: str | None = None,
-                     update_frontmatter: bool = False, output: str | None = None) -> dict:
+                     update_frontmatter: bool = False, output: str | None = None,
+                     fetch_results: list[SourceFetchResult] | None = None,
+                     noisy_terms_rejected: list[str] | None = None) -> dict:
     draft_doc = parse_markdown_document(load_text(draft_path))
     effective_title = title or title_from_document(draft_doc)
     effective_h1 = h1 or h1_from_body(draft_doc.body)
@@ -140,7 +183,7 @@ def optimize_payload(query: str, draft_path: str, comp, seo_brief, source_filter
     if output:
         Path(output).parent.mkdir(parents=True, exist_ok=True)
         Path(output).write_text(revised_draft, encoding="utf-8")
-    return {
+    payload = {
         "summary": result.summary,
         "score_breakdown": {"initial": to_dict(result.initial_score), "final": to_dict(result.final_score)},
         "iterations": [to_dict(i) for i in result.iterations],
@@ -149,9 +192,20 @@ def optimize_payload(query: str, draft_path: str, comp, seo_brief, source_filter
         "frontmatter_suggestions": build_frontmatter_suggestions(seo_brief, draft_doc),
         "source_urls": seo_brief.source_urls,
         "source_filtering": to_dict(source_filtering),
+        "fetch_results": [to_dict(result) for result in (fetch_results or [])],
         "recommended_outline_changes": seo_brief.suggested_outline,
         "suggested_title_meta": seo_brief.candidate_titles,
     }
+    payload["writer_guidance"] = build_writer_guidance(
+        query=query,
+        brief=seo_brief,
+        source_filtering=source_filtering,
+        fetch_results=fetch_results,
+        frontmatter_suggestions=payload["frontmatter_suggestions"],
+        optimization=payload,
+        noisy_terms_rejected=noisy_terms_rejected,
+    )
+    return payload
 
 
 def _ignored_recommendations(analysis: dict, source_filtering: SourceFilteringResult) -> list[str]:
@@ -180,7 +234,7 @@ def brief(
 ) -> None:
     ensure_dirs()
     req = SEORequest(query=query, geo=geo, language=language, urls=_split_urls(urls), top_n=top_n)
-    _, comp, seo_brief, raw_comp, source_filtering = run_pipeline(
+    _, comp, seo_brief, raw_comp, source_filtering, fetch_results, noisy_terms_rejected = run_pipeline(
         req,
         allow_forums=allow_forums,
         allow_pdfs=allow_pdfs,
@@ -188,7 +242,23 @@ def brief(
         allow_marketplaces=allow_marketplaces,
         allow_homepages=allow_homepages,
     )
-    payload = brief_payload(comp, seo_brief, raw_comp=raw_comp, source_filtering=source_filtering)
+    frontmatter_suggestions = build_frontmatter_suggestions(seo_brief)
+    payload = brief_payload(
+        comp,
+        seo_brief,
+        raw_comp=raw_comp,
+        source_filtering=source_filtering,
+        fetch_results=fetch_results,
+        noisy_terms_rejected=noisy_terms_rejected,
+    )
+    payload["writer_guidance"] = build_writer_guidance(
+        query=query,
+        brief=seo_brief,
+        source_filtering=source_filtering,
+        fetch_results=fetch_results,
+        frontmatter_suggestions=frontmatter_suggestions,
+        noisy_terms_rejected=noisy_terms_rejected,
+    )
     out = JSON_CACHE / f"brief-{slugify(query)}.json"
     dump_json(out, payload)
     typer.echo(json.dumps(payload, indent=2))
@@ -205,8 +275,18 @@ def analyze(
     top_n: int = 8,
 ) -> None:
     ensure_dirs()
-    comp, seo_brief, source_filtering = resolve_content_context(query, top_n, urls=urls, brief_path=brief_path)
-    payload = analyze_payload(query, draft, comp, seo_brief, source_filtering, title=title, h1=h1)
+    comp, seo_brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(query, top_n, urls=urls, brief_path=brief_path)
+    payload = analyze_payload(
+        query,
+        draft,
+        comp,
+        seo_brief,
+        source_filtering,
+        title=title,
+        h1=h1,
+        fetch_results=fetch_results,
+        noisy_terms_rejected=noisy_terms_rejected,
+    )
     out = JSON_CACHE / f"analyze-{slugify(query)}.json"
     dump_json(out, payload)
     typer.echo(json.dumps(payload, indent=2))
@@ -224,7 +304,7 @@ def rewrite(
     update_frontmatter: bool = typer.Option(False, help="Update Hugo SEO fields in front matter."),
     output: Optional[str] = typer.Option(None, "--output", "-o", help="Optional path for revised markdown."),
 ) -> None:
-    comp, seo_brief, source_filtering = resolve_content_context(query, top_n, urls=urls, brief_path=brief_path)
+    comp, seo_brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(query, top_n, urls=urls, brief_path=brief_path)
     draft_doc = parse_markdown_document(load_text(draft))
     effective_title = title or title_from_document(draft_doc)
     effective_h1 = h1 or h1_from_body(draft_doc.body)
@@ -248,7 +328,17 @@ def rewrite(
         "frontmatter_suggestions": build_frontmatter_suggestions(seo_brief, draft_doc),
         "source_urls": seo_brief.source_urls,
         "source_filtering": to_dict(source_filtering),
+        "fetch_results": [to_dict(result) for result in fetch_results],
     }
+    payload["writer_guidance"] = build_writer_guidance(
+        query=query,
+        brief=seo_brief,
+        source_filtering=source_filtering,
+        fetch_results=fetch_results,
+        frontmatter_suggestions=payload["frontmatter_suggestions"],
+        analysis={"missing_topics": draft_analysis.missing_subtopics, "overused_terms": draft_analysis.overused_terms},
+        noisy_terms_rejected=noisy_terms_rejected,
+    )
     out = JSON_CACHE / f"rewrite-{slugify(query)}.json"
     dump_json(out, payload)
     typer.echo(json.dumps(payload, indent=2))
@@ -267,7 +357,7 @@ def optimize(
     update_frontmatter: bool = typer.Option(False, help="Update Hugo SEO fields in front matter."),
     output: Optional[str] = typer.Option(None, "--output", "-o", help="Optional path for revised markdown."),
 ) -> None:
-    comp, seo_brief, source_filtering = resolve_content_context(query, top_n, urls=urls, brief_path=brief_path)
+    comp, seo_brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(query, top_n, urls=urls, brief_path=brief_path)
     payload = optimize_payload(
         query,
         draft,
@@ -279,6 +369,8 @@ def optimize(
         h1=h1,
         update_frontmatter=update_frontmatter,
         output=output,
+        fetch_results=fetch_results,
+        noisy_terms_rejected=noisy_terms_rejected,
     )
     out = JSON_CACHE / f"optimize-{slugify(query)}.json"
     dump_json(out, payload)
@@ -314,7 +406,7 @@ def build_post(
 
     if urls or not saved_brief_path.exists():
         req = SEORequest(query=query, urls=_split_urls(urls), top_n=top_n)
-        _, comp, seo_brief, raw_comp, source_filtering = run_pipeline(
+        _, comp, seo_brief, raw_comp, source_filtering, fetch_results, noisy_terms_rejected = run_pipeline(
             req,
             allow_forums=allow_forums,
             allow_pdfs=allow_pdfs,
@@ -322,12 +414,27 @@ def build_post(
             allow_marketplaces=allow_marketplaces,
             allow_homepages=allow_homepages,
         )
-        brief_data = brief_payload(comp, seo_brief, raw_comp=raw_comp, source_filtering=source_filtering)
+        brief_data = brief_payload(
+            comp,
+            seo_brief,
+            raw_comp=raw_comp,
+            source_filtering=source_filtering,
+            fetch_results=fetch_results,
+            noisy_terms_rejected=noisy_terms_rejected,
+        )
         dump_json(saved_brief_path, brief_data)
     else:
         comp, seo_brief = load_saved_brief(saved_brief_path)
         source_filtering = load_source_filtering(saved_brief_path)
-        brief_data = brief_payload(comp, seo_brief, source_filtering=source_filtering)
+        fetch_results = load_fetch_results(saved_brief_path)
+        noisy_terms_rejected = load_noisy_terms_rejected(saved_brief_path)
+        brief_data = brief_payload(
+            comp,
+            seo_brief,
+            source_filtering=source_filtering,
+            fetch_results=fetch_results,
+            noisy_terms_rejected=noisy_terms_rejected,
+        )
 
     if not article_path.exists():
         article_path.parent.mkdir(parents=True, exist_ok=True)
@@ -336,7 +443,15 @@ def build_post(
             encoding="utf-8",
         )
 
-    analysis = analyze_payload(query, str(article_path), comp, seo_brief, source_filtering)
+    analysis = analyze_payload(
+        query,
+        str(article_path),
+        comp,
+        seo_brief,
+        source_filtering,
+        fetch_results=fetch_results,
+        noisy_terms_rejected=noisy_terms_rejected,
+    )
     analyze_path = JSON_CACHE / f"analyze-{slug}.json"
     dump_json(analyze_path, analysis)
 
@@ -349,20 +464,46 @@ def build_post(
         iterations=iterations,
         update_frontmatter=update_frontmatter,
         output=str(revised_path),
+        fetch_results=fetch_results,
+        noisy_terms_rejected=noisy_terms_rejected,
     )
     optimize_path = JSON_CACHE / f"optimize-{slug}.json"
     dump_json(optimize_path, optimized)
 
+    qa = qa_markdown_content(query, article_path.read_text(encoding="utf-8"), noisy_terms_rejected)
+    guidance = build_writer_guidance(
+        query=query,
+        brief=seo_brief,
+        source_filtering=source_filtering,
+        fetch_results=fetch_results,
+        frontmatter_suggestions=analysis.get("frontmatter_suggestions", {}),
+        analysis=analysis,
+        optimization=optimized,
+        qa=qa,
+        noisy_terms_rejected=noisy_terms_rejected,
+    )
+    guidance_path = JSON_CACHE / f"guidance-{slug}.json"
+    dump_json(guidance_path, guidance)
+
     report = {
-        "summary": "Post workflow completed.",
+        "summary": "Guidance workflow completed. Markdown outputs may be scaffolds until an AI or editor completes the final pass.",
         "query": query,
         "brief_path": str(saved_brief_path),
         "article_path": str(article_path),
         "revised_path": str(revised_path),
+        "scaffold_path": str(article_path),
+        "revised_scaffold_path": str(revised_path),
+        "writer_guidance_path": str(guidance_path),
+        "final_article_path": str(article_path) if qa.get("passed") else None,
         "analyze_path": str(analyze_path),
+        "analysis_path": str(analyze_path),
         "optimize_path": str(optimize_path),
+        "optimization_path": str(optimize_path),
         "source_urls": seo_brief.source_urls,
         "source_filtering": to_dict(source_filtering),
+        "fetch_results": [to_dict(result) for result in fetch_results],
+        "content_qa": qa,
+        "noisy_terms_rejected": noisy_terms_rejected,
         "score_breakdown": optimized["score_breakdown"],
         "frontmatter_changed": update_frontmatter,
         "ignored_recommendations": _ignored_recommendations(analysis, source_filtering),
@@ -375,6 +516,7 @@ def build_post(
         "brief": brief_data,
         "analysis": analysis,
         "optimization": optimized,
+        "writer_guidance": guidance,
         "report": report,
     }
     typer.echo(json.dumps(payload, indent=2))
@@ -419,6 +561,22 @@ def yourtextguru_positioned_sites(
         typer.echo(f"error: {exc}", err=True)
         raise typer.Exit(1) from exc
     typer.echo(json.dumps(to_dict(result), indent=2))
+
+
+@app.command("content-qa")
+def content_qa(
+    query: str = typer.Option(...),
+    draft: str = typer.Option(..., help="Path to Hugo/markdown content to QA."),
+    brief_path: Optional[str] = typer.Option(None, "--brief", help="Saved brief JSON for noisy-term context."),
+) -> None:
+    noisy_terms: list[str] = []
+    path = Path(brief_path) if brief_path else JSON_CACHE / f"brief-{slugify(query)}.json"
+    if path.exists():
+        noisy_terms = load_noisy_terms_rejected(path)
+    payload = qa_markdown_content(query, load_text(draft), noisy_terms)
+    out = JSON_CACHE / f"qa-{slugify(query)}.json"
+    dump_json(out, payload)
+    typer.echo(json.dumps(payload, indent=2))
 
 
 @app.command()

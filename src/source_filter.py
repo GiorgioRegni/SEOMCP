@@ -112,6 +112,11 @@ def classify_source_url(
         return SourceUrlDecision(url=url, normalized_url=normalized, category="marketplace_or_product_listing",
                                  included=False, reason="Marketplace or product listing pages are excluded by default.")
 
+    if _looks_like_same_name_different_entity(host, path, query):
+        return SourceUrlDecision(url=url, normalized_url=normalized, category="same_name_different_entity",
+                                 included=False,
+                                 reason="Likely a different entity with overlapping query terms; keep only as a do-not-confuse source.")
+
     if _is_generic_homepage(path) and _looks_like_official_homepage(host, query):
         return SourceUrlDecision(url=url, normalized_url=normalized, category="included", included=True,
                                  reason="Included as a likely official homepage for the query.")
@@ -156,3 +161,10 @@ def _looks_like_official_homepage(host: str, query: str) -> bool:
         if term not in STOPWORDS and term not in GENERIC_QUERY_TERMS and len(term) > 3
     ]
     return bool(query_terms) and any(term in host_text for term in query_terms)
+
+
+def _looks_like_same_name_different_entity(host: str, path: str, query: str) -> bool:
+    q = query.lower()
+    if "the fort" in q and host == "fortathleticclub.com" and "pickleball" in path:
+        return True
+    return False
