@@ -74,7 +74,8 @@ pip install -r requirements.txt
 - `src/feedback.py` – iterative optimization loop.
 - `src/guidance.py` – writer-facing guidance JSON for AI/MCP content loops.
 - `src/content_qa.py` – final markdown QA checks.
-- `src/mcp_server.py` – thin MCP-compatible JSON IO tool server.
+- `src/mcp_stdio_server.py` – MCP stdio server for MCP clients.
+- `src/mcp_server.py` – legacy JSON-lines tool server for direct smoke tests.
 - `src/browser_session.py` – optional Chrome DevTools profile launcher for authenticated browser-backed tools.
 - `src/yourtextguru.py` – optional YourText.Guru scraper using the authenticated Chrome session.
 - `src/models.py` – typed dataclasses.
@@ -198,16 +199,148 @@ Notes:
 
 ## MCP-compatible interface
 
-Run server:
+### Recommended MCP stdio server
+
+Use this entrypoint for MCP clients:
 
 ```bash
-python -m src.mcp_server
+python3 -m src.mcp_stdio_server
 ```
 
-Send JSON lines over stdin:
+The server exposes these tools:
+
+- `get_seo_writer_instructions`
+- `build_seo_brief`
+- `analyze_seo_draft`
+- `rewrite_seo_draft`
+- `optimize_seo_draft`
+- `qa_seo_content`
+- `launch_chrome_profile`
+- `get_yourtextguru_positioned_sites`
+
+Inputs and outputs are JSON-compatible dictionaries. Draft inputs may contain Hugo YAML or TOML front matter. Rewrite/optimize output is still scaffold guidance unless an editor turns it into final copy.
+
+An MCP-consuming AI should call `get_seo_writer_instructions` at the start of a content workflow. That tool returns the canonical file layout, recommended loop, stop/iterate criteria, front matter rules, and final article rules. The brief/analyze/optimize tools also return `writer_guidance`, but `get_seo_writer_instructions` is the stable orientation payload for how to use the system.
+
+Some MCP tools need network access:
+
+- `build_seo_brief` fetches public web pages when building a new brief.
+- `analyze_seo_draft`, `rewrite_seo_draft`, and `optimize_seo_draft` can work offline when a saved `data/json/brief-<slug>.json` exists, but may fetch pages if URLs are provided or no saved brief exists.
+- `launch_chrome_profile` and `get_yourtextguru_positioned_sites` require local browser support and network access to the authenticated service.
+- `get_seo_writer_instructions` and `qa_seo_content` are offline-safe.
+
+In restricted environments, reuse saved briefs under `data/json/brief-<slug>.json` and treat `fetch_results` / `source_filtering` as confidence guidance. Do not include failed fetches, blocked URLs, or network errors in final article copy.
+
+### Local clone MCP setup
+
+For a local clone, install dependencies first:
+
+```bash
+git clone https://github.com/GiorgioRegni/SEOMCP.git
+cd SEOMCP
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+Then configure your MCP client to launch the stdio server from that clone.
+
+Generic JSON-style MCP config:
+
+```json
+{
+  "mcpServers": {
+    "seo-writer-skill": {
+      "command": "/absolute/path/to/SEOMCP/.venv/bin/python",
+      "args": ["-m", "src.mcp_stdio_server"],
+      "cwd": "/absolute/path/to/SEOMCP"
+    }
+  }
+}
+```
+
+Codex-style TOML config:
+
+```toml
+[mcp_servers.seo-writer-skill]
+command = "/absolute/path/to/SEOMCP/.venv/bin/python"
+args = ["-m", "src.mcp_stdio_server"]
+cwd = "/absolute/path/to/SEOMCP"
+```
+
+Use a local clone when you want persistent `data/` caches, generated reports, and Hugo markdown files in the repo.
+
+### Run from public GitHub with uvx
+
+The repo includes `pyproject.toml` with a `seo-writer-mcp` console script, so MCP clients that can run `uvx` can install from a public GitHub URL:
+
+```json
+{
+  "mcpServers": {
+    "seo-writer-skill": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/GiorgioRegni/SEOMCP.git",
+        "seo-writer-mcp"
+      ]
+    }
+  }
+}
+```
+
+This is convenient for tool-only use. For content workflows that should write `examples/` and `data/json/` into your project, prefer a local clone and set `cwd` to the repo root.
+
+### Natural prompt example
+
+With the MCP server configured, you should be able to give the client AI a short request:
+
+```text
+Generate an SEO article for "hulk hogan" using these URLs:
+- https://en.wikipedia.org/wiki/Hulk_Hogan
+- https://www.imdb.com/name/nm0001356/
+- https://www.wwe.com/superstars/hulkhogan
+- https://abcnews.go.com/GMA/Culture/wwe-star-hulk-hogan-cause-death-revealed/story?id=124249036
+```
+
+The MCP-consuming AI should call `get_seo_writer_instructions`, build or reuse the brief, write the final Hugo article to `examples/<slug>.md`, keep rough scaffold output in `examples/working-<slug>.md`, run `qa_seo_content`, and iterate only when QA fails or important gaps remain.
+
+### MCP tool call examples
+
+Build a brief:
+
+```json
+{"tool":"get_seo_writer_instructions","input":{}}
+```
+
+Then build a brief:
 
 ```json
 {"tool":"build_seo_brief","input":{"query":"pickleball rules","urls":["https://usapickleball.org/what-is-pickleball/official-rules/"]}}
+```
+
+Analyze a Hugo draft:
+
+```json
+{
+  "tool": "analyze_seo_draft",
+  "input": {
+    "query": "object storage",
+    "draft_markdown": "---\ntitle: Object Storage\ndraft: false\n---\n\n## Overview\n\nObject storage stores data as objects."
+  }
+}
+```
+
+QA final content:
+
+```json
+{
+  "tool": "qa_seo_content",
+  "input": {
+    "query": "object storage",
+    "draft_markdown": "---\ntitle: Object Storage\ndraft: false\n---\n\n## Overview\n\nObject storage stores data as objects."
+  }
+}
 ```
 
 Authenticated browser-backed keyword service example:
@@ -218,17 +351,16 @@ Authenticated browser-backed keyword service example:
 
 For `rewrite_seo_draft` and `optimize_seo_draft`, pass `"update_frontmatter": true` to update Hugo SEO fields. Otherwise front matter is preserved and only the markdown body is revised.
 
-Supported tools:
+### Legacy JSON-lines smoke server
 
-- `build_seo_brief`
-- `analyze_seo_draft`
-- `rewrite_seo_draft`
-- `optimize_seo_draft`
-- `qa_seo_content`
-- `launch_chrome_profile`
-- `get_yourtextguru_positioned_sites`
+For direct shell smoke tests without an MCP client, the older JSON-lines wrapper is still available:
 
-All inputs/outputs are stable JSON dictionaries.
+```bash
+printf '%s\n' '{"tool":"qa_seo_content","input":{"query":"object storage","draft_markdown":"## Object Storage\n\nObject storage stores data as objects."}}' \
+  | python3 -m src.mcp_server
+```
+
+That legacy wrapper is useful for debugging, but MCP clients should use `python3 -m src.mcp_stdio_server` or the `seo-writer-mcp` console script.
 
 ---
 

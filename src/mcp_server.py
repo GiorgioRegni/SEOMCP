@@ -31,6 +31,103 @@ Responds with: {"ok": true, "result": {...}} or {"ok": false, "error": "..."}
 """
 
 
+def get_seo_writer_instructions(payload: dict | None = None) -> dict:
+    return {
+        "role": (
+            "The Python tools are a guidance/statistics engine. Codex or another "
+            "MCP-consuming AI is responsible for writing the final Hugo article."
+        ),
+        "canonical_paths": {
+            "final_article": "examples/<slug>.md",
+            "working_scaffold": "examples/working-<slug>.md",
+            "brief": "data/json/brief-<slug>.json",
+            "guidance": "data/json/guidance-<slug>.json",
+            "analysis": "data/json/analyze-<slug>.json",
+            "optimization": "data/json/optimize-<slug>.json",
+            "qa": "data/json/qa-<slug>.json",
+            "report": "data/json/report-<slug>.json",
+        },
+        "recommended_loop": [
+            "Build or reuse a brief for the keyword.",
+            "Draft or inspect the canonical Hugo article.",
+            "Analyze the article body against the brief.",
+            "Use writer_guidance, missing topics, score reasons, and source filtering as guidance.",
+            "Edit the canonical Hugo article directly; do not treat scaffold output as final prose.",
+            "Run content QA.",
+            "Iterate only when QA fails, important gaps remain, or a rewrite improves the article without hurting prose.",
+        ],
+        "network_requirements": {
+            "offline_safe": [
+                "get_seo_writer_instructions",
+                "qa_seo_content",
+            ],
+            "uses_network_when_context_is_missing": [
+                "analyze_seo_draft",
+                "rewrite_seo_draft",
+                "optimize_seo_draft",
+            ],
+            "requires_network_for_new_briefs": [
+                "build_seo_brief",
+            ],
+            "requires_browser_or_authenticated_session": [
+                "launch_chrome_profile",
+                "get_yourtextguru_positioned_sites",
+            ],
+            "offline_strategy": [
+                "Prefer saved brief files such as data/json/brief-<slug>.json when available.",
+                "If network access is unavailable, analyze against the saved brief rather than fetching URLs again.",
+                "If a tool reports fetch failures, use fetch_results/source_filtering as confidence guidance.",
+                "Do not mention failed fetches, blocked URLs, or network errors in final article copy.",
+            ],
+        },
+        "stop_or_iterate": {
+            "hard_gate": "content-qa must pass before an article is final.",
+            "iterate_when": [
+                "content-qa fails",
+                "important missing_topics, missing_entities, or reader questions remain",
+                "the article does not satisfy likely search intent",
+                "headings miss useful sections from the guidance",
+                "front matter is generic or misleading",
+                "overused terms make the prose read repetitive",
+                "optimization improves the overall score by roughly 3-5+ points without hurting prose",
+            ],
+            "stop_when": [
+                "content-qa passes",
+                "missing topics are empty or only weak/noisy suggestions remain",
+                "the article answers the main reader intent directly",
+                "front matter is publishable",
+                "the latest optimizer pass gives little or no score improvement",
+                "manual reading says the article is useful, natural, and Hugo-ready",
+            ],
+            "judgment_rule": (
+                "If the score improves but the prose gets worse, reject the change. "
+                "If the score is mediocre but the article is useful, accurate, and QA-clean, "
+                "prefer editorial judgment over the score."
+            ),
+        },
+        "final_article_rules": [
+            "Preserve Hugo front matter and custom fields unless explicitly updating SEO fields.",
+            "Never leave scaffold phrases in final content.",
+            "Never include internal workflow metadata, failed fetch notes, scores, or CLI process details in the article.",
+            "Use source pages for abstraction, not copying.",
+            "Avoid keyword stuffing.",
+            "Write the finished publishable article to examples/<slug>.md.",
+        ],
+        "frontmatter_rules": [
+            "Supported formats: YAML --- and TOML +++.",
+            "Only manage title, description, tags, and draft when front matter updates are requested.",
+            "Do not set draft: true when the article is intended to publish.",
+        ],
+        "useful_tools": [
+            "build_seo_brief",
+            "analyze_seo_draft",
+            "rewrite_seo_draft",
+            "optimize_seo_draft",
+            "qa_seo_content",
+        ],
+    }
+
+
 def build_seo_brief(payload: dict) -> dict:
     req = SEORequest(
         query=payload["query"],
@@ -194,6 +291,7 @@ def get_yourtextguru_positioned_sites(payload: dict) -> dict:
 
 
 TOOLS = {
+    "get_seo_writer_instructions": get_seo_writer_instructions,
     "build_seo_brief": build_seo_brief,
     "analyze_seo_draft": analyze_seo_draft,
     "rewrite_seo_draft": rewrite_seo_draft,
