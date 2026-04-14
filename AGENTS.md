@@ -26,13 +26,21 @@ This repo is a local SEO writing prototype for producing Hugo-ready markdown art
    - `data/json/analyze-<slug>.json`
    - `data/json/optimize-<slug>.json`
    - Treat scores as heuristic guidance, not ranking predictions.
-8. If the generated `revised_draft` is weak or unchanged, edit the Hugo article directly using:
+8. Treat generated markdown as scaffolding unless it already reads like a publishable article. The tools are allowed to produce outlines, gap-filling notes, and rough revised drafts; Codex is responsible for turning that material into final copy.
+9. Do an editorial synthesis pass before declaring the article finished:
+   - Read the article markdown, saved brief, analyze JSON, optimize JSON, and source URL list.
+   - Use the tool output as guidance, not as final prose.
+   - Replace boilerplate, placeholders, and mechanical phrasing with specific, useful article copy.
+   - Use weak, blocked, dynamic, or review-based source data to decide what not to overstate.
+   - Keep the result Hugo-ready and publishable.
+10. If the generated `revised_draft` is weak or unchanged, edit the Hugo article directly using:
    - `score_breakdown`
    - `recommended_outline_changes`
    - `missing_topics`
    - `overused_terms`
    - `frontmatter_suggestions`
    - `source_urls`
+11. When the user asks to build a post, the deliverable is the final edited Hugo markdown file, not merely the CLI-generated scaffold.
 
 ## Hugo Front Matter Rules
 
@@ -61,6 +69,8 @@ This repo is a local SEO writing prototype for producing Hugo-ready markdown art
 - Use competitor/source pages for abstraction, not copying.
 - Do not paste large spans from source pages.
 - Prefer reader usefulness over chasing the score.
+- Never leave instruction-like scaffold text in a final article, such as "use this section", "explain why", "add practical guidance", or generic concept lists.
+- Do not include internal workflow metadata in final article copy. Failed fetches, filtered URLs, weak-source warnings, scores, optimization notes, and CLI/report details belong in JSON reports or the final response, not in the Hugo post.
 - Avoid keyword stuffing.
 - If a structure score is low, first check whether headings merely use different wording than the brief.
 - If `recommended_outline_changes` are useful, align headings naturally instead of adding duplicate sections.

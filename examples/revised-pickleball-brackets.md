@@ -210,3 +210,10 @@ Check the official event page first. Tournament platforms, league sites, club pa
 - [PB5star: Tournament Guide to Pickleball Brackets](https://www.pb5star.com/a/blog/tournament-time-everything-you-need-to-know-about-pickleball-brackets)
 - [PickleballBrackets.com event page](https://pickleballbrackets.com/ptoc.aspx?eid=3692157a-7dbf-45c1-a449-0a19923fb90b)
 - [Fairgrounds: Guide to Pickleball Brackets for Beginners](https://www.visitfairgrounds.com/blog/the-ultimate-guide-to-pickleball-brackets-for-beginners)
+
+## Sources skipped
+
+- The truncated `pickleballbrackets.com/ptd.aspx...` URL was not usable.
+- The Facebook profile was filtered out because it is a social profile and likely to be noisy or login-gated.
+- The generic Pickleball.com homepage was too broad for this informational article.
+- The Etsy printable listing was a product/template page, not a strong source for tournament bracket intent.

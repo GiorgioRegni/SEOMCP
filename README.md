@@ -60,7 +60,8 @@ pip install -r requirements.txt
 
 - `src/main.py` – CLI entrypoint and pipeline orchestration.
 - `src/serp.py` – SERP provider abstraction (manual + placeholder provider).
-- `src/fetch.py` – URL filtering, fetch, HTML metadata extraction, caching.
+- `src/source_filter.py` – conservative source URL classification before fetch.
+- `src/fetch.py` – fetch, HTML metadata extraction, caching.
 - `src/extract.py` – trafilatura-based readable content extraction with a BeautifulSoup fallback.
 - `src/analyze.py` – competitor and draft analysis.
 - `src/score.py` – transparent heuristic scoring.
@@ -78,6 +79,21 @@ pip install -r requirements.txt
 ---
 
 ## CLI usage
+
+### Build a Hugo post end to end
+
+```bash
+python3 -m src.main build-post \
+  --query "pickleball brackets" \
+  --urls "https://example.com/page-one,https://example.com/page-two" \
+  --output examples/pickleball-brackets.md \
+  --revised-output examples/revised-pickleball-brackets.md \
+  --iterations 3
+```
+
+`build-post` filters noisy URLs, builds or reuses `data/json/brief-<query>.json`, creates the article if it does not exist, runs analysis, writes optimized markdown, and stores `data/json/report-<query>.json`.
+
+Source filtering is conservative by default. It excludes malformed URLs, social/profile pages, PDFs, forums, broad homepages, and marketplace/product listings unless you pass an explicit allow flag such as `--allow-forums`, `--allow-pdfs`, `--allow-social`, `--allow-marketplaces`, or `--allow-homepages`.
 
 ### Build brief
 

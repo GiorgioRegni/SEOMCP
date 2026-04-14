@@ -72,13 +72,14 @@ def dump_frontmatter(frontmatter: dict[str, Any], fmt: str) -> str:
     raise ValueError(f"Unsupported front matter format: {fmt}")
 
 
-def build_frontmatter_suggestions(brief: ContentBrief) -> dict[str, Any]:
+def build_frontmatter_suggestions(brief: ContentBrief, doc: MarkdownDocument | None = None) -> dict[str, Any]:
     title = brief.candidate_titles[0] if brief.candidate_titles else brief.primary_query.title()
+    existing_draft = doc.frontmatter.get("draft") if doc else None
     return {
         "title": title,
         "description": _description_for_brief(brief),
         "tags": _tags_for_brief(brief),
-        "draft": True,
+        "draft": False if existing_draft is False else True,
     }
 
 
@@ -90,7 +91,7 @@ def update_hugo_seo_fields(doc: MarkdownDocument, brief: ContentBrief, *, overwr
         raw_frontmatter=doc.raw_frontmatter,
         body=doc.body,
     )
-    suggestions = build_frontmatter_suggestions(brief)
+    suggestions = build_frontmatter_suggestions(brief, updated)
 
     changed = False
     for key in SEO_FIELDS:
@@ -130,9 +131,14 @@ def build_hugo_document(brief: ContentBrief, body: str, fmt: str) -> str:
 
 def _description_for_brief(brief: ContentBrief) -> str:
     title = brief.candidate_titles[0] if brief.candidate_titles else brief.primary_query.title()
+    concepts = [
+        c for c in brief.recommended_concepts_entities[:4]
+        if c.lower() not in title.lower()
+    ]
+    if concepts:
+        return f"A practical guide to {brief.primary_query}, including {', '.join(concepts[:3])}, and answers to common questions."
     return (
-        f"{title} with key details, viewing context, related entities, and questions to answer "
-        f"for {brief.likely_intent.lower()} search intent."
+        f"A practical guide to {brief.primary_query}, with clear explanations, useful context, and answers to common questions."
     )
 
 

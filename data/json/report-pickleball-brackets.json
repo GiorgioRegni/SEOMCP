@@ -1,33 +1,11 @@
 {
-  "summary": "Draft analyzed against competitor-derived recommendations.",
-  "score_breakdown": {
-    "topical_coverage": 96.5,
-    "structure": 62.5,
-    "intent_alignment": 35.81,
-    "naturalness_penalty": 4.48,
-    "redundancy_penalty": 0.0,
-    "title_meta": 100.0,
-    "overall": 70.75,
-    "reasons": [
-      "Missing 1 recommended phrases/concepts.",
-      "Score is heuristic for content quality guidance, not a ranking predictor."
-    ]
-  },
-  "frontmatter_suggestions": {
-    "title": "Pickleball Brackets: Complete Guide",
-    "description": "A practical guide to pickleball brackets, including Single Elimination, Double Elimination, Round Robin, and answers to common questions.",
-    "tags": [
-      "pickleball-brackets",
-      "single-elimination",
-      "double-elimination",
-      "round-robin",
-      "key-takeaways",
-      "usa-pickleball",
-      "pickleball-tournaments",
-      "pickleball-tournament"
-    ],
-    "draft": false
-  },
+  "summary": "Post workflow completed.",
+  "query": "pickleball brackets",
+  "brief_path": "data/json/brief-pickleball-brackets.json",
+  "article_path": "examples/pickleball-brackets.md",
+  "revised_path": "examples/revised-pickleball-brackets.md",
+  "analyze_path": "data/json/analyze-pickleball-brackets.json",
+  "optimize_path": "data/json/optimize-pickleball-brackets.json",
   "source_urls": [
     "https://pickleballtournaments.com/search",
     "https://www.pb5star.com/a/blog/tournament-time-everything-you-need-to-know-about-pickleball-brackets",
@@ -158,21 +136,44 @@
       }
     ]
   },
-  "missing_topics": [],
-  "overused_terms": [],
-  "recommended_outline_changes": [
-    "## how do Pickleball Brackets Work?",
-    "## Types of Pickleball Tournament Brackets",
-    "## Single Elimination vs Double Elimination in Pickleball",
-    "## Understanding Round-robin Brackets in Pickleball",
-    "## Beginner’s Guide to Participating in Pickleball Tournaments",
-    "## What to Know About Pickleball Brackets",
-    "## how to use Pickleball Brackets",
-    "## Pickleball Brackets Options and Examples"
+  "score_breakdown": {
+    "initial": {
+      "topical_coverage": 96.5,
+      "structure": 62.5,
+      "intent_alignment": 35.81,
+      "naturalness_penalty": 4.48,
+      "redundancy_penalty": 0.0,
+      "title_meta": 100.0,
+      "overall": 70.75,
+      "reasons": [
+        "Missing 1 recommended phrases/concepts.",
+        "Score is heuristic for content quality guidance, not a ranking predictor."
+      ]
+    },
+    "final": {
+      "topical_coverage": 96.5,
+      "structure": 62.5,
+      "intent_alignment": 35.81,
+      "naturalness_penalty": 4.48,
+      "redundancy_penalty": 0.0,
+      "title_meta": 100.0,
+      "overall": 70.75,
+      "reasons": [
+        "Missing 1 recommended phrases/concepts.",
+        "Score is heuristic for content quality guidance, not a ranking predictor."
+      ]
+    }
+  },
+  "frontmatter_changed": false,
+  "ignored_recommendations": [
+    "Skipped https://pickleballbrackets.com/ptd.aspx...: URL is empty, truncated, or missing an HTTP(S) host.",
+    "Skipped https://www.facebook.com/PickleballBrackets/: Social/profile pages are noisy or login-gated.",
+    "Skipped https://pickleball.com/: Generic homepages are too broad for brief generation.",
+    "Skipped https://pickleballleagues.com/: Generic homepages are too broad for brief generation.",
+    "Skipped https://ppatour.com/: Generic homepages are too broad for brief generation.",
+    "Skipped https://www.etsy.com/listing/1689349574/pickleball-tournament-bracket-12-or-14: Marketplace or product listing pages are excluded by default."
   ],
-  "suggested_title_meta": [
-    "Pickleball Brackets: Complete Guide",
-    "Pickleball Brackets Explained Step by Step",
-    "Practical Pickleball Brackets Guide for Beginners"
+  "commands_run": [
+    "python3 -m src.main build-post --query \"pickleball brackets\""
   ]
 }

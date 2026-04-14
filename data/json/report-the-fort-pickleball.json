@@ -1,0 +1,163 @@
+{
+  "summary": "Post workflow completed.",
+  "query": "the fort pickleball",
+  "brief_path": "data/json/brief-the-fort-pickleball.json",
+  "article_path": "examples/the-fort-pickleball.md",
+  "revised_path": "examples/revised-the-fort-pickleball.md",
+  "analyze_path": "data/json/analyze-the-fort-pickleball.json",
+  "optimize_path": "data/json/optimize-the-fort-pickleball.json",
+  "source_urls": [
+    "https://playthefort.com/",
+    "https://www.theapp.global/news/the-fort-established-hq",
+    "https://www.tripadvisor.com/Attraction_Review-g34227-d33257652-Reviews-The_Fort-Fort_Lauderdale_Broward_County_Florida.html",
+    "https://fortathleticclub.com/courts-sports/pickleball/",
+    "https://www.yelp.com/biz/the-fort-fort-lauderdale-4",
+    "https://www.youtube.com/watch?v=1Y8zyQpY-Z4",
+    "https://www.parks.fortlauderdale.gov/programs/pickleball"
+  ],
+  "source_filtering": {
+    "included": [
+      "https://playthefort.com/",
+      "https://www.theapp.global/news/the-fort-established-hq",
+      "https://www.tripadvisor.com/Attraction_Review-g34227-d33257652-Reviews-The_Fort-Fort_Lauderdale_Broward_County_Florida.html",
+      "https://fortathleticclub.com/courts-sports/pickleball/",
+      "https://www.yelp.com/biz/the-fort-fort-lauderdale-4",
+      "https://www.youtube.com/watch?v=1Y8zyQpY-Z4",
+      "https://www.parks.fortlauderdale.gov/programs/pickleball"
+    ],
+    "excluded": [
+      {
+        "url": "https://www.instagram.com/playthefort/?hl=en",
+        "normalized_url": "https://www.instagram.com/playthefort",
+        "category": "social_or_login_gated",
+        "included": false,
+        "reason": "Social/profile pages are noisy or login-gated."
+      },
+      {
+        "url": "https://www.facebook.com/playthefort/",
+        "normalized_url": "https://www.facebook.com/playthefort",
+        "category": "social_or_login_gated",
+        "included": false,
+        "reason": "Social/profile pages are noisy or login-gated."
+      },
+      {
+        "url": "https://www.facebook.com/142411158959010/",
+        "normalized_url": "https://www.facebook.com/142411158959010",
+        "category": "social_or_login_gated",
+        "included": false,
+        "reason": "Social/profile pages are noisy or login-gated."
+      }
+    ],
+    "decisions": [
+      {
+        "url": "https://playthefort.com/",
+        "normalized_url": "https://playthefort.com",
+        "category": "included",
+        "included": true,
+        "reason": "Included as a likely official homepage for the query."
+      },
+      {
+        "url": "https://www.instagram.com/playthefort/?hl=en",
+        "normalized_url": "https://www.instagram.com/playthefort",
+        "category": "social_or_login_gated",
+        "included": false,
+        "reason": "Social/profile pages are noisy or login-gated."
+      },
+      {
+        "url": "https://www.theapp.global/news/the-fort-established-hq",
+        "normalized_url": "https://www.theapp.global/news/the-fort-established-hq",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.tripadvisor.com/Attraction_Review-g34227-d33257652-Reviews-The_Fort-Fort_Lauderdale_Broward_County_Florida.html",
+        "normalized_url": "https://www.tripadvisor.com/Attraction_Review-g34227-d33257652-Reviews-The_Fort-Fort_Lauderdale_Broward_County_Florida.html",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.facebook.com/playthefort/",
+        "normalized_url": "https://www.facebook.com/playthefort",
+        "category": "social_or_login_gated",
+        "included": false,
+        "reason": "Social/profile pages are noisy or login-gated."
+      },
+      {
+        "url": "https://fortathleticclub.com/courts-sports/pickleball/",
+        "normalized_url": "https://fortathleticclub.com/courts-sports/pickleball",
+        "category": "included",
+        "included": true,
+        "reason": ""
+      },
+      {
+        "url": "https://www.yelp.com/biz/the-fort-fort-lauderdale-4",
+        "normalized_url": "https://www.yelp.com/biz/the-fort-fort-lauderdale-4",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=1Y8zyQpY-Z4",
+        "normalized_url": "https://www.youtube.com/watch",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.parks.fortlauderdale.gov/programs/pickleball",
+        "normalized_url": "https://www.parks.fortlauderdale.gov/programs/pickleball",
+        "category": "included",
+        "included": true,
+        "reason": ""
+      },
+      {
+        "url": "https://www.facebook.com/142411158959010/",
+        "normalized_url": "https://www.facebook.com/142411158959010",
+        "category": "social_or_login_gated",
+        "included": false,
+        "reason": "Social/profile pages are noisy or login-gated."
+      }
+    ]
+  },
+  "score_breakdown": {
+    "initial": {
+      "topical_coverage": 92.5,
+      "structure": 60.0,
+      "intent_alignment": 11.76,
+      "naturalness_penalty": 4.08,
+      "redundancy_penalty": 2.5,
+      "title_meta": 100.0,
+      "overall": 60.74,
+      "reasons": [
+        "Missing 3 recommended phrases/concepts.",
+        "Possible keyword repetition in terms: fort.",
+        "Score is heuristic for content quality guidance, not a ranking predictor."
+      ]
+    },
+    "final": {
+      "topical_coverage": 92.5,
+      "structure": 60.0,
+      "intent_alignment": 11.76,
+      "naturalness_penalty": 4.08,
+      "redundancy_penalty": 2.5,
+      "title_meta": 100.0,
+      "overall": 60.74,
+      "reasons": [
+        "Missing 3 recommended phrases/concepts.",
+        "Possible keyword repetition in terms: fort.",
+        "Score is heuristic for content quality guidance, not a ranking predictor."
+      ]
+    }
+  },
+  "frontmatter_changed": false,
+  "ignored_recommendations": [
+    "Skipped https://www.instagram.com/playthefort/?hl=en: Social/profile pages are noisy or login-gated.",
+    "Skipped https://www.facebook.com/playthefort/: Social/profile pages are noisy or login-gated.",
+    "Skipped https://www.facebook.com/142411158959010/: Social/profile pages are noisy or login-gated."
+  ],
+  "commands_run": [
+    "python3 -m src.main build-post --query \"the fort pickleball\""
+  ]
+}

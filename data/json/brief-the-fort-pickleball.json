@@ -1,0 +1,350 @@
+{
+  "source_urls": [
+    "https://playthefort.com/",
+    "https://www.theapp.global/news/the-fort-established-hq",
+    "https://www.tripadvisor.com/Attraction_Review-g34227-d33257652-Reviews-The_Fort-Fort_Lauderdale_Broward_County_Florida.html",
+    "https://fortathleticclub.com/courts-sports/pickleball/",
+    "https://www.yelp.com/biz/the-fort-fort-lauderdale-4",
+    "https://www.youtube.com/watch?v=1Y8zyQpY-Z4",
+    "https://www.parks.fortlauderdale.gov/programs/pickleball"
+  ],
+  "source_filtering": {
+    "included": [
+      "https://playthefort.com/",
+      "https://www.theapp.global/news/the-fort-established-hq",
+      "https://www.tripadvisor.com/Attraction_Review-g34227-d33257652-Reviews-The_Fort-Fort_Lauderdale_Broward_County_Florida.html",
+      "https://fortathleticclub.com/courts-sports/pickleball/",
+      "https://www.yelp.com/biz/the-fort-fort-lauderdale-4",
+      "https://www.youtube.com/watch?v=1Y8zyQpY-Z4",
+      "https://www.parks.fortlauderdale.gov/programs/pickleball"
+    ],
+    "excluded": [
+      {
+        "url": "https://www.instagram.com/playthefort/?hl=en",
+        "normalized_url": "https://www.instagram.com/playthefort",
+        "category": "social_or_login_gated",
+        "included": false,
+        "reason": "Social/profile pages are noisy or login-gated."
+      },
+      {
+        "url": "https://www.facebook.com/playthefort/",
+        "normalized_url": "https://www.facebook.com/playthefort",
+        "category": "social_or_login_gated",
+        "included": false,
+        "reason": "Social/profile pages are noisy or login-gated."
+      },
+      {
+        "url": "https://www.facebook.com/142411158959010/",
+        "normalized_url": "https://www.facebook.com/142411158959010",
+        "category": "social_or_login_gated",
+        "included": false,
+        "reason": "Social/profile pages are noisy or login-gated."
+      }
+    ],
+    "decisions": [
+      {
+        "url": "https://playthefort.com/",
+        "normalized_url": "https://playthefort.com",
+        "category": "included",
+        "included": true,
+        "reason": "Included as a likely official homepage for the query."
+      },
+      {
+        "url": "https://www.instagram.com/playthefort/?hl=en",
+        "normalized_url": "https://www.instagram.com/playthefort",
+        "category": "social_or_login_gated",
+        "included": false,
+        "reason": "Social/profile pages are noisy or login-gated."
+      },
+      {
+        "url": "https://www.theapp.global/news/the-fort-established-hq",
+        "normalized_url": "https://www.theapp.global/news/the-fort-established-hq",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.tripadvisor.com/Attraction_Review-g34227-d33257652-Reviews-The_Fort-Fort_Lauderdale_Broward_County_Florida.html",
+        "normalized_url": "https://www.tripadvisor.com/Attraction_Review-g34227-d33257652-Reviews-The_Fort-Fort_Lauderdale_Broward_County_Florida.html",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.facebook.com/playthefort/",
+        "normalized_url": "https://www.facebook.com/playthefort",
+        "category": "social_or_login_gated",
+        "included": false,
+        "reason": "Social/profile pages are noisy or login-gated."
+      },
+      {
+        "url": "https://fortathleticclub.com/courts-sports/pickleball/",
+        "normalized_url": "https://fortathleticclub.com/courts-sports/pickleball",
+        "category": "included",
+        "included": true,
+        "reason": ""
+      },
+      {
+        "url": "https://www.yelp.com/biz/the-fort-fort-lauderdale-4",
+        "normalized_url": "https://www.yelp.com/biz/the-fort-fort-lauderdale-4",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.youtube.com/watch?v=1Y8zyQpY-Z4",
+        "normalized_url": "https://www.youtube.com/watch",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.parks.fortlauderdale.gov/programs/pickleball",
+        "normalized_url": "https://www.parks.fortlauderdale.gov/programs/pickleball",
+        "category": "included",
+        "included": true,
+        "reason": ""
+      },
+      {
+        "url": "https://www.facebook.com/142411158959010/",
+        "normalized_url": "https://www.facebook.com/142411158959010",
+        "category": "social_or_login_gated",
+        "included": false,
+        "reason": "Social/profile pages are noisy or login-gated."
+      }
+    ]
+  },
+  "raw_competitor_analysis": {
+    "query": "the fort pickleball",
+    "page_count": 3,
+    "median_word_count": 539,
+    "word_count_range": [
+      365,
+      1215
+    ],
+    "common_headings": [
+      "south florida’s new hot spot",
+      "welcome to the fort",
+      "get your free intro to pickleball",
+      "fort pickleball",
+      "florida room and patio",
+      "serves & thirds courtside bar",
+      "upcoming events",
+      "host an event",
+      "get the fort app",
+      "lets keep in touch",
+      "fort links",
+      "table of contents"
+    ],
+    "recommended_phrases": [
+      "helpful thanks",
+      "thanks love",
+      "florida room",
+      "pickleball players",
+      "pickleball experience",
+      "south florida",
+      "fort lauderdale",
+      "pickleball club",
+      "pickleball courts",
+      "love mar",
+      "come together",
+      "courts world",
+      "world first",
+      "first pickleball",
+      "pickleball stadium",
+      "serves thirds",
+      "headquarters training",
+      "state-of-the-art facility",
+      "stars stars",
+      "pickle ball",
+      "helpful thanks love",
+      "thanks love mar",
+      "courts world first",
+      "premier social sports",
+      "community come together"
+    ],
+    "recommended_entities": [
+      "The Fort",
+      "Florida Room",
+      "South Florida",
+      "Fort Lauderdale",
+      "Snyder Park",
+      "THE FORT",
+      "WE WILL",
+      "WILL LOAN",
+      "You Bring",
+      "LOAN YOU",
+      "Florida. Blending",
+      "Top Chef",
+      "James Beard–nominated",
+      "YOUR FREE",
+      "The Rest",
+      "SIGN UP",
+      "Free Intro",
+      "COURTSIDE BAR",
+      "TV. Whether",
+      "FREE INTRO"
+    ],
+    "recommended_subtopics": [
+      "south florida’s new hot spot",
+      "welcome to the fort",
+      "get your free intro to pickleball",
+      "fort pickleball",
+      "florida room and patio",
+      "serves & thirds courtside bar",
+      "upcoming events",
+      "host an event",
+      "get the fort app",
+      "lets keep in touch",
+      "pickleball",
+      "free",
+      "fort",
+      "florida",
+      "play",
+      "app",
+      "home",
+      "players",
+      "helpful",
+      "0love"
+    ],
+    "weak_source_warning": false,
+    "warnings": [],
+    "source_urls": [
+      "https://playthefort.com/",
+      "https://www.theapp.global/news/the-fort-established-hq",
+      "https://www.tripadvisor.com/Attraction_Review-g34227-d33257652-Reviews-The_Fort-Fort_Lauderdale_Broward_County_Florida.html",
+      "https://fortathleticclub.com/courts-sports/pickleball/",
+      "https://www.yelp.com/biz/the-fort-fort-lauderdale-4",
+      "https://www.youtube.com/watch?v=1Y8zyQpY-Z4",
+      "https://www.parks.fortlauderdale.gov/programs/pickleball"
+    ]
+  },
+  "competitor_analysis": {
+    "query": "the fort pickleball",
+    "page_count": 3,
+    "median_word_count": 539,
+    "word_count_range": [
+      365,
+      1215
+    ],
+    "common_headings": [
+      "welcome to the fort",
+      "get your free intro to pickleball",
+      "fort pickleball",
+      "get the fort app",
+      "fort links"
+    ],
+    "recommended_phrases": [
+      "helpful thanks",
+      "thanks love",
+      "florida room",
+      "pickleball players",
+      "pickleball experience",
+      "fort lauderdale",
+      "pickleball club",
+      "pickleball courts",
+      "first pickleball",
+      "pickleball stadium",
+      "state-of-the-art facility"
+    ],
+    "recommended_entities": [
+      "The Fort",
+      "Florida Room",
+      "South Florida",
+      "Fort Lauderdale",
+      "The Rest"
+    ],
+    "recommended_subtopics": [
+      "welcome to the fort",
+      "get your free intro to pickleball",
+      "fort pickleball",
+      "get the fort app",
+      "pickleball",
+      "fort"
+    ],
+    "weak_source_warning": false,
+    "warnings": [
+      "Curated noisy or transient extracted terms before building the writing brief (35 item(s))."
+    ],
+    "source_urls": [
+      "https://playthefort.com/",
+      "https://www.theapp.global/news/the-fort-established-hq",
+      "https://www.tripadvisor.com/Attraction_Review-g34227-d33257652-Reviews-The_Fort-Fort_Lauderdale_Broward_County_Florida.html",
+      "https://fortathleticclub.com/courts-sports/pickleball/",
+      "https://www.yelp.com/biz/the-fort-fort-lauderdale-4",
+      "https://www.youtube.com/watch?v=1Y8zyQpY-Z4",
+      "https://www.parks.fortlauderdale.gov/programs/pickleball"
+    ]
+  },
+  "content_brief": {
+    "primary_query": "the fort pickleball",
+    "likely_intent": "Mixed",
+    "target_word_count_range": [
+      400,
+      1215
+    ],
+    "candidate_titles": [
+      "The Fort Pickleball: Complete Guide",
+      "The Fort Pickleball Explained Step by Step",
+      "Practical The Fort Pickleball Guide for Beginners"
+    ],
+    "suggested_outline": [
+      "## Welcome to the Fort",
+      "## get Your Free Intro to Pickleball",
+      "## Fort Pickleball",
+      "## get the Fort app",
+      "## Fort Links"
+    ],
+    "recommended_concepts_entities": [
+      "The Fort",
+      "Florida Room",
+      "South Florida",
+      "Fort Lauderdale",
+      "The Rest",
+      "helpful thanks",
+      "thanks love",
+      "florida room",
+      "pickleball players",
+      "pickleball experience",
+      "fort lauderdale",
+      "pickleball club",
+      "pickleball courts",
+      "first pickleball",
+      "pickleball stadium",
+      "state-of-the-art facility"
+    ],
+    "questions_to_answer": [
+      "What should readers know about welcome to the fort?",
+      "What should readers know about get your free intro to pickleball?",
+      "What should readers know about fort pickleball?",
+      "What should readers know about get the fort app?",
+      "What should readers know about pickleball?",
+      "What should readers know about fort?"
+    ],
+    "phrases_to_use_naturally": [
+      "helpful thanks",
+      "thanks love",
+      "florida room",
+      "pickleball players",
+      "pickleball experience",
+      "fort lauderdale",
+      "pickleball club",
+      "pickleball courts",
+      "first pickleball",
+      "pickleball stadium",
+      "state-of-the-art facility"
+    ],
+    "warnings": [
+      "Curated noisy or transient extracted terms before building the writing brief (35 item(s))."
+    ],
+    "source_urls": [
+      "https://playthefort.com/",
+      "https://www.theapp.global/news/the-fort-established-hq",
+      "https://www.tripadvisor.com/Attraction_Review-g34227-d33257652-Reviews-The_Fort-Fort_Lauderdale_Broward_County_Florida.html",
+      "https://fortathleticclub.com/courts-sports/pickleball/",
+      "https://www.yelp.com/biz/the-fort-fort-lauderdale-4",
+      "https://www.youtube.com/watch?v=1Y8zyQpY-Z4",
+      "https://www.parks.fortlauderdale.gov/programs/pickleball"
+    ]
+  }
+}

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from .models import CompetitorAnalysis, DraftAnalysis, ScoreBreakdown
+from .models import CompetitorAnalysis, ContentBrief, DraftAnalysis, ScoreBreakdown
 
 
-def score_draft(comp: CompetitorAnalysis, draft: DraftAnalysis) -> ScoreBreakdown:
+def score_draft(comp: CompetitorAnalysis, draft: DraftAnalysis, brief: ContentBrief | None = None) -> ScoreBreakdown:
     reasons: list[str] = []
 
     topical = max(0.0, 100.0 - (len(draft.missing_phrases) * 2.0 + len(draft.missing_entities) * 1.5))
@@ -14,8 +14,16 @@ def score_draft(comp: CompetitorAnalysis, draft: DraftAnalysis) -> ScoreBreakdow
     if structure < 50:
         reasons.append("Heading coverage is lower than top competitors.")
 
-    target_mid = comp.median_word_count if comp.median_word_count > 0 else 900
-    wc_diff_ratio = abs(draft.word_count - target_mid) / max(1, target_mid)
+    if brief:
+        low, high = brief.target_word_count_range
+        if low <= draft.word_count <= high:
+            wc_diff_ratio = 0.0
+        else:
+            target_mid = (low + high) / 2
+            wc_diff_ratio = abs(draft.word_count - target_mid) / max(1, target_mid)
+    else:
+        target_mid = comp.median_word_count if comp.median_word_count > 0 else 900
+        wc_diff_ratio = abs(draft.word_count - target_mid) / max(1, target_mid)
     intent = max(0.0, 100.0 - wc_diff_ratio * 100.0 - len(draft.missing_subtopics) * 2.0)
     if draft.missing_subtopics:
         reasons.append(f"Draft is missing {len(draft.missing_subtopics)} likely subtopics/questions.")

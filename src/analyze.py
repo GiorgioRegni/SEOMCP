@@ -95,29 +95,55 @@ def _readability(text: str) -> dict[str, float]:
     }
 
 
+def _normalized_tokens(text: str) -> set[str]:
+    expanded = text.replace("-", " ")
+    return {_singularize(t) for t in tokenize(expanded) if len(t) > 2}
+
+
+def _singularize(token: str) -> str:
+    if token.endswith("ies") and len(token) > 4:
+        return f"{token[:-3]}y"
+    if token.endswith("es") and len(token) > 4:
+        return token[:-2]
+    if token.endswith("s") and len(token) > 3:
+        return token[:-1]
+    return token
+
+
+def _covered(needle: str, haystack: str, *, threshold: float = 0.65) -> bool:
+    needle_tokens = _normalized_tokens(needle)
+    if not needle_tokens:
+        return True
+    haystack_tokens = _normalized_tokens(haystack)
+    return len(needle_tokens.intersection(haystack_tokens)) / len(needle_tokens) >= threshold
+
+
+def _heading_covered(needle: str, headings: list[str]) -> bool:
+    return any(_covered(needle, heading, threshold=0.6) for heading in headings)
+
+
 def analyze_draft(draft_md: str, query: str, comp: CompetitorAnalysis, title: str | None = None,
                   h1: str | None = None) -> DraftAnalysis:
     tokens = tokenize(draft_md)
     token_set = set(tokens)
-    phrases_in = {p for p in comp.recommended_phrases if p in draft_md.lower()}
-    missing_phrases = [p for p in comp.recommended_phrases if p not in phrases_in][:20]
+    missing_phrases = [p for p in comp.recommended_phrases if not _covered(p, draft_md, threshold=0.8)][:20]
 
-    lower = draft_md.lower()
-    missing_entities = [e for e in comp.recommended_entities if e.lower() not in lower][:15]
-    missing_subtopics = [s for s in comp.recommended_subtopics if s.lower() not in lower][:12]
+    missing_entities = [e for e in comp.recommended_entities if not _covered(e, draft_md, threshold=0.75)][:15]
+    missing_subtopics = [s for s in comp.recommended_subtopics if not _covered(s, draft_md, threshold=0.65)][:12]
 
     counts = Counter(tokens)
     overused = [w for w, c in counts.items() if c > max(8, len(tokens) * 0.03) and len(w) > 3][:12]
 
     headings = [line.strip("# ").lower() for line in draft_md.splitlines() if line.lstrip().startswith("#")]
-    covered = [h for h in comp.common_headings if any(h in d for d in headings)]
+    covered = [h for h in comp.common_headings if _heading_covered(h, headings)]
     heading_cov = len(covered) / max(1, len(comp.common_headings[:8]))
 
     lex_div = len(token_set) / max(1, len(tokens))
 
     alignment_base = (title or "") + " " + (h1 or "")
     query_tokens = tokenize(query)
-    align = sum(1 for t in query_tokens if t in tokenize(alignment_base.lower())) / max(1, len(query_tokens))
+    alignment_tokens = _normalized_tokens(alignment_base.lower())
+    align = sum(1 for t in query_tokens if _singularize(t) in alignment_tokens) / max(1, len(query_tokens))
 
     return DraftAnalysis(
         word_count=len(tokens),

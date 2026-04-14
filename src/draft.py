@@ -22,31 +22,35 @@ def _paragraph_for_section(section: str, brief: ContentBrief) -> str:
 
     if "overview" in lower:
         return (
-            f"{query_title} is a focused search topic with mixed intent: readers may want a quick explanation, "
-            "release context, viewing options, and a sense of how the pickleball community is reacting. "
-            "A useful page should answer those questions directly before moving into reviews or commentary."
+            f"{query_title} is a focused search topic with mixed intent. Readers may want a quick explanation, "
+            "where it fits in the pickleball landscape, practical details, and what to verify before they act. "
+            "A useful page should answer those questions directly before moving into broader context."
         )
-    if "release" in lower or "platform" in lower or "watch" in lower:
+    if "release" in lower or "platform" in lower or "watch" in lower or "where" in lower:
         return (
-            "Cover the official movie listing first, then summarize where readers may be able to watch, stream, "
-            "rent, or verify availability. Availability can change, so this section should be checked against "
-            "current platform pages before publication."
+            "Start with the official source, then summarize the practical next step for readers. If availability, "
+            "hours, schedules, booking, or event details can change, tell readers to verify the current page before "
+            "making plans."
         )
     if "synopsis" in lower or "trailer" in lower:
         return (
-            "Give readers a short, original synopsis without copying platform descriptions. Mention the holiday "
-            "movie framing, the pickleball-themed premise, and whether a trailer or first-look clip is available."
+            "Give readers a short, original summary without copying source descriptions. Focus on the facts that "
+            "help them understand the topic quickly and decide what to check next."
         )
     if "reaction" in lower or "reception" in lower or "review" in lower:
         return (
-            "Separate formal review signals from community reaction. Rotten Tomatoes, Letterboxd, Reddit, Facebook, "
-            "and pickleball media can each add context, but social posts and opinion pieces should be presented as "
-            "commentary rather than verified facts."
+            "Separate verified source details from community reaction. Reviews, social posts, and local listings can "
+            "add useful context, but present them as commentary unless the claim is backed by an official source."
+        )
+    if "what to know" in lower or "how to use" in lower or "options" in lower:
+        return (
+            f"Explain {section.lower()} in plain language. Cover what the reader can do with the information, "
+            "what details may change, and which official source should be checked before relying on it."
         )
     if "pickleball" in lower:
         return (
-            "Explain why this movie matters to pickleball audiences: it is a novelty holiday film built around the "
-            "sport, and fans may care whether the play, culture, and terminology feel authentic."
+            "Explain why this topic matters to pickleball players or fans. Focus on practical details, location or "
+            "program context, and what readers should verify before visiting, booking, buying, or sharing the page."
         )
     if "faq" in lower:
         questions = brief.questions_to_answer[:5]
@@ -67,7 +71,7 @@ def generate_draft_body_from_brief(brief: ContentBrief) -> str:
 
     if brief.warnings:
         lines.extend([
-            "> Draft note: source confidence is limited. Verify release, streaming, cast, and review details before publishing.",
+            "> Draft note: source confidence is limited. Verify names, locations, schedules, prices, availability, and claims against official sources before publishing.",
             "",
         ])
 

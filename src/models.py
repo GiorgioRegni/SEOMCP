@@ -35,6 +35,22 @@ class PageData:
 
 
 @dataclass
+class SourceUrlDecision:
+    url: str
+    normalized_url: str
+    category: str
+    included: bool
+    reason: str = ""
+
+
+@dataclass
+class SourceFilteringResult:
+    included: list[str] = field(default_factory=list)
+    excluded: list[SourceUrlDecision] = field(default_factory=list)
+    decisions: list[SourceUrlDecision] = field(default_factory=list)
+
+
+@dataclass
 class CompetitorAnalysis:
     query: str
     page_count: int
@@ -95,6 +111,7 @@ class RewriteResult:
     added_items: list[str]
     removed_items: list[str]
     warnings: list[str] = field(default_factory=list)
+    revision_notes: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -113,6 +130,7 @@ class OptimizeResult:
     final_score: ScoreBreakdown
     iterations: list[IterationRecord]
     final_draft: str
+    revision_notes: list[str] = field(default_factory=list)
 
 
 @dataclass

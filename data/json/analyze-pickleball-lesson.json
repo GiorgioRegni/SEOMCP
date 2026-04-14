@@ -1,21 +1,21 @@
 {
   "summary": "Draft analyzed against competitor-derived recommendations.",
   "score_breakdown": {
-    "topical_coverage": 80.0,
-    "structure": 62.5,
-    "intent_alignment": 0.0,
+    "topical_coverage": 89.5,
+    "structure": 87.5,
+    "intent_alignment": 100.0,
     "naturalness_penalty": 0.0,
     "redundancy_penalty": 0.0,
-    "title_meta": 50.0,
-    "overall": 50.5,
+    "title_meta": 100.0,
+    "overall": 93.83,
     "reasons": [
-      "Missing 7 recommended phrases/concepts.",
+      "Missing 3 recommended phrases/concepts.",
       "Score is heuristic for content quality guidance, not a ranking predictor."
     ]
   },
   "frontmatter_suggestions": {
     "title": "Pickleball Lessons: What Beginners Should Expect",
-    "description": "Pickleball Lessons: What Beginners Should Expect with key details, viewing context, related entities, and questions to answer for informational search intent.",
+    "description": "A practical guide to pickleball lesson, including Private Lessons, Group Lessons, Beginner Lessons, and answers to common questions.",
     "tags": [
       "pickleball-lesson",
       "pickleball-lessons",
@@ -26,7 +26,7 @@
       "lesson-calendar",
       "teaching-professionals"
     ],
-    "draft": true
+    "draft": false
   },
   "source_urls": [
     "https://lorileebeltman.com/pickleball-lessons-for-beginners/",
@@ -38,6 +38,11 @@
     "https://oldsaybrookct.myrec.com/info/activities/program_details.aspx?ProgramID=29872",
     "https://www.nycpickleball.com/lessons"
   ],
+  "source_filtering": {
+    "included": [],
+    "excluded": [],
+    "decisions": []
+  },
   "missing_topics": [],
   "overused_terms": [],
   "recommended_outline_changes": [

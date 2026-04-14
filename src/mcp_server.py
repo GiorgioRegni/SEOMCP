@@ -37,14 +37,20 @@ def build_seo_brief(payload: dict) -> dict:
         urls=payload.get("urls", []),
         top_n=payload.get("top_n", 8),
     )
-    _, comp, brief = run_pipeline(req)
-    return {"source_urls": brief.source_urls, "competitor_analysis": to_dict(comp), "content_brief": to_dict(brief)}
+    _, comp, brief, raw_comp, source_filtering = run_pipeline(req)
+    return {
+        "source_urls": brief.source_urls,
+        "source_filtering": to_dict(source_filtering),
+        "raw_competitor_analysis": to_dict(raw_comp),
+        "competitor_analysis": to_dict(comp),
+        "content_brief": to_dict(brief),
+    }
 
 
 def analyze_seo_draft(payload: dict) -> dict:
     req = SEORequest(query=payload["query"], urls=payload.get("urls", []), top_n=payload.get("top_n", 8))
     urls = ",".join(req.urls) if req.urls else None
-    comp, brief = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
+    comp, brief, source_filtering = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
     draft_doc = parse_markdown_document(payload.get("draft_markdown", ""))
     title = payload.get("title") or title_from_document(draft_doc)
     h1 = payload.get("h1") or h1_from_body(draft_doc.body)
@@ -53,15 +59,16 @@ def analyze_seo_draft(payload: dict) -> dict:
         "summary": "Draft analyzed.",
         "draft_analysis": to_dict(analysis),
         "brief": to_dict(brief),
-        "frontmatter_suggestions": build_frontmatter_suggestions(brief),
+        "frontmatter_suggestions": build_frontmatter_suggestions(brief, draft_doc),
         "source_urls": brief.source_urls,
+        "source_filtering": to_dict(source_filtering),
     }
 
 
 def rewrite_seo_draft(payload: dict) -> dict:
     req = SEORequest(query=payload["query"], urls=payload.get("urls", []), top_n=payload.get("top_n", 8))
     urls = ",".join(req.urls) if req.urls else None
-    comp, brief = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
+    comp, brief, source_filtering = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
     draft_doc = parse_markdown_document(payload.get("draft_markdown", ""))
     title = payload.get("title") or title_from_document(draft_doc)
     h1 = payload.get("h1") or h1_from_body(draft_doc.body)
@@ -72,15 +79,16 @@ def rewrite_seo_draft(payload: dict) -> dict:
         draft_doc = update_hugo_seo_fields(draft_doc, brief, overwrite=True)
     result = to_dict(rewritten)
     result["revised_draft"] = render_markdown_document(draft_doc)
-    result["frontmatter_suggestions"] = build_frontmatter_suggestions(brief)
+    result["frontmatter_suggestions"] = build_frontmatter_suggestions(brief, draft_doc)
     result["source_urls"] = brief.source_urls
+    result["source_filtering"] = to_dict(source_filtering)
     return result
 
 
 def optimize_seo_draft(payload: dict) -> dict:
     req = SEORequest(query=payload["query"], urls=payload.get("urls", []), top_n=payload.get("top_n", 8))
     urls = ",".join(req.urls) if req.urls else None
-    comp, brief = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
+    comp, brief, source_filtering = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
     draft_doc = parse_markdown_document(payload.get("draft_markdown", ""))
     title = payload.get("title") or title_from_document(draft_doc)
     h1 = payload.get("h1") or h1_from_body(draft_doc.body)
@@ -98,8 +106,9 @@ def optimize_seo_draft(payload: dict) -> dict:
         draft_doc = update_hugo_seo_fields(draft_doc, brief, overwrite=True)
     response = to_dict(result)
     response["final_draft"] = render_markdown_document(draft_doc)
-    response["frontmatter_suggestions"] = build_frontmatter_suggestions(brief)
+    response["frontmatter_suggestions"] = build_frontmatter_suggestions(brief, draft_doc)
     response["source_urls"] = brief.source_urls
+    response["source_filtering"] = to_dict(source_filtering)
     return response
 
 

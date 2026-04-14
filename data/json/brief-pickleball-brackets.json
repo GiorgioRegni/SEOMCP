@@ -1,90 +1,288 @@
 {
   "source_urls": [
     "https://pickleballtournaments.com/search",
-    "https://pickleballleagues.com/",
-    "https://ppatour.com/",
     "https://www.pb5star.com/a/blog/tournament-time-everything-you-need-to-know-about-pickleball-brackets",
     "https://pickleballbrackets.com/ptoc.aspx?eid=3692157a-7dbf-45c1-a449-0a19923fb90b",
     "https://www.visitfairgrounds.com/blog/the-ultimate-guide-to-pickleball-brackets-for-beginners"
   ],
-  "competitor_analysis": {
+  "source_filtering": {
+    "included": [
+      "https://pickleballtournaments.com/search",
+      "https://www.pb5star.com/a/blog/tournament-time-everything-you-need-to-know-about-pickleball-brackets",
+      "https://pickleballbrackets.com/ptoc.aspx?eid=3692157a-7dbf-45c1-a449-0a19923fb90b",
+      "https://www.visitfairgrounds.com/blog/the-ultimate-guide-to-pickleball-brackets-for-beginners"
+    ],
+    "excluded": [
+      {
+        "url": "https://pickleballbrackets.com/ptd.aspx...",
+        "normalized_url": "https://pickleballbrackets.com/ptd.aspx...",
+        "category": "malformed",
+        "included": false,
+        "reason": "URL is empty, truncated, or missing an HTTP(S) host."
+      },
+      {
+        "url": "https://www.facebook.com/PickleballBrackets/",
+        "normalized_url": "https://www.facebook.com/PickleballBrackets",
+        "category": "social_or_login_gated",
+        "included": false,
+        "reason": "Social/profile pages are noisy or login-gated."
+      },
+      {
+        "url": "https://pickleball.com/",
+        "normalized_url": "https://pickleball.com",
+        "category": "generic_homepage",
+        "included": false,
+        "reason": "Generic homepages are too broad for brief generation."
+      },
+      {
+        "url": "https://pickleballleagues.com/",
+        "normalized_url": "https://pickleballleagues.com",
+        "category": "generic_homepage",
+        "included": false,
+        "reason": "Generic homepages are too broad for brief generation."
+      },
+      {
+        "url": "https://ppatour.com/",
+        "normalized_url": "https://ppatour.com",
+        "category": "generic_homepage",
+        "included": false,
+        "reason": "Generic homepages are too broad for brief generation."
+      },
+      {
+        "url": "https://www.etsy.com/listing/1689349574/pickleball-tournament-bracket-12-or-14",
+        "normalized_url": "https://www.etsy.com/listing/1689349574/pickleball-tournament-bracket-12-or-14",
+        "category": "marketplace_or_product_listing",
+        "included": false,
+        "reason": "Marketplace or product listing pages are excluded by default."
+      }
+    ],
+    "decisions": [
+      {
+        "url": "https://pickleballtournaments.com/search",
+        "normalized_url": "https://pickleballtournaments.com/search",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://pickleballbrackets.com/ptd.aspx...",
+        "normalized_url": "https://pickleballbrackets.com/ptd.aspx...",
+        "category": "malformed",
+        "included": false,
+        "reason": "URL is empty, truncated, or missing an HTTP(S) host."
+      },
+      {
+        "url": "https://www.facebook.com/PickleballBrackets/",
+        "normalized_url": "https://www.facebook.com/PickleballBrackets",
+        "category": "social_or_login_gated",
+        "included": false,
+        "reason": "Social/profile pages are noisy or login-gated."
+      },
+      {
+        "url": "https://pickleball.com/",
+        "normalized_url": "https://pickleball.com",
+        "category": "generic_homepage",
+        "included": false,
+        "reason": "Generic homepages are too broad for brief generation."
+      },
+      {
+        "url": "https://pickleballleagues.com/",
+        "normalized_url": "https://pickleballleagues.com",
+        "category": "generic_homepage",
+        "included": false,
+        "reason": "Generic homepages are too broad for brief generation."
+      },
+      {
+        "url": "https://ppatour.com/",
+        "normalized_url": "https://ppatour.com",
+        "category": "generic_homepage",
+        "included": false,
+        "reason": "Generic homepages are too broad for brief generation."
+      },
+      {
+        "url": "https://www.pb5star.com/a/blog/tournament-time-everything-you-need-to-know-about-pickleball-brackets",
+        "normalized_url": "https://www.pb5star.com/a/blog/tournament-time-everything-you-need-to-know-about-pickleball-brackets",
+        "category": "dynamic_event_page",
+        "included": true,
+        "reason": "Included, but live event data may change."
+      },
+      {
+        "url": "https://pickleballbrackets.com/ptoc.aspx?eid=3692157a-7dbf-45c1-a449-0a19923fb90b",
+        "normalized_url": "https://pickleballbrackets.com/ptoc.aspx",
+        "category": "dynamic_event_page",
+        "included": true,
+        "reason": "Included, but live event data may change."
+      },
+      {
+        "url": "https://www.visitfairgrounds.com/blog/the-ultimate-guide-to-pickleball-brackets-for-beginners",
+        "normalized_url": "https://www.visitfairgrounds.com/blog/the-ultimate-guide-to-pickleball-brackets-for-beginners",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.etsy.com/listing/1689349574/pickleball-tournament-bracket-12-or-14",
+        "normalized_url": "https://www.etsy.com/listing/1689349574/pickleball-tournament-bracket-12-or-14",
+        "category": "marketplace_or_product_listing",
+        "included": false,
+        "reason": "Marketplace or product listing pages are excluded by default."
+      }
+    ]
+  },
+  "raw_competitor_analysis": {
     "query": "pickleball brackets",
-    "page_count": 3,
-    "median_word_count": 1300,
+    "page_count": 2,
+    "median_word_count": 1122,
     "word_count_range": [
-      900,
-      1600
+      638,
+      1607
     ],
     "common_headings": [
-      "what pickleball brackets are",
-      "common pickleball bracket formats",
-      "single elimination, double elimination, and round robin",
-      "seeding, skill divisions, and age divisions",
-      "how to read a pickleball tournament bracket",
-      "what happens after you lose",
-      "schedules, live results, and tournament platforms",
-      "pickleball bracket faq"
+      "how do pickleball brackets work?",
+      "types of pickleball tournament brackets",
+      "single elimination vs double elimination in pickleball",
+      "understanding round-robin brackets in pickleball",
+      "beginner’s guide to participating in pickleball tournaments",
+      "equipment regulations and tournament essentials",
+      "gear up for tournament success with pb5star",
+      "related articles",
+      "do you need a pickleball bag? what to consider before buying",
+      "5 basic rules of pickleball every player should know",
+      "build your confidence with easy pickleball drills for beginners",
+      "the club"
     ],
     "recommended_phrases": [
+      "single elimination",
+      "double elimination",
       "pickleball brackets",
       "pickleball tournament",
-      "tournament bracket",
-      "single elimination",
-      "double elimination",
       "round robin",
-      "pool play",
-      "bracket format",
-      "skill division",
-      "age division",
-      "mixed doubles",
-      "mens doubles",
-      "womens doubles",
-      "seeding",
-      "winners bracket",
-      "consolation bracket",
-      "medal match",
-      "tournament schedule",
-      "live results",
-      "tournament director"
+      "player team",
+      "elimination double",
+      "pickleball tournaments",
+      "progress through",
+      "through rounds",
+      "performance-driven apparel",
+      "usa pickleball",
+      "players teams",
+      "tournament experience",
+      "pickleball community",
+      "fellow players",
+      "format often",
+      "court time",
+      "multiple matches",
+      "bracket updates",
+      "single elimination double",
+      "elimination double elimination",
+      "progress through rounds",
+      "double elimination round",
+      "elimination round robin"
     ],
     "recommended_entities": [
-      "Pickleball Brackets",
-      "PickleballTournaments.com",
-      "PickleballBrackets.com",
-      "Pickleball Leagues",
-      "PPA Tour",
-      "USA Pickleball",
-      "Round Robin",
       "Single Elimination",
       "Double Elimination",
+      "Round Robin",
+      "With PB5star",
+      "At PB5star",
+      "Key Takeaways",
+      "Elimination: Embraces",
+      "USA Pickleball",
+      "Robin: Maximizes",
+      "Beginner’s Guide",
+      "Tip: You",
+      "Tip: Use",
+      "Elimination: Creates",
+      "Play: Balances",
+      "Pickleball Tournaments",
+      "With USA",
       "Pool Play",
-      "Medal Match",
-      "Skill Division",
-      "Age Division",
-      "Tournament Director"
+      "PB5 Court",
+      "Cons: Can",
+      "Pros: Everyone"
     ],
     "recommended_subtopics": [
-      "what pickleball brackets are",
-      "common pickleball bracket formats",
-      "single elimination",
-      "double elimination",
-      "round robin and pool play",
-      "seeding, skill divisions, and age divisions",
-      "age and skill divisions",
-      "how to read a pickleball tournament bracket",
-      "schedules, live results, and tournament platforms",
-      "what happens after a loss",
-      "how beginners should prepare for a tournament"
+      "how do pickleball brackets work?",
+      "types of pickleball tournament brackets",
+      "single elimination vs double elimination in pickleball",
+      "understanding round-robin brackets in pickleball",
+      "beginner’s guide to participating in pickleball tournaments",
+      "equipment regulations and tournament essentials",
+      "gear up for tournament success with pb5star",
+      "related articles",
+      "do you need a pickleball bag? what to consider before buying",
+      "5 basic rules of pickleball every player should know",
+      "tournament",
+      "pickleball",
+      "tournaments",
+      "players",
+      "bracket",
+      "elimination"
     ],
-    "weak_source_warning": false,
+    "weak_source_warning": true,
     "warnings": [
-      "Several ranking pages are dynamic tournament platforms or event pages, so use them for workflow and terminology context rather than fixed claims about live events.",
-      "The malformed PickleballBrackets URL, Facebook profile, generic Pickleball.com homepage, and Etsy printable listing were filtered out as noisy or weak for informational intent."
+      "https://www.visitfairgrounds.com/blog/the-ultimate-guide-to-pickleball-brackets-for-beginners: weak_structure",
+      "Source set may be weak/noisy; recommendations have high uncertainty."
     ],
     "source_urls": [
       "https://pickleballtournaments.com/search",
-      "https://pickleballleagues.com/",
-      "https://ppatour.com/",
+      "https://www.pb5star.com/a/blog/tournament-time-everything-you-need-to-know-about-pickleball-brackets",
+      "https://pickleballbrackets.com/ptoc.aspx?eid=3692157a-7dbf-45c1-a449-0a19923fb90b",
+      "https://www.visitfairgrounds.com/blog/the-ultimate-guide-to-pickleball-brackets-for-beginners"
+    ]
+  },
+  "competitor_analysis": {
+    "query": "pickleball brackets",
+    "page_count": 2,
+    "median_word_count": 1122,
+    "word_count_range": [
+      638,
+      1607
+    ],
+    "common_headings": [
+      "how do pickleball brackets work?",
+      "types of pickleball tournament brackets",
+      "single elimination vs double elimination in pickleball",
+      "understanding round-robin brackets in pickleball",
+      "beginner’s guide to participating in pickleball tournaments",
+      "what to know about pickleball brackets",
+      "how to use pickleball brackets",
+      "pickleball brackets options and examples"
+    ],
+    "recommended_phrases": [
+      "single elimination",
+      "double elimination",
+      "pickleball brackets",
+      "pickleball tournament",
+      "pickleball tournaments",
+      "usa pickleball",
+      "pickleball community"
+    ],
+    "recommended_entities": [
+      "Single Elimination",
+      "Double Elimination",
+      "Round Robin",
+      "Key Takeaways",
+      "USA Pickleball",
+      "Pickleball Tournaments"
+    ],
+    "recommended_subtopics": [
+      "how do pickleball brackets work?",
+      "types of pickleball tournament brackets",
+      "single elimination vs double elimination in pickleball",
+      "understanding round-robin brackets in pickleball",
+      "beginner’s guide to participating in pickleball tournaments",
+      "pickleball",
+      "what to know about pickleball brackets",
+      "how to use pickleball brackets"
+    ],
+    "weak_source_warning": true,
+    "warnings": [
+      "https://www.visitfairgrounds.com/blog/the-ultimate-guide-to-pickleball-brackets-for-beginners: weak_structure",
+      "Source set may be weak/noisy; recommendations have high uncertainty.",
+      "Curated noisy or transient extracted terms before building the writing brief (30 item(s))."
+    ],
+    "source_urls": [
+      "https://pickleballtournaments.com/search",
       "https://www.pb5star.com/a/blog/tournament-time-everything-you-need-to-know-about-pickleball-brackets",
       "https://pickleballbrackets.com/ptoc.aspx?eid=3692157a-7dbf-45c1-a449-0a19923fb90b",
       "https://www.visitfairgrounds.com/blog/the-ultimate-guide-to-pickleball-brackets-for-beginners"
@@ -92,88 +290,67 @@
   },
   "content_brief": {
     "primary_query": "pickleball brackets",
-    "likely_intent": "Informational",
+    "likely_intent": "Mixed",
     "target_word_count_range": [
-      900,
-      1600
+      638,
+      1607
     ],
     "candidate_titles": [
-      "Pickleball Brackets: How Tournament Draws Work",
-      "Pickleball Brackets Explained for Beginners",
-      "How to Read and Use Pickleball Tournament Brackets"
+      "Pickleball Brackets: Complete Guide",
+      "Pickleball Brackets Explained Step by Step",
+      "Practical Pickleball Brackets Guide for Beginners"
     ],
     "suggested_outline": [
-      "## What pickleball brackets are",
-      "## Common pickleball bracket formats",
-      "## Single elimination, double elimination, and round robin",
-      "## Seeding, skill divisions, and age divisions",
-      "## How to read a pickleball tournament bracket",
-      "## What happens after you lose",
-      "## Schedules, live results, and tournament platforms",
-      "## Pickleball bracket FAQ"
+      "## how do Pickleball Brackets Work?",
+      "## Types of Pickleball Tournament Brackets",
+      "## Single Elimination vs Double Elimination in Pickleball",
+      "## Understanding Round-robin Brackets in Pickleball",
+      "## Beginner’s Guide to Participating in Pickleball Tournaments",
+      "## What to Know About Pickleball Brackets",
+      "## how to use Pickleball Brackets",
+      "## Pickleball Brackets Options and Examples"
     ],
     "recommended_concepts_entities": [
-      "Pickleball Brackets",
-      "PickleballTournaments.com",
-      "PickleballBrackets.com",
-      "Pickleball Leagues",
-      "PPA Tour",
-      "USA Pickleball",
-      "Round Robin",
       "Single Elimination",
       "Double Elimination",
-      "Pool Play",
-      "Medal Match",
-      "Skill Division",
-      "Age Division",
-      "Tournament Director",
-      "seeding",
-      "winners bracket",
-      "consolation bracket",
-      "mixed doubles",
-      "mens doubles",
-      "womens doubles"
-    ],
-    "questions_to_answer": [
-      "What is a pickleball bracket?",
-      "How do pickleball tournament brackets work?",
-      "What is the difference between single elimination, double elimination, and round robin?",
-      "How are teams seeded in pickleball tournaments?",
-      "What happens when you lose a match?",
-      "How do pool play and medal rounds work?",
-      "Where can players find schedules, brackets, and live results?",
-      "What should beginners check before registering for a tournament?"
-    ],
-    "phrases_to_use_naturally": [
-      "pickleball brackets",
-      "pickleball tournament",
-      "tournament bracket",
+      "Round Robin",
+      "Key Takeaways",
+      "USA Pickleball",
+      "Pickleball Tournaments",
       "single elimination",
       "double elimination",
-      "round robin",
-      "pool play",
-      "bracket format",
-      "skill division",
-      "age division",
-      "mixed doubles",
-      "mens doubles",
-      "womens doubles",
-      "seeding",
-      "winners bracket",
-      "consolation bracket",
-      "medal match",
-      "tournament schedule",
-      "live results",
-      "tournament director"
+      "pickleball brackets",
+      "pickleball tournament",
+      "pickleball tournaments",
+      "usa pickleball",
+      "pickleball community"
+    ],
+    "questions_to_answer": [
+      "how do pickleball brackets work?",
+      "What should readers know about types of pickleball tournament brackets?",
+      "What should readers know about single elimination vs double elimination in pickleball?",
+      "What should readers know about understanding round-robin brackets in pickleball?",
+      "What should readers know about beginner’s guide to participating in pickleball tournaments?",
+      "What should readers know about pickleball?",
+      "what to know about pickleball brackets?",
+      "how to use pickleball brackets?"
+    ],
+    "phrases_to_use_naturally": [
+      "single elimination",
+      "double elimination",
+      "pickleball brackets",
+      "pickleball tournament",
+      "pickleball tournaments",
+      "usa pickleball",
+      "pickleball community"
     ],
     "warnings": [
-      "Do not make live-event claims without rechecking the current platform page.",
-      "Avoid overusing the exact phrase pickleball brackets; explain formats and reader decisions instead."
+      "https://www.visitfairgrounds.com/blog/the-ultimate-guide-to-pickleball-brackets-for-beginners: weak_structure",
+      "Source set may be weak/noisy; recommendations have high uncertainty.",
+      "Curated noisy or transient extracted terms before building the writing brief (30 item(s))."
     ],
     "source_urls": [
       "https://pickleballtournaments.com/search",
-      "https://pickleballleagues.com/",
-      "https://ppatour.com/",
       "https://www.pb5star.com/a/blog/tournament-time-everything-you-need-to-know-about-pickleball-brackets",
       "https://pickleballbrackets.com/ptoc.aspx?eid=3692157a-7dbf-45c1-a449-0a19923fb90b",
       "https://www.visitfairgrounds.com/blog/the-ultimate-guide-to-pickleball-brackets-for-beginners"
