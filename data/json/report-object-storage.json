@@ -1,0 +1,241 @@
+{
+  "summary": "Guidance workflow completed. Markdown outputs may be scaffolds until an AI or editor completes the final pass.",
+  "query": "object storage",
+  "brief_path": "data/json/brief-object-storage.json",
+  "article_path": "examples/object-storage.md",
+  "revised_path": "examples/working-object-storage.md",
+  "scaffold_path": "examples/working-object-storage.md",
+  "revised_scaffold_path": "examples/working-object-storage.md",
+  "writer_guidance_path": "data/json/guidance-object-storage.json",
+  "final_article_path": "examples/object-storage.md",
+  "content_qa_path": "examples/object-storage.md",
+  "analyze_path": "data/json/analyze-object-storage.json",
+  "analysis_path": "data/json/analyze-object-storage.json",
+  "optimize_path": "data/json/optimize-object-storage.json",
+  "optimization_path": "data/json/optimize-object-storage.json",
+  "source_urls": [
+    "https://en.wikipedia.org/wiki/Object_storage",
+    "https://aws.amazon.com/what-is/object-storage/",
+    "https://cloud.google.com/learn/what-is-object-storage",
+    "https://www.netapp.com/data-storage/what-is-object-storage/",
+    "https://www.nutanix.com/info/object-storage",
+    "https://cloudian.com/guides/object-storage/object-storage-care/",
+    "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+    "https://objectfirst.com/guides/data-storage/what-is-object-storage/"
+  ],
+  "source_filtering": {
+    "included": [
+      "https://en.wikipedia.org/wiki/Object_storage",
+      "https://aws.amazon.com/what-is/object-storage/",
+      "https://cloud.google.com/learn/what-is-object-storage",
+      "https://www.netapp.com/data-storage/what-is-object-storage/",
+      "https://www.nutanix.com/info/object-storage",
+      "https://cloudian.com/guides/object-storage/object-storage-care/",
+      "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+      "https://objectfirst.com/guides/data-storage/what-is-object-storage/"
+    ],
+    "excluded": [
+      {
+        "url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for/",
+        "normalized_url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for",
+        "category": "forum",
+        "included": false,
+        "reason": "Forum/community pages are excluded by default."
+      }
+    ],
+    "decisions": [
+      {
+        "url": "https://en.wikipedia.org/wiki/Object_storage",
+        "normalized_url": "https://en.wikipedia.org/wiki/Object_storage",
+        "category": "included",
+        "included": true,
+        "reason": ""
+      },
+      {
+        "url": "https://aws.amazon.com/what-is/object-storage/",
+        "normalized_url": "https://aws.amazon.com/what-is/object-storage",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://cloud.google.com/learn/what-is-object-storage",
+        "normalized_url": "https://cloud.google.com/learn/what-is-object-storage",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.netapp.com/data-storage/what-is-object-storage/",
+        "normalized_url": "https://www.netapp.com/data-storage/what-is-object-storage",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.nutanix.com/info/object-storage",
+        "normalized_url": "https://www.nutanix.com/info/object-storage",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://cloudian.com/guides/object-storage/object-storage-care/",
+        "normalized_url": "https://cloudian.com/guides/object-storage/object-storage-care",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+        "normalized_url": "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage",
+        "category": "included",
+        "included": true,
+        "reason": ""
+      },
+      {
+        "url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for/",
+        "normalized_url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for",
+        "category": "forum",
+        "included": false,
+        "reason": "Forum/community pages are excluded by default."
+      },
+      {
+        "url": "https://objectfirst.com/guides/data-storage/what-is-object-storage/",
+        "normalized_url": "https://objectfirst.com/guides/data-storage/what-is-object-storage",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      }
+    ]
+  },
+  "fetch_results": [
+    {
+      "url": "https://en.wikipedia.org/wiki/Object_storage",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 3658,
+      "quality_flags": []
+    },
+    {
+      "url": "https://aws.amazon.com/what-is/object-storage/",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 1975,
+      "quality_flags": []
+    },
+    {
+      "url": "https://cloud.google.com/learn/what-is-object-storage",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 1233,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.netapp.com/data-storage/what-is-object-storage/",
+      "status": "failed",
+      "used_in_analysis": false,
+      "error": "403 Client Error: Forbidden for url: https://www.netapp.com/data-storage/what-is-object-storage/",
+      "word_count": 0,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.nutanix.com/info/object-storage",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 867,
+      "quality_flags": []
+    },
+    {
+      "url": "https://cloudian.com/guides/object-storage/object-storage-care/",
+      "status": "failed",
+      "used_in_analysis": false,
+      "error": "HTTPSConnectionPool(host='cloudian.com', port=443): Max retries exceeded with url: /guides/object-storage/object-storage-care/ (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1007)')))",
+      "word_count": 0,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 334,
+      "quality_flags": []
+    },
+    {
+      "url": "https://objectfirst.com/guides/data-storage/what-is-object-storage/",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 1734,
+      "quality_flags": []
+    }
+  ],
+  "content_qa": {
+    "passed": true,
+    "query": "object storage",
+    "issues": [],
+    "warnings": [
+      {
+        "severity": "warning",
+        "code": "repetition",
+        "message": "Potentially repetitive term: storage"
+      }
+    ],
+    "checks": {
+      "frontmatter_parseable": true,
+      "frontmatter_format": "yaml",
+      "word_count": 1660,
+      "scaffold_issue_count": 0,
+      "internal_metadata_issue_count": 0,
+      "noisy_term_warning_count": 0,
+      "repeated_terms": [
+        "storage"
+      ]
+    }
+  },
+  "noisy_terms_rejected": [
+    "retrieved november"
+  ],
+  "score_breakdown": {
+    "initial": {
+      "topical_coverage": 93.0,
+      "structure": 100.0,
+      "intent_alignment": 100.0,
+      "naturalness_penalty": 2.72,
+      "redundancy_penalty": 5.0,
+      "title_meta": 100.0,
+      "overall": 89.83,
+      "reasons": [
+        "Missing 2 recommended phrases/concepts.",
+        "Possible keyword repetition in terms: object, storage.",
+        "Score is heuristic for content quality guidance, not a ranking predictor."
+      ]
+    },
+    "final": {
+      "topical_coverage": 93.0,
+      "structure": 100.0,
+      "intent_alignment": 100.0,
+      "naturalness_penalty": 2.72,
+      "redundancy_penalty": 5.0,
+      "title_meta": 100.0,
+      "overall": 89.83,
+      "reasons": [
+        "Missing 2 recommended phrases/concepts.",
+        "Possible keyword repetition in terms: object, storage.",
+        "Score is heuristic for content quality guidance, not a ranking predictor."
+      ]
+    }
+  },
+  "frontmatter_changed": false,
+  "ignored_recommendations": [
+    "Skipped https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for/: Forum/community pages are excluded by default."
+  ],
+  "commands_run": [
+    "python3 -m src.main build-post --query \"object storage\""
+  ]
+}

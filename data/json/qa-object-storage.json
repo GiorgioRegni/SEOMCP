@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "query": "object storage",
+  "issues": [],
+  "warnings": [
+    {
+      "severity": "warning",
+      "code": "repetition",
+      "message": "Potentially repetitive term: storage"
+    }
+  ],
+  "checks": {
+    "frontmatter_parseable": true,
+    "frontmatter_format": "yaml",
+    "word_count": 1660,
+    "scaffold_issue_count": 0,
+    "internal_metadata_issue_count": 0,
+    "noisy_term_warning_count": 0,
+    "repeated_terms": [
+      "storage"
+    ]
+  }
+}

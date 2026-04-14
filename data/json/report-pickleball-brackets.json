@@ -3,7 +3,8 @@
   "query": "pickleball brackets",
   "brief_path": "data/json/brief-pickleball-brackets.json",
   "article_path": "examples/pickleball-brackets.md",
-  "revised_path": "examples/revised-pickleball-brackets.md",
+  "revised_path": null,
+  "final_article_path": "examples/pickleball-brackets.md",
   "analyze_path": "data/json/analyze-pickleball-brackets.json",
   "optimize_path": "data/json/optimize-pickleball-brackets.json",
   "source_urls": [

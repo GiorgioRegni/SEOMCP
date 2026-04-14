@@ -1,0 +1,420 @@
+{
+  "source_urls": [
+    "https://en.wikipedia.org/wiki/Object_storage",
+    "https://aws.amazon.com/what-is/object-storage/",
+    "https://cloud.google.com/learn/what-is-object-storage",
+    "https://www.netapp.com/data-storage/what-is-object-storage/",
+    "https://www.nutanix.com/info/object-storage",
+    "https://cloudian.com/guides/object-storage/object-storage-care/",
+    "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+    "https://objectfirst.com/guides/data-storage/what-is-object-storage/"
+  ],
+  "source_filtering": {
+    "included": [
+      "https://en.wikipedia.org/wiki/Object_storage",
+      "https://aws.amazon.com/what-is/object-storage/",
+      "https://cloud.google.com/learn/what-is-object-storage",
+      "https://www.netapp.com/data-storage/what-is-object-storage/",
+      "https://www.nutanix.com/info/object-storage",
+      "https://cloudian.com/guides/object-storage/object-storage-care/",
+      "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+      "https://objectfirst.com/guides/data-storage/what-is-object-storage/"
+    ],
+    "excluded": [
+      {
+        "url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for/",
+        "normalized_url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for",
+        "category": "forum",
+        "included": false,
+        "reason": "Forum/community pages are excluded by default."
+      }
+    ],
+    "decisions": [
+      {
+        "url": "https://en.wikipedia.org/wiki/Object_storage",
+        "normalized_url": "https://en.wikipedia.org/wiki/Object_storage",
+        "category": "included",
+        "included": true,
+        "reason": ""
+      },
+      {
+        "url": "https://aws.amazon.com/what-is/object-storage/",
+        "normalized_url": "https://aws.amazon.com/what-is/object-storage",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://cloud.google.com/learn/what-is-object-storage",
+        "normalized_url": "https://cloud.google.com/learn/what-is-object-storage",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.netapp.com/data-storage/what-is-object-storage/",
+        "normalized_url": "https://www.netapp.com/data-storage/what-is-object-storage",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.nutanix.com/info/object-storage",
+        "normalized_url": "https://www.nutanix.com/info/object-storage",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://cloudian.com/guides/object-storage/object-storage-care/",
+        "normalized_url": "https://cloudian.com/guides/object-storage/object-storage-care",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+        "normalized_url": "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage",
+        "category": "included",
+        "included": true,
+        "reason": ""
+      },
+      {
+        "url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for/",
+        "normalized_url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for",
+        "category": "forum",
+        "included": false,
+        "reason": "Forum/community pages are excluded by default."
+      },
+      {
+        "url": "https://objectfirst.com/guides/data-storage/what-is-object-storage/",
+        "normalized_url": "https://objectfirst.com/guides/data-storage/what-is-object-storage",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      }
+    ]
+  },
+  "fetch_results": [
+    {
+      "url": "https://en.wikipedia.org/wiki/Object_storage",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 3658,
+      "quality_flags": []
+    },
+    {
+      "url": "https://aws.amazon.com/what-is/object-storage/",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 1975,
+      "quality_flags": []
+    },
+    {
+      "url": "https://cloud.google.com/learn/what-is-object-storage",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 1233,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.netapp.com/data-storage/what-is-object-storage/",
+      "status": "failed",
+      "used_in_analysis": false,
+      "error": "403 Client Error: Forbidden for url: https://www.netapp.com/data-storage/what-is-object-storage/",
+      "word_count": 0,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.nutanix.com/info/object-storage",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 867,
+      "quality_flags": []
+    },
+    {
+      "url": "https://cloudian.com/guides/object-storage/object-storage-care/",
+      "status": "failed",
+      "used_in_analysis": false,
+      "error": "HTTPSConnectionPool(host='cloudian.com', port=443): Max retries exceeded with url: /guides/object-storage/object-storage-care/ (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1007)')))",
+      "word_count": 0,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 334,
+      "quality_flags": []
+    },
+    {
+      "url": "https://objectfirst.com/guides/data-storage/what-is-object-storage/",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 1734,
+      "quality_flags": []
+    }
+  ],
+  "noisy_terms_rejected": [
+    "retrieved november"
+  ],
+  "raw_competitor_analysis": {
+    "query": "object storage",
+    "page_count": 6,
+    "median_word_count": 1483,
+    "word_count_range": [
+      334,
+      3658
+    ],
+    "common_headings": [
+      "what is object storage?",
+      "how does object storage work?",
+      "object storage vs. file storage vs. block storage",
+      "benefits of object storage",
+      "contents",
+      "history",
+      "architecture",
+      "implementation",
+      "market adoption",
+      "market analysis",
+      "standards",
+      "differences between key–value and object stores"
+    ],
+    "recommended_phrases": [
+      "object storage",
+      "block storage",
+      "file storage",
+      "archived original",
+      "unstructured data",
+      "object-based storage",
+      "use cases",
+      "cloud storage",
+      "storage object",
+      "storage systems",
+      "unique identifier",
+      "data storage",
+      "cloud object",
+      "large amounts",
+      "file systems",
+      "storage devices",
+      "key value",
+      "retrieved november",
+      "across multiple",
+      "amounts data",
+      "storage object storage",
+      "cloud object storage",
+      "storage block storage",
+      "object storage systems",
+      "object storage object"
+    ],
+    "recommended_entities": [
+      "Object Storage",
+      "Storage Service",
+      "Big Data",
+      "Amazon S3",
+      "Block Storage",
+      "File Storage",
+      "Google Cloud",
+      "Cloud Storage",
+      "Data Protection",
+      "The S3",
+      "RESTful APIs",
+      "Storage Networking",
+      "SIGOPS Symposium",
+      "Azure Blob",
+      "Swany, Martin",
+      "Ridge National",
+      "Equipment Corporation",
+      "Cloudian, DataCore",
+      "Miller, Rich",
+      "Trillion Objects"
+    ],
+    "recommended_subtopics": [
+      "what is object storage?",
+      "how does object storage work?",
+      "object storage vs. file storage vs. block storage",
+      "benefits of object storage",
+      "contents",
+      "history",
+      "architecture",
+      "implementation",
+      "market adoption",
+      "market analysis",
+      "storage",
+      "object",
+      "archived",
+      "original",
+      "retrieved",
+      "data",
+      "file",
+      "block",
+      "buckets",
+      "nodes"
+    ],
+    "weak_source_warning": false,
+    "warnings": [],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/Object_storage",
+      "https://aws.amazon.com/what-is/object-storage/",
+      "https://cloud.google.com/learn/what-is-object-storage",
+      "https://www.netapp.com/data-storage/what-is-object-storage/",
+      "https://www.nutanix.com/info/object-storage",
+      "https://cloudian.com/guides/object-storage/object-storage-care/",
+      "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+      "https://objectfirst.com/guides/data-storage/what-is-object-storage/"
+    ]
+  },
+  "competitor_analysis": {
+    "query": "object storage",
+    "page_count": 6,
+    "median_word_count": 1483,
+    "word_count_range": [
+      334,
+      3658
+    ],
+    "common_headings": [
+      "what is object storage?",
+      "how does object storage work?",
+      "object storage vs. file storage vs. block storage",
+      "benefits of object storage",
+      "differences between key–value and object stores"
+    ],
+    "recommended_phrases": [
+      "object storage",
+      "block storage",
+      "file storage",
+      "archived original",
+      "object-based storage",
+      "cloud storage",
+      "storage object",
+      "storage systems",
+      "data storage",
+      "cloud object",
+      "storage devices",
+      "storage object storage",
+      "cloud object storage",
+      "storage block storage",
+      "object storage systems",
+      "object storage object"
+    ],
+    "recommended_entities": [
+      "Object Storage",
+      "Storage Service",
+      "Big Data",
+      "Amazon S3",
+      "Block Storage",
+      "File Storage",
+      "Cloud Storage",
+      "Storage Networking"
+    ],
+    "recommended_subtopics": [
+      "what is object storage?",
+      "how does object storage work?",
+      "object storage vs. file storage vs. block storage",
+      "benefits of object storage",
+      "storage",
+      "object"
+    ],
+    "weak_source_warning": false,
+    "warnings": [
+      "Curated noisy or transient extracted terms before building the writing brief (30 item(s))."
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/Object_storage",
+      "https://aws.amazon.com/what-is/object-storage/",
+      "https://cloud.google.com/learn/what-is-object-storage",
+      "https://www.netapp.com/data-storage/what-is-object-storage/",
+      "https://www.nutanix.com/info/object-storage",
+      "https://cloudian.com/guides/object-storage/object-storage-care/",
+      "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+      "https://objectfirst.com/guides/data-storage/what-is-object-storage/"
+    ]
+  },
+  "content_brief": {
+    "primary_query": "object storage",
+    "likely_intent": "Mixed",
+    "target_word_count_range": [
+      400,
+      3658
+    ],
+    "candidate_titles": [
+      "Object Storage: Complete Guide",
+      "Object Storage Explained Step by Step",
+      "Practical Object Storage Guide for Beginners"
+    ],
+    "suggested_outline": [
+      "## What is Object Storage?",
+      "## how Does Object Storage Work?",
+      "## Object Storage vs. File Storage vs. Block Storage",
+      "## Benefits of Object Storage",
+      "## Differences Between Key–value and Object Stores"
+    ],
+    "recommended_concepts_entities": [
+      "Object Storage",
+      "Storage Service",
+      "Big Data",
+      "Amazon S3",
+      "Block Storage",
+      "File Storage",
+      "Cloud Storage",
+      "Storage Networking",
+      "object storage",
+      "block storage",
+      "file storage",
+      "archived original",
+      "object-based storage",
+      "cloud storage",
+      "storage object",
+      "storage systems",
+      "data storage",
+      "cloud object",
+      "storage devices",
+      "storage object storage"
+    ],
+    "questions_to_answer": [
+      "what is object storage?",
+      "how does object storage work?",
+      "What should readers know about object storage vs. file storage vs. block storage?",
+      "What should readers know about benefits of object storage?",
+      "What should readers know about storage?",
+      "What should readers know about object?"
+    ],
+    "phrases_to_use_naturally": [
+      "object storage",
+      "block storage",
+      "file storage",
+      "archived original",
+      "object-based storage",
+      "cloud storage",
+      "storage object",
+      "storage systems",
+      "data storage",
+      "cloud object",
+      "storage devices",
+      "storage object storage",
+      "cloud object storage",
+      "storage block storage",
+      "object storage systems",
+      "object storage object"
+    ],
+    "warnings": [
+      "Curated noisy or transient extracted terms before building the writing brief (30 item(s))."
+    ],
+    "source_urls": [
+      "https://en.wikipedia.org/wiki/Object_storage",
+      "https://aws.amazon.com/what-is/object-storage/",
+      "https://cloud.google.com/learn/what-is-object-storage",
+      "https://www.netapp.com/data-storage/what-is-object-storage/",
+      "https://www.nutanix.com/info/object-storage",
+      "https://cloudian.com/guides/object-storage/object-storage-care/",
+      "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+      "https://objectfirst.com/guides/data-storage/what-is-object-storage/"
+    ]
+  }
+}

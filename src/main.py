@@ -381,12 +381,17 @@ def optimize(
 def build_post(
     query: str = typer.Option(...),
     urls: Optional[str] = typer.Option(None, help="Comma-separated URLs"),
-    output: Optional[str] = typer.Option(None, "--output", "-o", help="Article markdown path."),
-    revised_output: Optional[str] = typer.Option(None, "--revised-output", help="Revised markdown path."),
+    output: Optional[str] = typer.Option(None, "--output", "-o", help="Canonical final article markdown path."),
+    revised_output: Optional[str] = typer.Option(
+        None,
+        "--working-output",
+        "--revised-output",
+        help="Working/scaffold markdown path.",
+    ),
     brief_path: Optional[str] = typer.Option(None, "--brief", help="Saved brief path. Defaults to data/json/brief-<query>.json."),
     top_n: int = 8,
     iterations: int = 3,
-    update_frontmatter: bool = typer.Option(False, help="Update Hugo SEO fields in revised output."),
+    update_frontmatter: bool = typer.Option(False, help="Update Hugo SEO fields in working output."),
     frontmatter_format: str = typer.Option("yaml", help="Front matter format when creating a new article."),
     allow_forums: bool = typer.Option(False, help="Allow forum/community URLs."),
     allow_pdfs: bool = typer.Option(False, help="Allow PDF URLs."),
@@ -397,7 +402,7 @@ def build_post(
     ensure_dirs()
     slug = slugify(query)
     article_path = Path(output or f"examples/{slug}.md")
-    revised_path = Path(revised_output or f"examples/revised-{slug}.md")
+    working_path = Path(revised_output or f"examples/working-{slug}.md")
     saved_brief_path = Path(brief_path) if brief_path else JSON_CACHE / f"brief-{slug}.json"
 
     commands_run = [
@@ -436,16 +441,19 @@ def build_post(
             noisy_terms_rejected=noisy_terms_rejected,
         )
 
-    if not article_path.exists():
-        article_path.parent.mkdir(parents=True, exist_ok=True)
-        article_path.write_text(
+    final_article_exists = article_path.exists()
+    draft_path = article_path if final_article_exists else working_path
+
+    if not final_article_exists:
+        working_path.parent.mkdir(parents=True, exist_ok=True)
+        working_path.write_text(
             generate_draft_from_brief(seo_brief, frontmatter_format=frontmatter_format),
             encoding="utf-8",
         )
 
     analysis = analyze_payload(
         query,
-        str(article_path),
+        str(draft_path),
         comp,
         seo_brief,
         source_filtering,
@@ -457,20 +465,21 @@ def build_post(
 
     optimized = optimize_payload(
         query,
-        str(article_path),
+        str(draft_path),
         comp,
         seo_brief,
         source_filtering,
         iterations=iterations,
         update_frontmatter=update_frontmatter,
-        output=str(revised_path),
+        output=str(working_path),
         fetch_results=fetch_results,
         noisy_terms_rejected=noisy_terms_rejected,
     )
     optimize_path = JSON_CACHE / f"optimize-{slug}.json"
     dump_json(optimize_path, optimized)
 
-    qa = qa_markdown_content(query, article_path.read_text(encoding="utf-8"), noisy_terms_rejected)
+    qa_path = article_path if final_article_exists else working_path
+    qa = qa_markdown_content(query, qa_path.read_text(encoding="utf-8"), noisy_terms_rejected)
     guidance = build_writer_guidance(
         query=query,
         brief=seo_brief,
@@ -490,11 +499,12 @@ def build_post(
         "query": query,
         "brief_path": str(saved_brief_path),
         "article_path": str(article_path),
-        "revised_path": str(revised_path),
-        "scaffold_path": str(article_path),
-        "revised_scaffold_path": str(revised_path),
+        "revised_path": str(working_path),
+        "scaffold_path": str(working_path),
+        "revised_scaffold_path": str(working_path),
         "writer_guidance_path": str(guidance_path),
-        "final_article_path": str(article_path) if qa.get("passed") else None,
+        "final_article_path": str(article_path) if final_article_exists and qa.get("passed") else None,
+        "content_qa_path": str(qa_path),
         "analyze_path": str(analyze_path),
         "analysis_path": str(analyze_path),
         "optimize_path": str(optimize_path),

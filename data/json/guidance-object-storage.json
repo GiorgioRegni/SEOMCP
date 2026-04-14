@@ -1,0 +1,267 @@
+{
+  "query": "object storage",
+  "role": "SEO guidance for an AI or human writer; not publishable prose.",
+  "likely_intent": "Mixed",
+  "target_word_count_range": [
+    400,
+    3658
+  ],
+  "source_summary": {
+    "included_count": 8,
+    "skipped_count": 1,
+    "fetched_count": 6,
+    "failed_count": 2,
+    "used_in_analysis_count": 6
+  },
+  "included_urls": [
+    "https://en.wikipedia.org/wiki/Object_storage",
+    "https://aws.amazon.com/what-is/object-storage/",
+    "https://cloud.google.com/learn/what-is-object-storage",
+    "https://www.netapp.com/data-storage/what-is-object-storage/",
+    "https://www.nutanix.com/info/object-storage",
+    "https://cloudian.com/guides/object-storage/object-storage-care/",
+    "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+    "https://objectfirst.com/guides/data-storage/what-is-object-storage/"
+  ],
+  "skipped_urls": [
+    {
+      "url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for/",
+      "normalized_url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for",
+      "category": "forum",
+      "included": false,
+      "reason": "Forum/community pages are excluded by default."
+    }
+  ],
+  "fetch_results": [
+    {
+      "url": "https://en.wikipedia.org/wiki/Object_storage",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 3658,
+      "quality_flags": []
+    },
+    {
+      "url": "https://aws.amazon.com/what-is/object-storage/",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 1975,
+      "quality_flags": []
+    },
+    {
+      "url": "https://cloud.google.com/learn/what-is-object-storage",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 1233,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.netapp.com/data-storage/what-is-object-storage/",
+      "status": "failed",
+      "used_in_analysis": false,
+      "error": "403 Client Error: Forbidden for url: https://www.netapp.com/data-storage/what-is-object-storage/",
+      "word_count": 0,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.nutanix.com/info/object-storage",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 867,
+      "quality_flags": []
+    },
+    {
+      "url": "https://cloudian.com/guides/object-storage/object-storage-care/",
+      "status": "failed",
+      "used_in_analysis": false,
+      "error": "HTTPSConnectionPool(host='cloudian.com', port=443): Max retries exceeded with url: /guides/object-storage/object-storage-care/ (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1007)')))",
+      "word_count": 0,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 334,
+      "quality_flags": []
+    },
+    {
+      "url": "https://objectfirst.com/guides/data-storage/what-is-object-storage/",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 1734,
+      "quality_flags": []
+    }
+  ],
+  "do_not_confuse_sources": [],
+  "recommended_coverage": {
+    "headings_to_consider": [
+      "## What is Object Storage?",
+      "## how Does Object Storage Work?",
+      "## Object Storage vs. File Storage vs. Block Storage",
+      "## Benefits of Object Storage",
+      "## Differences Between Key–value and Object Stores"
+    ],
+    "questions_to_answer": [
+      "what is object storage?",
+      "how does object storage work?",
+      "What should readers know about object storage vs. file storage vs. block storage?",
+      "What should readers know about benefits of object storage?",
+      "What should readers know about storage?",
+      "What should readers know about object?"
+    ],
+    "concepts_to_cover": [
+      "Object Storage",
+      "Storage Service",
+      "Big Data",
+      "Amazon S3",
+      "Block Storage",
+      "File Storage",
+      "Cloud Storage",
+      "Storage Networking",
+      "object storage",
+      "block storage",
+      "file storage",
+      "archived original",
+      "object-based storage",
+      "cloud storage",
+      "storage object",
+      "storage systems",
+      "data storage",
+      "cloud object",
+      "storage devices",
+      "storage object storage"
+    ],
+    "phrases_to_use_naturally": [
+      "object storage",
+      "block storage",
+      "file storage",
+      "archived original",
+      "object-based storage",
+      "cloud storage",
+      "storage object",
+      "storage systems",
+      "data storage",
+      "cloud object",
+      "storage devices",
+      "storage object storage",
+      "cloud object storage",
+      "storage block storage",
+      "object storage systems",
+      "object storage object"
+    ]
+  },
+  "terms_to_avoid": [
+    "retrieved november"
+  ],
+  "frontmatter_suggestions": {
+    "title": "Object Storage: Complete Guide",
+    "description": "A practical guide to object storage, including Storage Service, Big Data, Amazon S3, and answers to common questions.",
+    "tags": [
+      "object-storage",
+      "storage-service",
+      "big-data",
+      "amazon-s3",
+      "block-storage",
+      "file-storage",
+      "cloud-storage",
+      "storage-networking"
+    ],
+    "draft": false
+  },
+  "editorial_checklist": [
+    "Use the JSON as guidance, not final prose.",
+    "Write original copy; do not copy large spans from sources.",
+    "Preserve Hugo front matter and custom fields unless explicitly updating SEO fields.",
+    "Remove scaffold phrases and internal workflow metadata before publishing.",
+    "Use noisy or blocked sources to limit claims, not as article copy.",
+    "Prefer reader usefulness and factual clarity over raising the heuristic score.",
+    "Run content QA before treating the markdown as final."
+  ],
+  "draft_gaps": {
+    "missing_topics": [],
+    "overused_terms": [
+      "object",
+      "storage"
+    ],
+    "score_breakdown": {
+      "topical_coverage": 93.0,
+      "structure": 100.0,
+      "intent_alignment": 100.0,
+      "naturalness_penalty": 2.72,
+      "redundancy_penalty": 5.0,
+      "title_meta": 100.0,
+      "overall": 89.83,
+      "reasons": [
+        "Missing 2 recommended phrases/concepts.",
+        "Possible keyword repetition in terms: object, storage.",
+        "Score is heuristic for content quality guidance, not a ranking predictor."
+      ]
+    }
+  },
+  "optimization_summary": {
+    "summary": "Optimized in 1 iteration(s). Score moved from 89.8 to 89.8.",
+    "score_breakdown": {
+      "initial": {
+        "topical_coverage": 93.0,
+        "structure": 100.0,
+        "intent_alignment": 100.0,
+        "naturalness_penalty": 2.72,
+        "redundancy_penalty": 5.0,
+        "title_meta": 100.0,
+        "overall": 89.83,
+        "reasons": [
+          "Missing 2 recommended phrases/concepts.",
+          "Possible keyword repetition in terms: object, storage.",
+          "Score is heuristic for content quality guidance, not a ranking predictor."
+        ]
+      },
+      "final": {
+        "topical_coverage": 93.0,
+        "structure": 100.0,
+        "intent_alignment": 100.0,
+        "naturalness_penalty": 2.72,
+        "redundancy_penalty": 5.0,
+        "title_meta": 100.0,
+        "overall": 89.83,
+        "reasons": [
+          "Missing 2 recommended phrases/concepts.",
+          "Possible keyword repetition in terms: object, storage.",
+          "Score is heuristic for content quality guidance, not a ranking predictor."
+        ]
+      }
+    },
+    "revision_notes": [
+      "Consider weaving these concepts into existing sections where natural: Big Data, Storage Networking.",
+      "No safe automatic body rewrite was needed; use the analysis JSON for manual editorial judgment."
+    ]
+  },
+  "content_qa": {
+    "passed": true,
+    "query": "object storage",
+    "issues": [],
+    "warnings": [
+      {
+        "severity": "warning",
+        "code": "repetition",
+        "message": "Potentially repetitive term: storage"
+      }
+    ],
+    "checks": {
+      "frontmatter_parseable": true,
+      "frontmatter_format": "yaml",
+      "word_count": 1660,
+      "scaffold_issue_count": 0,
+      "internal_metadata_issue_count": 0,
+      "noisy_term_warning_count": 0,
+      "repeated_terms": [
+        "storage"
+      ]
+    }
+  }
+}

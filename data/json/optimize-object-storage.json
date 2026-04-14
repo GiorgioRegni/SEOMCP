@@ -1,0 +1,465 @@
+{
+  "summary": "Optimized in 1 iteration(s). Score moved from 89.8 to 89.8.",
+  "score_breakdown": {
+    "initial": {
+      "topical_coverage": 93.0,
+      "structure": 100.0,
+      "intent_alignment": 100.0,
+      "naturalness_penalty": 2.72,
+      "redundancy_penalty": 5.0,
+      "title_meta": 100.0,
+      "overall": 89.83,
+      "reasons": [
+        "Missing 2 recommended phrases/concepts.",
+        "Possible keyword repetition in terms: object, storage.",
+        "Score is heuristic for content quality guidance, not a ranking predictor."
+      ]
+    },
+    "final": {
+      "topical_coverage": 93.0,
+      "structure": 100.0,
+      "intent_alignment": 100.0,
+      "naturalness_penalty": 2.72,
+      "redundancy_penalty": 5.0,
+      "title_meta": 100.0,
+      "overall": 89.83,
+      "reasons": [
+        "Missing 2 recommended phrases/concepts.",
+        "Possible keyword repetition in terms: object, storage.",
+        "Score is heuristic for content quality guidance, not a ranking predictor."
+      ]
+    }
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "score_before": 89.83,
+      "score_after": 89.83,
+      "delta": 0.0,
+      "analysis_summary": {
+        "missing_topics_after": 0,
+        "overused_terms_after": [
+          "object",
+          "storage"
+        ]
+      }
+    }
+  ],
+  "revised_draft": "---\ntitle: \"Object Storage: What It Is, How It Works, and When to Use It\"\ndescription: \"A practical guide to object storage, including how objects, buckets, metadata, APIs, and file vs block comparisons fit together.\"\nslug: \"object-storage\"\ndate: 2026-04-13\nlastmod: 2026-04-13\ndraft: false\ntags: [\"object storage\", \"cloud storage\", \"Amazon S3\", \"block storage\", \"file storage\"]\ncategories:\n  - Cloud Infrastructure\nfaqs:\n  - question: \"What is object storage?\"\n    answer: \"Object storage is a data storage architecture that stores each item as an object with data, metadata, and a unique identifier, usually inside a flat namespace such as a bucket.\"\n  - question: \"How is object storage different from file storage?\"\n    answer: \"File storage organizes data in folders and paths. Object storage uses unique object IDs and metadata, which makes it better suited for large-scale unstructured data.\"\n  - question: \"How is object storage different from block storage?\"\n    answer: \"Block storage presents raw storage volumes to applications and is often used for databases and virtual machines. Object storage is accessed through APIs and is better for backups, media, archives, logs, and cloud-native data.\"\n  - question: \"Is Amazon S3 object storage?\"\n    answer: \"Yes. Amazon S3 is one of the best-known object storage services, and many other systems support S3-compatible APIs.\"\n  - question: \"When should I use object storage?\"\n    answer: \"Use object storage when you need durable, scalable storage for unstructured data such as backups, media files, data lakes, logs, archives, and application assets.\"\n---\n\n## Overview\n\nObject storage is the storage model behind many cloud buckets, backup repositories, media libraries, data lakes, and archive systems. Instead of saving data as files in a folder tree or as raw blocks on a disk volume, it stores each item as an object with three parts: the data itself, metadata about that data, and a unique identifier.\n\nThat design is why object storage shows up so often in cloud infrastructure conversations. It is built for large amounts of unstructured data: images, videos, documents, backups, logs, analytics files, machine learning datasets, and application assets. It is also the model behind services such as Amazon S3, Google Cloud Storage, Oracle Object Storage, and many S3-compatible platforms.\n\nThe simple way to think about it:\n\n- File storage is organized around paths and folders.\n- Block storage is organized around low-level chunks attached to a server.\n- Object storage is organized around objects, metadata, and API access.\n\nThat difference changes how applications store data, how teams scale storage, and what tradeoffs they accept.\n\n## What object storage means\n\nAn object is a self-contained unit of data. It usually includes:\n\n- The payload, such as a photo, backup file, video, log bundle, or document.\n- Metadata, such as content type, owner, creation date, retention policy, or custom labels.\n- A unique identifier or key that lets the system find the object later.\n\nObjects are commonly stored inside buckets or containers. Unlike a traditional file system, object storage does not depend on a deep folder hierarchy. You may see names that look like paths, such as `images/2026/header.jpg`, but the storage system usually treats that as an object key rather than a true nested directory structure.\n\nThis flat namespace is one reason object storage can scale well. The system does not need to manage the same kind of directory tree that a file server does. It can distribute objects across many nodes, disks, regions, or availability zones while keeping access simple through an API.\n\n## How object storage works\n\nMost object storage systems follow the same basic pattern.\n\nAn application sends data to the storage service through an API. The service stores the payload, records metadata, assigns or accepts an object key, and returns a response. Later, the application retrieves, updates metadata for, or deletes the object by calling the service again.\n\nIn cloud environments, those calls often happen over HTTP-based APIs. The best-known example is Amazon S3, and S3 compatibility has become an important feature across many object storage products because it gives developers and tools a familiar interface.\n\nBehind the scenes, the platform may use replication, erasure coding, versioning, checksums, lifecycle policies, encryption, access policies, and geographic distribution. Those implementation details vary by provider, but the goal is usually the same: store a very large number of objects durably and make them available through predictable API calls.\n\nThe metadata layer is especially important. A file system mostly cares about names, directories, timestamps, and permissions. Object storage can attach richer metadata to each object, which makes it easier to classify, search, retain, expire, or process data at scale.\n\n## Object storage vs file storage\n\nFile storage is familiar because it works like folders on a laptop or shared network drive. Data lives in a hierarchy of directories and files. Users and applications browse paths such as `/projects/client-a/logo.png`.\n\nThat model is useful when people need shared folders, familiar permissions, and applications that expect a normal file system. It is common for network attached storage, team shares, content production workflows, and legacy applications.\n\nObject storage is different. It is better when applications can talk to a storage API and when the data does not need to behave like a mounted file system. Instead of asking \"which folder is this in?\" you ask \"what is the object key, and what metadata describes it?\"\n\nUse file storage when the folder structure and file-system behavior matter. Use object storage when the application needs durable, scalable storage for many independent pieces of unstructured data.\n\n## Object storage vs block storage\n\nBlock storage breaks data into low-level blocks and presents storage to a server as a volume. Operating systems, databases, and virtual machines can format that volume and manage it directly.\n\nThat makes block storage a strong fit for workloads that need low latency, frequent writes, and fine-grained control. Databases, boot disks, transactional systems, and virtual machine volumes commonly use block storage.\n\nObject storage is usually a better fit when data is written and retrieved as whole objects. It is not meant to replace a database volume or a boot disk. It is meant to hold things like backups, media files, exports, logs, archives, and application assets.\n\nThe tradeoff is practical:\n\n- Choose block storage for performance-sensitive volumes attached to compute.\n- Choose file storage when users or applications need shared folder semantics.\n- Choose object storage when scale, durability, metadata, API access, and cost control matter more than file-system behavior.\n\n## Benefits of object storage\n\nThe biggest benefit is scale. Object storage systems are designed to handle large volumes of unstructured data and very large object counts. That is why they are common in cloud storage, analytics, backup, and archive use cases.\n\nDurability is another major reason teams use it. Many platforms replicate data or spread it across storage nodes so that hardware failure does not automatically mean data loss. Cloud services often expose durability, availability, versioning, retention, and lifecycle controls directly in the storage layer.\n\nMetadata is a third advantage. Because each object can carry descriptive information, teams can organize data by more than just folder path. That helps with lifecycle rules, compliance, search, analytics, and automation.\n\nCost management can also be strong when the workload fits the model. Many providers offer storage classes for active data, infrequently accessed data, and long-term archives. Lifecycle policies can move objects to cheaper tiers or delete them when they are no longer needed.\n\nFinally, API access makes object storage natural for modern applications. Web apps, mobile apps, data pipelines, backup tools, and cloud-native services can store and retrieve objects without needing a traditional file share.\n\n## Common use cases\n\nObject storage is most useful when data is large, numerous, relatively independent, and not constantly modified in place.\n\nCommon examples include:\n\n- Backups and disaster recovery copies\n- Media files, images, video, and audio\n- Static website assets\n- Data lake files for analytics\n- Log archives and event data\n- Machine learning datasets\n- Compliance archives and records retention\n- Application uploads and user-generated content\n- Software packages, exports, and large documents\n\nIt is less ideal for workloads that need many tiny random writes inside the same file, traditional file locking, or very low-latency disk behavior. Those are usually better handled by block storage, file storage, or a database.\n\n## Key-value stores and object stores\n\nObject storage can look a lot like a key-value system because each object is retrieved by a key. That comparison is useful, but it is not the whole story.\n\nA basic key-value store focuses on storing and retrieving values by key. Object storage also stores data by key, but it usually adds storage-specific features: metadata, buckets, access policies, lifecycle rules, versioning, retention controls, replication, and APIs designed around large binary objects.\n\nSo the clean distinction is this: object storage uses a key-like access pattern, but it is built as a data storage system for durable, large-scale object management rather than only as an application data structure.\n\n## When object storage is the right choice\n\nObject storage is a good fit when you need a place to keep large amounts of unstructured data and your application can work through an API.\n\nIt is especially useful when:\n\n- Data needs to grow without constant storage redesign.\n- Files do not need to be edited in place like a normal file system.\n- Metadata, retention, or lifecycle rules matter.\n- You want cloud storage or S3-compatible tooling.\n- Backups, archives, media, logs, or analytics files are central to the workload.\n\nIt is probably not the right first choice when your workload expects a mounted file system, requires database-like latency, or depends on block-level writes.\n\n## Practical takeaways\n\nObject storage is not just \"cheap storage in the cloud.\" It is a different storage architecture. The object model changes how data is addressed, described, protected, and scaled.\n\nIf you are choosing between storage types, start with the workload:\n\n- Does the application need a normal file path? Look at file storage.\n- Does the server need a fast attached volume? Look at block storage.\n- Does the workload store many independent files, backups, media assets, logs, or datasets? Object storage is likely the right place to start.\n\nFor most modern teams, the decision is not whether object storage replaces every other storage model. It does not. The better question is which data belongs there. Used for the right workloads, it gives you scalable, durable, metadata-rich storage without forcing everything into a traditional file system.\n\n## FAQ\n\n### What is object storage?\n\nObject storage is a way to store data as objects. Each object includes the data, metadata, and a unique identifier, usually inside a bucket or container.\n\n### How does object storage work?\n\nAn application sends data to an object storage service through an API. The service stores the object, keeps metadata with it, and lets the application retrieve it later by object key or identifier.\n\n### Is object storage the same as cloud storage?\n\nNot exactly. Many cloud storage services use object storage, but object storage is the architecture. Cloud storage is one way to deliver it.\n\n### Is object storage better than file storage?\n\nIt depends on the workload. Object storage is better for scalable unstructured data and API-based applications. File storage is better when users or applications need normal folder and file-system behavior.\n\n### Is object storage good for databases?\n\nUsually not as the primary database volume. Databases often need block storage or specialized database storage. Object storage is commonly used for database backups, exports, logs, and analytical datasets.\n\n## Sources checked\n\n- [Wikipedia: Object storage](https://en.wikipedia.org/wiki/Object_storage)\n- [AWS: What is Object Storage?](https://aws.amazon.com/what-is/object-storage/)\n- [Google Cloud: What is Object Storage?](https://cloud.google.com/learn/what-is-object-storage)\n- [Nutanix: Complete Guide to Object Storage](https://www.nutanix.com/info/object-storage)\n- [Oracle: What is Object Storage?](https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/)\n- [Object First: What is Object Storage?](https://objectfirst.com/guides/data-storage/what-is-object-storage/)\n",
+  "revision_notes": [
+    "Consider weaving these concepts into existing sections where natural: Big Data, Storage Networking.",
+    "No safe automatic body rewrite was needed; use the analysis JSON for manual editorial judgment."
+  ],
+  "frontmatter_suggestions": {
+    "title": "Object Storage: Complete Guide",
+    "description": "A practical guide to object storage, including Storage Service, Big Data, Amazon S3, and answers to common questions.",
+    "tags": [
+      "object-storage",
+      "storage-service",
+      "big-data",
+      "amazon-s3",
+      "block-storage",
+      "file-storage",
+      "cloud-storage",
+      "storage-networking"
+    ],
+    "draft": false
+  },
+  "source_urls": [
+    "https://en.wikipedia.org/wiki/Object_storage",
+    "https://aws.amazon.com/what-is/object-storage/",
+    "https://cloud.google.com/learn/what-is-object-storage",
+    "https://www.netapp.com/data-storage/what-is-object-storage/",
+    "https://www.nutanix.com/info/object-storage",
+    "https://cloudian.com/guides/object-storage/object-storage-care/",
+    "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+    "https://objectfirst.com/guides/data-storage/what-is-object-storage/"
+  ],
+  "source_filtering": {
+    "included": [
+      "https://en.wikipedia.org/wiki/Object_storage",
+      "https://aws.amazon.com/what-is/object-storage/",
+      "https://cloud.google.com/learn/what-is-object-storage",
+      "https://www.netapp.com/data-storage/what-is-object-storage/",
+      "https://www.nutanix.com/info/object-storage",
+      "https://cloudian.com/guides/object-storage/object-storage-care/",
+      "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+      "https://objectfirst.com/guides/data-storage/what-is-object-storage/"
+    ],
+    "excluded": [
+      {
+        "url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for/",
+        "normalized_url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for",
+        "category": "forum",
+        "included": false,
+        "reason": "Forum/community pages are excluded by default."
+      }
+    ],
+    "decisions": [
+      {
+        "url": "https://en.wikipedia.org/wiki/Object_storage",
+        "normalized_url": "https://en.wikipedia.org/wiki/Object_storage",
+        "category": "included",
+        "included": true,
+        "reason": ""
+      },
+      {
+        "url": "https://aws.amazon.com/what-is/object-storage/",
+        "normalized_url": "https://aws.amazon.com/what-is/object-storage",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://cloud.google.com/learn/what-is-object-storage",
+        "normalized_url": "https://cloud.google.com/learn/what-is-object-storage",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.netapp.com/data-storage/what-is-object-storage/",
+        "normalized_url": "https://www.netapp.com/data-storage/what-is-object-storage",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.nutanix.com/info/object-storage",
+        "normalized_url": "https://www.nutanix.com/info/object-storage",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://cloudian.com/guides/object-storage/object-storage-care/",
+        "normalized_url": "https://cloudian.com/guides/object-storage/object-storage-care",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      },
+      {
+        "url": "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+        "normalized_url": "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage",
+        "category": "included",
+        "included": true,
+        "reason": ""
+      },
+      {
+        "url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for/",
+        "normalized_url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for",
+        "category": "forum",
+        "included": false,
+        "reason": "Forum/community pages are excluded by default."
+      },
+      {
+        "url": "https://objectfirst.com/guides/data-storage/what-is-object-storage/",
+        "normalized_url": "https://objectfirst.com/guides/data-storage/what-is-object-storage",
+        "category": "weak_for_intent",
+        "included": true,
+        "reason": "Included, but URL text has weak overlap with the query."
+      }
+    ]
+  },
+  "fetch_results": [
+    {
+      "url": "https://en.wikipedia.org/wiki/Object_storage",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 3658,
+      "quality_flags": []
+    },
+    {
+      "url": "https://aws.amazon.com/what-is/object-storage/",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 1975,
+      "quality_flags": []
+    },
+    {
+      "url": "https://cloud.google.com/learn/what-is-object-storage",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 1233,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.netapp.com/data-storage/what-is-object-storage/",
+      "status": "failed",
+      "used_in_analysis": false,
+      "error": "403 Client Error: Forbidden for url: https://www.netapp.com/data-storage/what-is-object-storage/",
+      "word_count": 0,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.nutanix.com/info/object-storage",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 867,
+      "quality_flags": []
+    },
+    {
+      "url": "https://cloudian.com/guides/object-storage/object-storage-care/",
+      "status": "failed",
+      "used_in_analysis": false,
+      "error": "HTTPSConnectionPool(host='cloudian.com', port=443): Max retries exceeded with url: /guides/object-storage/object-storage-care/ (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1007)')))",
+      "word_count": 0,
+      "quality_flags": []
+    },
+    {
+      "url": "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 334,
+      "quality_flags": []
+    },
+    {
+      "url": "https://objectfirst.com/guides/data-storage/what-is-object-storage/",
+      "status": "fetched",
+      "used_in_analysis": true,
+      "error": "",
+      "word_count": 1734,
+      "quality_flags": []
+    }
+  ],
+  "recommended_outline_changes": [
+    "## What is Object Storage?",
+    "## how Does Object Storage Work?",
+    "## Object Storage vs. File Storage vs. Block Storage",
+    "## Benefits of Object Storage",
+    "## Differences Between Key–value and Object Stores"
+  ],
+  "suggested_title_meta": [
+    "Object Storage: Complete Guide",
+    "Object Storage Explained Step by Step",
+    "Practical Object Storage Guide for Beginners"
+  ],
+  "writer_guidance": {
+    "query": "object storage",
+    "role": "SEO guidance for an AI or human writer; not publishable prose.",
+    "likely_intent": "Mixed",
+    "target_word_count_range": [
+      400,
+      3658
+    ],
+    "source_summary": {
+      "included_count": 8,
+      "skipped_count": 1,
+      "fetched_count": 6,
+      "failed_count": 2,
+      "used_in_analysis_count": 6
+    },
+    "included_urls": [
+      "https://en.wikipedia.org/wiki/Object_storage",
+      "https://aws.amazon.com/what-is/object-storage/",
+      "https://cloud.google.com/learn/what-is-object-storage",
+      "https://www.netapp.com/data-storage/what-is-object-storage/",
+      "https://www.nutanix.com/info/object-storage",
+      "https://cloudian.com/guides/object-storage/object-storage-care/",
+      "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+      "https://objectfirst.com/guides/data-storage/what-is-object-storage/"
+    ],
+    "skipped_urls": [
+      {
+        "url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for/",
+        "normalized_url": "https://www.reddit.com/r/homelab/comments/1k0r6ab/what_is_object_storage_what_would_you_use_it_for",
+        "category": "forum",
+        "included": false,
+        "reason": "Forum/community pages are excluded by default."
+      }
+    ],
+    "fetch_results": [
+      {
+        "url": "https://en.wikipedia.org/wiki/Object_storage",
+        "status": "fetched",
+        "used_in_analysis": true,
+        "error": "",
+        "word_count": 3658,
+        "quality_flags": []
+      },
+      {
+        "url": "https://aws.amazon.com/what-is/object-storage/",
+        "status": "fetched",
+        "used_in_analysis": true,
+        "error": "",
+        "word_count": 1975,
+        "quality_flags": []
+      },
+      {
+        "url": "https://cloud.google.com/learn/what-is-object-storage",
+        "status": "fetched",
+        "used_in_analysis": true,
+        "error": "",
+        "word_count": 1233,
+        "quality_flags": []
+      },
+      {
+        "url": "https://www.netapp.com/data-storage/what-is-object-storage/",
+        "status": "failed",
+        "used_in_analysis": false,
+        "error": "403 Client Error: Forbidden for url: https://www.netapp.com/data-storage/what-is-object-storage/",
+        "word_count": 0,
+        "quality_flags": []
+      },
+      {
+        "url": "https://www.nutanix.com/info/object-storage",
+        "status": "fetched",
+        "used_in_analysis": true,
+        "error": "",
+        "word_count": 867,
+        "quality_flags": []
+      },
+      {
+        "url": "https://cloudian.com/guides/object-storage/object-storage-care/",
+        "status": "failed",
+        "used_in_analysis": false,
+        "error": "HTTPSConnectionPool(host='cloudian.com', port=443): Max retries exceeded with url: /guides/object-storage/object-storage-care/ (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1007)')))",
+        "word_count": 0,
+        "quality_flags": []
+      },
+      {
+        "url": "https://www.oracle.com/cloud/storage/object-storage/what-is-object-storage/",
+        "status": "fetched",
+        "used_in_analysis": true,
+        "error": "",
+        "word_count": 334,
+        "quality_flags": []
+      },
+      {
+        "url": "https://objectfirst.com/guides/data-storage/what-is-object-storage/",
+        "status": "fetched",
+        "used_in_analysis": true,
+        "error": "",
+        "word_count": 1734,
+        "quality_flags": []
+      }
+    ],
+    "do_not_confuse_sources": [],
+    "recommended_coverage": {
+      "headings_to_consider": [
+        "## What is Object Storage?",
+        "## how Does Object Storage Work?",
+        "## Object Storage vs. File Storage vs. Block Storage",
+        "## Benefits of Object Storage",
+        "## Differences Between Key–value and Object Stores"
+      ],
+      "questions_to_answer": [
+        "what is object storage?",
+        "how does object storage work?",
+        "What should readers know about object storage vs. file storage vs. block storage?",
+        "What should readers know about benefits of object storage?",
+        "What should readers know about storage?",
+        "What should readers know about object?"
+      ],
+      "concepts_to_cover": [
+        "Object Storage",
+        "Storage Service",
+        "Big Data",
+        "Amazon S3",
+        "Block Storage",
+        "File Storage",
+        "Cloud Storage",
+        "Storage Networking",
+        "object storage",
+        "block storage",
+        "file storage",
+        "archived original",
+        "object-based storage",
+        "cloud storage",
+        "storage object",
+        "storage systems",
+        "data storage",
+        "cloud object",
+        "storage devices",
+        "storage object storage"
+      ],
+      "phrases_to_use_naturally": [
+        "object storage",
+        "block storage",
+        "file storage",
+        "archived original",
+        "object-based storage",
+        "cloud storage",
+        "storage object",
+        "storage systems",
+        "data storage",
+        "cloud object",
+        "storage devices",
+        "storage object storage",
+        "cloud object storage",
+        "storage block storage",
+        "object storage systems",
+        "object storage object"
+      ]
+    },
+    "terms_to_avoid": [
+      "retrieved november"
+    ],
+    "frontmatter_suggestions": {
+      "title": "Object Storage: Complete Guide",
+      "description": "A practical guide to object storage, including Storage Service, Big Data, Amazon S3, and answers to common questions.",
+      "tags": [
+        "object-storage",
+        "storage-service",
+        "big-data",
+        "amazon-s3",
+        "block-storage",
+        "file-storage",
+        "cloud-storage",
+        "storage-networking"
+      ],
+      "draft": false
+    },
+    "editorial_checklist": [
+      "Use the JSON as guidance, not final prose.",
+      "Write original copy; do not copy large spans from sources.",
+      "Preserve Hugo front matter and custom fields unless explicitly updating SEO fields.",
+      "Remove scaffold phrases and internal workflow metadata before publishing.",
+      "Use noisy or blocked sources to limit claims, not as article copy.",
+      "Prefer reader usefulness and factual clarity over raising the heuristic score.",
+      "Run content QA before treating the markdown as final."
+    ],
+    "optimization_summary": {
+      "summary": "Optimized in 1 iteration(s). Score moved from 89.8 to 89.8.",
+      "score_breakdown": {
+        "initial": {
+          "topical_coverage": 93.0,
+          "structure": 100.0,
+          "intent_alignment": 100.0,
+          "naturalness_penalty": 2.72,
+          "redundancy_penalty": 5.0,
+          "title_meta": 100.0,
+          "overall": 89.83,
+          "reasons": [
+            "Missing 2 recommended phrases/concepts.",
+            "Possible keyword repetition in terms: object, storage.",
+            "Score is heuristic for content quality guidance, not a ranking predictor."
+          ]
+        },
+        "final": {
+          "topical_coverage": 93.0,
+          "structure": 100.0,
+          "intent_alignment": 100.0,
+          "naturalness_penalty": 2.72,
+          "redundancy_penalty": 5.0,
+          "title_meta": 100.0,
+          "overall": 89.83,
+          "reasons": [
+            "Missing 2 recommended phrases/concepts.",
+            "Possible keyword repetition in terms: object, storage.",
+            "Score is heuristic for content quality guidance, not a ranking predictor."
+          ]
+        }
+      },
+      "revision_notes": [
+        "Consider weaving these concepts into existing sections where natural: Big Data, Storage Networking.",
+        "No safe automatic body rewrite was needed; use the analysis JSON for manual editorial judgment."
+      ]
+    }
+  }
+}

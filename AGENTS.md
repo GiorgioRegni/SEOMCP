@@ -13,14 +13,16 @@ This repo is a local SEO guidance prototype for helping an AI or human writer pr
    - If URLs are not provided and a browser-authenticated keyword source is relevant, use the Chrome/YourText.Guru workflow documented in `README.md`.
    - Otherwise build the best available brief and clearly flag weak or missing source data.
 4. Generate or update a Hugo markdown scaffold when useful:
-   - Default article path: `examples/<slug>.md`.
-   - If preserving an original article for review, write revised scaffold output to `examples/revised-<slug>.md`.
+   - Canonical final article path: `examples/<slug>.md`.
+   - Working/scaffold path: `examples/working-<slug>.md`.
+   - For `build-post`, pass `--working-output examples/working-<slug>.md` when overriding the default working path.
+   - Do not leave rough generated scaffold as the canonical final file.
    - Use YAML front matter by default for new drafts.
 5. Analyze the article:
    - `python3 -m src.main analyze --query "<keyword>" --draft examples/<slug>.md`
    - Do not repeat URLs if the saved brief exists; the CLI automatically reuses `data/json/brief-<slug>.json`.
 6. Optimize when useful:
-   - `python3 -m src.main optimize --query "<keyword>" --draft examples/<slug>.md --iterations 3 --output examples/revised-<slug>.md`
+   - `python3 -m src.main optimize --query "<keyword>" --draft examples/<slug>.md --iterations 3 --output examples/working-<slug>.md`
    - Add `--update-frontmatter` only when the user wants SEO front matter suggestions applied.
 7. Review the JSON outputs manually:
    - `data/json/analyze-<slug>.json`
@@ -34,7 +36,7 @@ This repo is a local SEO guidance prototype for helping an AI or human writer pr
    - Use the tool output as guidance, not as final prose.
    - Replace boilerplate, placeholders, and mechanical phrasing with specific, useful article copy.
    - Use weak, blocked, dynamic, or review-based source data to decide what not to overstate.
-   - Keep the result Hugo-ready and publishable.
+   - Write the finished Hugo-ready article to `examples/<slug>.md`.
 10. If the generated `revised_draft` is weak or unchanged, edit the Hugo article directly using:
    - `score_breakdown`
    - `recommended_outline_changes`

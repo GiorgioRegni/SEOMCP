@@ -93,13 +93,13 @@ python3 -m src.main build-post \
   --query "pickleball brackets" \
   --urls "https://example.com/page-one,https://example.com/page-two" \
   --output examples/pickleball-brackets.md \
-  --revised-output examples/revised-pickleball-brackets.md \
+  --working-output examples/working-pickleball-brackets.md \
   --iterations 3
 ```
 
-`build-post` filters noisy URLs, builds or reuses `data/json/brief-<query>.json`, creates a markdown scaffold if the article does not exist, runs analysis/optimization, writes scaffold-capable markdown outputs, writes `data/json/guidance-<query>.json`, runs content QA, and stores `data/json/report-<query>.json`.
+`build-post` filters noisy URLs, builds or reuses `data/json/brief-<query>.json`, creates a working markdown scaffold when the final article does not exist, runs analysis/optimization, writes `data/json/guidance-<query>.json`, runs content QA, and stores `data/json/report-<query>.json`.
 
-The markdown files from this command are inputs to the content loop. Review the guidance JSON and let Codex or another writer synthesize the final Hugo article.
+The canonical final Hugo article should live at `examples/<slug>.md`. Rough generated output should live at `examples/working-<slug>.md` or another clearly named working path. Review the guidance JSON and let Codex or another writer synthesize the final Hugo article into the canonical file. `--revised-output` is still accepted as a backward-compatible alias for `--working-output`.
 
 Source filtering is conservative by default. It excludes malformed URLs, social/profile pages, PDFs, forums, broad homepages, and marketplace/product listings unless you pass an explicit allow flag such as `--allow-forums`, `--allow-pdfs`, `--allow-social`, `--allow-marketplaces`, or `--allow-homepages`.
 
@@ -129,7 +129,7 @@ python -m src.main rewrite --query "pickleball rules" --draft examples/draft.md 
 
 By default, rewrite and optimize preserve existing Hugo front matter and rewrite only the body. Output should be treated as scaffold/gap-fill guidance unless an editor has reviewed it. Pass `--update-frontmatter` to update managed SEO fields: `title`, `description`, `tags`, and `draft`.
 
-Pass `--output examples/revised-article.md` to also write the revised markdown to a file for diffing/review.
+Pass `--output examples/working-article.md` to also write the revised markdown to a working file for diffing/review. After editorial synthesis, put the publishable version in the canonical article file.
 
 ### Generate a first draft from a saved brief
 
