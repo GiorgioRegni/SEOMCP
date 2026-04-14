@@ -2,7 +2,7 @@
 
 `seo-writer-skill` is a local, tool-assisted SEO guidance prototype that:
 
-1. Collects candidate competitor URLs (manual list in v1; pluggable provider abstraction).
+1. Collects candidate competitor URLs from a manual list, a configured SERP API, or Chrome-backed Google search.
 2. Fetches and caches pages from the open web.
 3. Extracts readable content and heading structure.
 4. Builds a practical content brief from common patterns.
@@ -34,7 +34,7 @@ The Python tools are not the final writer. They provide guidance, stats, source 
 ## What it does **not** do
 
 - It does **not** predict Google rankings.
-- It does **not** use paid SEO APIs in v1.
+- It does **not** require paid SEO APIs; API-backed SERP providers are optional.
 - It does **not** guarantee factual correctness of source pages.
 - It should **not** copy source text; it abstracts concepts.
 - It does **not** author final publishable prose by itself; generated markdown may be scaffold output for an AI writer loop.
@@ -63,7 +63,7 @@ pip install -r requirements.txt
 ## Project layout
 
 - `src/main.py` – CLI entrypoint and pipeline orchestration.
-- `src/serp.py` – SERP provider abstraction (manual + placeholder provider).
+- `src/serp.py` – SERP provider abstraction (manual URLs, Brave, Serper, SerpAPI, Chrome-backed Google).
 - `src/source_filter.py` – conservative source URL classification before fetch.
 - `src/fetch.py` – fetch, HTML metadata extraction, caching.
 - `src/extract.py` – trafilatura-based readable content extraction with a BeautifulSoup fallback.
@@ -76,8 +76,7 @@ pip install -r requirements.txt
 - `src/content_qa.py` – final markdown QA checks.
 - `src/mcp_stdio_server.py` – MCP stdio server for MCP clients.
 - `src/mcp_server.py` – legacy JSON-lines tool server for direct smoke tests.
-- `src/browser_session.py` – optional Chrome DevTools profile launcher for authenticated browser-backed tools.
-- `src/yourtextguru.py` – optional YourText.Guru scraper using the authenticated Chrome session.
+- `src/browser_session.py` – optional Chrome DevTools profile launcher for browser-backed SERP discovery.
 - `src/models.py` – typed dataclasses.
 - `src/utils.py` – helpers, cache paths, tokenization.
 - `data/html`, `data/json` – local cache and reports.
@@ -103,6 +102,68 @@ python3 -m src.main build-post \
 The canonical final Hugo article should live at `examples/<slug>.md`. Rough generated output should live at `examples/working-<slug>.md` or another clearly named working path. Review the guidance JSON and let Codex or another writer synthesize the final Hugo article into the canonical file. `--revised-output` is still accepted as a backward-compatible alias for `--working-output`.
 
 Source filtering is conservative by default. It excludes malformed URLs, social/profile pages, PDFs, forums, broad homepages, and marketplace/product listings unless you pass an explicit allow flag such as `--allow-forums`, `--allow-pdfs`, `--allow-social`, `--allow-marketplaces`, or `--allow-homepages`.
+
+When `--urls` is omitted, the CLI tries the configured SERP provider. Configure one with environment variables:
+
+```bash
+# Pick one provider.
+export SEO_WRITER_SERP_PROVIDER=brave       # brave | serper | serpapi | google-chrome
+
+# API providers need their matching key.
+export BRAVE_SEARCH_API_KEY="..."
+export SERPER_API_KEY="..."
+export SERPAPI_API_KEY="..."
+```
+
+If `SEO_WRITER_SERP_PROVIDER` is not set, the tool auto-selects the first configured API key in this order: Brave, Serper, SerpAPI. Chrome-backed Google search is only used when explicitly selected because it can hit consent pages or CAPTCHA.
+
+Example without manually supplied URLs:
+
+```bash
+SEO_WRITER_SERP_PROVIDER=brave \
+BRAVE_SEARCH_API_KEY="..." \
+python3 -m src.main build-post \
+  --query "object storage" \
+  --output examples/object-storage.md \
+  --working-output examples/working-object-storage.md
+```
+
+### Discover SERP URLs
+
+You can inspect the URL discovery step directly:
+
+```bash
+python3 -m src.main discover-serp \
+  --query "object storage" \
+  --provider brave \
+  --top-n 10
+```
+
+Supported public providers:
+
+- `brave` uses `BRAVE_SEARCH_API_KEY`.
+- `serper` uses `SERPER_API_KEY`.
+- `serpapi` uses `SERPAPI_API_KEY`.
+- `google-chrome` launches or reuses a local Chrome DevTools profile and performs a simple Google search.
+
+The API key aliases `SEO_WRITER_BRAVE_API_KEY`, `SEO_WRITER_SERPER_API_KEY`, and `SEO_WRITER_SERPAPI_API_KEY` are also accepted if you prefer project-scoped environment names.
+
+Chrome-backed Google search has no API key, but it is less reliable than API providers:
+
+```bash
+python3 -m src.main discover-serp \
+  --query "object storage" \
+  --provider google-chrome \
+  --top-n 10
+```
+
+Optional Chrome environment variables:
+
+```bash
+export SEO_WRITER_GOOGLE_CHROME_PROFILE="data/chrome/google-serp"
+export SEO_WRITER_GOOGLE_CHROME_PORT="9227"
+export SEO_WRITER_GOOGLE_CHROME_HEADLESS="1"
+```
 
 ### Build brief
 
@@ -158,45 +219,6 @@ python3 -m src.main content-qa \
 
 The QA command checks for scaffold phrases, internal workflow metadata, noisy extracted terms, suspicious repetition, and Hugo front matter issues. It writes `data/json/qa-<query>.json`.
 
-### Authenticated YourText.Guru keyword service
-
-Some keyword services are behind a login and cannot be fetched with plain `requests`. For those, the prototype can launch a normal Chrome instance with a persistent local profile and a Chrome DevTools endpoint. Log in once in that profile, then reuse the session from CLI or MCP tools.
-
-First launch Chrome and log in:
-
-```bash
-python3 -m src.main launch-chrome-profile \
-  --profile-dir data/chrome/yourtextguru \
-  --start-url "https://yourtext.guru/login"
-```
-
-Then scrape the best positioned pages for a keyword:
-
-```bash
-python3 -m src.main yourtextguru-positioned-sites \
-  --keyword "a pickleball christmas" \
-  --limit 10 \
-  --lang en_us \
-  --profile-dir data/chrome/yourtextguru
-```
-
-The command navigates the authenticated browser to:
-
-```text
-https://yourtext.guru/positioning/keywords/a%20pickleball%20christmas?lang=en_us
-```
-
-and writes a JSON cache file under `data/json/yourtextguru-positioning-<keyword>.json`.
-
-Notes:
-
-- The Chrome profile is ignored by git because it contains local cookies/session data.
-- If `--port` is omitted, the launcher allocates a free localhost port and stores it in the profile metadata for reuse.
-- If the page redirects to login, complete login in the launched browser and rerun the scrape command.
-- This is intentionally separate from the open-web SERP/fetch pipeline because it depends on a user-controlled authenticated session.
-
----
-
 ## MCP-compatible interface
 
 ### Recommended MCP stdio server
@@ -210,13 +232,13 @@ python3 -m src.mcp_stdio_server
 The server exposes these tools:
 
 - `get_seo_writer_instructions`
+- `discover_serp_urls`
 - `build_seo_brief`
 - `analyze_seo_draft`
 - `rewrite_seo_draft`
 - `optimize_seo_draft`
 - `qa_seo_content`
 - `launch_chrome_profile`
-- `get_yourtextguru_positioned_sites`
 
 Inputs and outputs are JSON-compatible dictionaries. Draft inputs may contain Hugo YAML or TOML front matter. Rewrite/optimize output is still scaffold guidance unless an editor turns it into final copy.
 
@@ -225,9 +247,18 @@ An MCP-consuming AI should call `get_seo_writer_instructions` at the start of a 
 Some MCP tools need network access:
 
 - `build_seo_brief` fetches public web pages when building a new brief.
+- `discover_serp_urls` uses network access for API providers or Chrome-backed Google search.
 - `analyze_seo_draft`, `rewrite_seo_draft`, and `optimize_seo_draft` can work offline when a saved `data/json/brief-<slug>.json` exists, but may fetch pages if URLs are provided or no saved brief exists.
-- `launch_chrome_profile` and `get_yourtextguru_positioned_sites` require local browser support and network access to the authenticated service.
+- `launch_chrome_profile` requires local browser support and is mainly useful for `google-chrome` SERP discovery.
 - `get_seo_writer_instructions` and `qa_seo_content` are offline-safe.
+
+SERP discovery uses the same default order in CLI and MCP:
+
+1. Use user-provided `urls` first.
+2. If URLs are omitted, use `SEO_WRITER_SERP_PROVIDER` when set.
+3. If no provider is selected, auto-select the first configured API key: Brave, then Serper, then SerpAPI.
+4. If no provider or API key is configured, return no URLs with a warning.
+5. Use `google-chrome` only when explicitly selected.
 
 In restricted environments, reuse saved briefs under `data/json/brief-<slug>.json` and treat `fetch_results` / `source_filtering` as confidence guidance. Do not include failed fetches, blocked URLs, or network errors in final article copy.
 
@@ -296,14 +327,12 @@ This is convenient for tool-only use. For content workflows that should write `e
 With the MCP server configured, you should be able to give the client AI a short request:
 
 ```text
-Generate an SEO article for "hulk hogan" using these URLs:
-- https://en.wikipedia.org/wiki/Hulk_Hogan
-- https://www.imdb.com/name/nm0001356/
-- https://www.wwe.com/superstars/hulkhogan
-- https://abcnews.go.com/GMA/Culture/wwe-star-hulk-hogan-cause-death-revealed/story?id=124249036
+Generate an SEO article for "hulk hogan".
 ```
 
-The MCP-consuming AI should call `get_seo_writer_instructions`, build or reuse the brief, write the final Hugo article to `examples/<slug>.md`, keep rough scaffold output in `examples/working-<slug>.md`, run `qa_seo_content`, and iterate only when QA fails or important gaps remain.
+The MCP-consuming AI should call `get_seo_writer_instructions`, discover SERP URLs when the user did not provide them, build or reuse the brief, write the final Hugo article to `examples/<slug>.md`, keep rough scaffold output in `examples/working-<slug>.md`, run `qa_seo_content`, and iterate only when QA fails or important gaps remain.
+
+If the user supplies URLs, use them. If not, use `discover_serp_urls` or call `build_seo_brief` with no URLs so the configured provider can discover sources.
 
 ### MCP tool call examples
 
@@ -317,6 +346,12 @@ Then build a brief:
 
 ```json
 {"tool":"build_seo_brief","input":{"query":"pickleball rules","urls":["https://usapickleball.org/what-is-pickleball/official-rules/"]}}
+```
+
+Discover SERP URLs with the configured provider:
+
+```json
+{"tool":"discover_serp_urls","input":{"query":"object storage","top_n":10,"serp_provider":"brave"}}
 ```
 
 Analyze a Hugo draft:
@@ -341,12 +376,6 @@ QA final content:
     "draft_markdown": "---\ntitle: Object Storage\ndraft: false\n---\n\n## Overview\n\nObject storage stores data as objects."
   }
 }
-```
-
-Authenticated browser-backed keyword service example:
-
-```json
-{"tool":"get_yourtextguru_positioned_sites","input":{"keyword":"a pickleball christmas","limit":10,"lang":"en_us","profile_dir":"data/chrome/yourtextguru"}}
 ```
 
 For `rewrite_seo_draft` and `optimize_seo_draft`, pass `"update_frontmatter": true` to update Hugo SEO fields. Otherwise front matter is preserved and only the markdown body is revised.
@@ -382,7 +411,7 @@ Each score includes human-readable reasons and explicitly states this is **guida
 
 ### Swap SERP providers
 
-Implement `SERPProvider.search()` in `src/serp.py`, then replace `PlaceholderSearchProvider` with a provider (SerpAPI, Brave, etc.).
+Implement `SERPProvider.search()` in `src/serp.py`, then add it to `provider_from_env()`. Keep API keys in environment variables, not in repo files.
 
 ### Improve extraction/scoring
 
@@ -399,7 +428,7 @@ Keep `src/mcp_server.py` thin: add tools that call core functions and return JSO
 ## v1 success criteria mapping
 
 - Accept query + draft ✅
-- Inspect ranking pages from provided URLs ✅
+- Inspect ranking pages from provided URLs or configured SERP providers ✅
 - Produce content brief ✅
 - Score draft with explainable breakdown ✅
 - Generate revised draft ✅

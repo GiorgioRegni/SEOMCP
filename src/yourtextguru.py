@@ -4,9 +4,12 @@ import re
 from pathlib import Path
 from urllib.parse import quote
 
-from .browser_session import DEFAULT_CDP_PORT, DEFAULT_PROFILE_DIR, cdp_endpoint, ensure_chrome
+from .browser_session import DEFAULT_CDP_PORT, cdp_endpoint, ensure_chrome
 from .models import PositionedSite, YourTextGuruPositioningResult, to_dict
 from .utils import JSON_CACHE, dump_json, ensure_dirs, slugify
+
+
+DEFAULT_YOURTEXTGURU_PROFILE_DIR = Path("data/chrome/yourtextguru")
 
 
 def positioning_url(keyword: str, lang: str = "en_us") -> str:
@@ -45,7 +48,7 @@ def scrape_positioned_sites(
     keyword: str,
     limit: int = 10,
     lang: str = "en_us",
-    profile_dir: str | Path = DEFAULT_PROFILE_DIR,
+    profile_dir: str | Path = DEFAULT_YOURTEXTGURU_PROFILE_DIR,
     port: int | None = DEFAULT_CDP_PORT,
     launch_if_missing: bool = True,
     headless: bool = False,

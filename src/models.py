@@ -61,6 +61,25 @@ class SourceFetchResult:
 
 
 @dataclass
+class SERPResult:
+    position: int
+    url: str
+    title: str = ""
+    snippet: str = ""
+    source: str = ""
+
+
+@dataclass
+class SERPDiscoveryResult:
+    query: str
+    provider: str
+    count: int
+    urls: list[str]
+    results: list[SERPResult] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+
+
+@dataclass
 class CompetitorAnalysis:
     query: str
     page_count: int

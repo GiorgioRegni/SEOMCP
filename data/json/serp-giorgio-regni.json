@@ -1,0 +1,82 @@
+{
+  "query": "Giorgio Regni",
+  "provider": "google-chrome",
+  "count": 9,
+  "urls": [
+    "https://www.linkedin.com/in/giorgioregni",
+    "https://www.networkcomputing.com/author/giorgio-regni-co-founder-and-cto-scality",
+    "https://github.com/giorgioregni",
+    "https://www.darkreading.com/author/giorgio-regni",
+    "https://www.crunchbase.com/person/giorgio-regni",
+    "https://www.scality.com/about-scality/",
+    "https://vimeo.com/1091331759",
+    "https://en.wikipedia.org/wiki/Scality",
+    "https://www.scality.com/topics/s3-compatible-storage/#:~:text=Scality%20S3%20Connector%20is%20the,multi%2Dtenancy%20and%20high%20performance."
+  ],
+  "results": [
+    {
+      "position": 1,
+      "url": "https://www.linkedin.com/in/giorgioregni",
+      "title": "Giorgio Regni - Scality",
+      "snippet": "Web results LinkedIn · Giorgio Regni 2.5K+ followers San Francisco Bay Area · Scality Experience: Scality · Location: San Francisco Bay Area · 500+ connections on LinkedIn. View Giorgio Regni's profile on LinkedIn, a professional community of 1 ...",
+      "source": "google-chrome"
+    },
+    {
+      "position": 2,
+      "url": "https://www.networkcomputing.com/author/giorgio-regni-co-founder-and-cto-scality",
+      "title": "Giorgio Regni, Co-Founder and CTO, Scality",
+      "snippet": "Network Computing https://www.networkcomputing.com › Authors page Giorgio Regni is co-founder and CTO of Scality. He oversees the company's development, research, and product management.Read more",
+      "source": "google-chrome"
+    },
+    {
+      "position": 3,
+      "url": "https://github.com/giorgioregni",
+      "title": "Giorgio Regni GiorgioRegni",
+      "snippet": "GitHub https://github.com › giorgioregni Digital brain, Analog Heart - Software Ninja - CTO @Scality, the Software Defined Storage leader - GiorgioRegni.",
+      "source": "google-chrome"
+    },
+    {
+      "position": 4,
+      "url": "https://www.darkreading.com/author/giorgio-regni",
+      "title": "Giorgio Regni",
+      "snippet": "Dark Reading https://www.darkreading.com › Authors page As a Scality co-founder and our Chief Technology Officer, Giorgio Regni oversees the company's development, research, and product management.Read more",
+      "source": "google-chrome"
+    },
+    {
+      "position": 5,
+      "url": "https://www.crunchbase.com/person/giorgio-regni",
+      "title": "Giorgio Regni - CTO @ Scality - Crunchbase Person Profile",
+      "snippet": "Crunchbase https://www.crunchbase.com › person › giorgio-regni Giorgio Regni is a veteran of open source and commercial development projects, his expertise ranges from leading the development of an open-source content ...Read more",
+      "source": "google-chrome"
+    },
+    {
+      "position": 6,
+      "url": "https://www.scality.com/about-scality/",
+      "title": "Scality solves organizations' toughest data storage ...",
+      "snippet": "Scality https://www.scality.com › about-scality Executive Committee ; Jérôme Lecat. Chief Executive Officer ; Giorgio Regni. Chief Technology Officer ; Emilio Roman. Chief Revenue Officer ; Paul Speciale. Chief ...Read more",
+      "source": "google-chrome"
+    },
+    {
+      "position": 7,
+      "url": "https://vimeo.com/1091331759",
+      "title": "Learn About Scality RING's Exabyte Scale ...",
+      "snippet": "Vimeo https://vimeo.com › Techstrong.TV › Videos Jun 6, 2025 — Scality's Giorgio Regni presented at Cloud Field Day 23, focusing on the Scality RING's exabyte-scale, multidimensional architecture.",
+      "source": "google-chrome"
+    },
+    {
+      "position": 8,
+      "url": "https://en.wikipedia.org/wiki/Scality",
+      "title": "Scality",
+      "snippet": "Wikipedia https://en.wikipedia.org › wiki › Scality Giorgio Regni, CTO; Emilio Roman, CRO; Paul Speciale, CMO; Erwan Girard, Chief Product Officer; Vincent Breuil, Chief Financial Officer. Products, Software ...Read more History Products RING Zenko",
+      "source": "google-chrome"
+    },
+    {
+      "position": 9,
+      "url": "https://www.scality.com/topics/s3-compatible-storage/#:~:text=Scality%20S3%20Connector%20is%20the,multi%2Dtenancy%20and%20high%20performance.",
+      "title": "What is S3 compatible storage? I Scality",
+      "snippet": "People also ask What is scality S3?",
+      "source": "google-chrome"
+    }
+  ],
+  "warnings": []
+}

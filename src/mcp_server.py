@@ -11,6 +11,7 @@ from .models import SEORequest, to_dict
 from .rewrite import rewrite_draft
 from .feedback import optimize_draft
 from .score import score_draft
+from .serp import discover_serp_urls
 from .yourtextguru import scrape_positioned_sites
 from .browser_session import launch_chrome
 from .markdown_doc import (
@@ -21,6 +22,7 @@ from .markdown_doc import (
     title_from_document,
     update_hugo_seo_fields,
 )
+from .utils import JSON_CACHE, slugify
 
 
 """
@@ -68,11 +70,31 @@ def get_seo_writer_instructions(payload: dict | None = None) -> dict:
             ],
             "requires_network_for_new_briefs": [
                 "build_seo_brief",
+                "discover_serp_urls",
             ],
-            "requires_browser_or_authenticated_session": [
+            "requires_browser": [
                 "launch_chrome_profile",
-                "get_yourtextguru_positioned_sites",
+                "discover_serp_urls when serp_provider is google-chrome",
             ],
+            "serp_provider_env": {
+                "provider_selector": "SEO_WRITER_SERP_PROVIDER=brave|serper|serpapi|google-chrome",
+                "default_resolution_order": [
+                    "Use user-provided urls first.",
+                    "If urls are omitted, use SEO_WRITER_SERP_PROVIDER when set.",
+                    "If no provider is selected, auto-select the first configured API key: Brave, then Serper, then SerpAPI.",
+                    "If no provider or API key is configured, return no URLs with a warning instead of guessing.",
+                    "Use google-chrome only when explicitly selected.",
+                ],
+                "brave": "BRAVE_SEARCH_API_KEY or SEO_WRITER_BRAVE_API_KEY",
+                "serper": "SERPER_API_KEY or SEO_WRITER_SERPER_API_KEY",
+                "serpapi": "SERPAPI_API_KEY or SEO_WRITER_SERPAPI_API_KEY",
+                "google_chrome": "No API key; uses Chrome DevTools and may hit consent/CAPTCHA pages.",
+                "google_chrome_options": {
+                    "profile": "SEO_WRITER_GOOGLE_CHROME_PROFILE",
+                    "port": "SEO_WRITER_GOOGLE_CHROME_PORT",
+                    "headless": "SEO_WRITER_GOOGLE_CHROME_HEADLESS",
+                },
+            },
             "offline_strategy": [
                 "Prefer saved brief files such as data/json/brief-<slug>.json when available.",
                 "If network access is unavailable, analyze against the saved brief rather than fetching URLs again.",
@@ -119,6 +141,7 @@ def get_seo_writer_instructions(payload: dict | None = None) -> dict:
             "Do not set draft: true when the article is intended to publish.",
         ],
         "useful_tools": [
+            "discover_serp_urls",
             "build_seo_brief",
             "analyze_seo_draft",
             "rewrite_seo_draft",
@@ -136,9 +159,13 @@ def build_seo_brief(payload: dict) -> dict:
         urls=payload.get("urls", []),
         top_n=payload.get("top_n", 8),
     )
-    _, comp, brief, raw_comp, source_filtering, fetch_results, noisy_terms_rejected = run_pipeline(req)
+    _, comp, brief, raw_comp, source_filtering, fetch_results, noisy_terms_rejected = run_pipeline(
+        req,
+        serp_provider=payload.get("serp_provider"),
+    )
     frontmatter_suggestions = build_frontmatter_suggestions(brief)
     result = {
+        "serp_path": str(JSON_CACHE / f"serp-{slugify(req.query)}.json") if (JSON_CACHE / f"serp-{slugify(req.query)}.json").exists() else "",
         "source_urls": brief.source_urls,
         "source_filtering": to_dict(source_filtering),
         "fetch_results": [to_dict(item) for item in fetch_results],
@@ -158,10 +185,28 @@ def build_seo_brief(payload: dict) -> dict:
     return result
 
 
+def discover_serp(payload: dict) -> dict:
+    result = discover_serp_urls(
+        query=payload["query"],
+        top_n=payload.get("top_n", 10),
+        provider_name=payload.get("serp_provider") or payload.get("provider"),
+        geo=payload.get("geo"),
+        language=payload.get("language", "en"),
+        manual_urls=payload.get("urls") or None,
+    )
+    return to_dict(result)
+
+
 def analyze_seo_draft(payload: dict) -> dict:
     req = SEORequest(query=payload["query"], urls=payload.get("urls", []), top_n=payload.get("top_n", 8))
     urls = ",".join(req.urls) if req.urls else None
-    comp, brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
+    comp, brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(
+        req.query,
+        req.top_n,
+        urls=urls,
+        brief_path=payload.get("brief"),
+        serp_provider=payload.get("serp_provider"),
+    )
     draft_doc = parse_markdown_document(payload.get("draft_markdown", ""))
     title = payload.get("title") or title_from_document(draft_doc)
     h1 = payload.get("h1") or h1_from_body(draft_doc.body)
@@ -196,7 +241,13 @@ def analyze_seo_draft(payload: dict) -> dict:
 def rewrite_seo_draft(payload: dict) -> dict:
     req = SEORequest(query=payload["query"], urls=payload.get("urls", []), top_n=payload.get("top_n", 8))
     urls = ",".join(req.urls) if req.urls else None
-    comp, brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
+    comp, brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(
+        req.query,
+        req.top_n,
+        urls=urls,
+        brief_path=payload.get("brief"),
+        serp_provider=payload.get("serp_provider"),
+    )
     draft_doc = parse_markdown_document(payload.get("draft_markdown", ""))
     title = payload.get("title") or title_from_document(draft_doc)
     h1 = payload.get("h1") or h1_from_body(draft_doc.body)
@@ -226,7 +277,13 @@ def rewrite_seo_draft(payload: dict) -> dict:
 def optimize_seo_draft(payload: dict) -> dict:
     req = SEORequest(query=payload["query"], urls=payload.get("urls", []), top_n=payload.get("top_n", 8))
     urls = ",".join(req.urls) if req.urls else None
-    comp, brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(req.query, req.top_n, urls=urls, brief_path=payload.get("brief"))
+    comp, brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(
+        req.query,
+        req.top_n,
+        urls=urls,
+        brief_path=payload.get("brief"),
+        serp_provider=payload.get("serp_provider"),
+    )
     draft_doc = parse_markdown_document(payload.get("draft_markdown", ""))
     title = payload.get("title") or title_from_document(draft_doc)
     h1 = payload.get("h1") or h1_from_body(draft_doc.body)
@@ -270,9 +327,9 @@ def qa_seo_content(payload: dict) -> dict:
 
 def launch_chrome_profile(payload: dict) -> dict:
     return launch_chrome(
-        profile_dir=payload.get("profile_dir", "data/chrome/yourtextguru"),
+        profile_dir=payload.get("profile_dir", "data/chrome/seo-writer"),
         port=payload.get("port"),
-        start_url=payload.get("start_url", "https://yourtext.guru/login"),
+        start_url=payload.get("start_url", "about:blank"),
         headless=payload.get("headless", False),
     )
 
@@ -292,6 +349,7 @@ def get_yourtextguru_positioned_sites(payload: dict) -> dict:
 
 TOOLS = {
     "get_seo_writer_instructions": get_seo_writer_instructions,
+    "discover_serp_urls": discover_serp,
     "build_seo_brief": build_seo_brief,
     "analyze_seo_draft": analyze_seo_draft,
     "rewrite_seo_draft": rewrite_seo_draft,

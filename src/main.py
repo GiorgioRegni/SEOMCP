@@ -23,7 +23,7 @@ from .guidance import build_writer_guidance
 from .models import SEORequest, SourceFetchResult, SourceFilteringResult, to_dict
 from .rewrite import rewrite_draft
 from .score import score_draft
-from .serp import collect_serp_urls
+from .serp import collect_serp_urls, discover_serp_urls
 from .source_filter import filter_source_urls
 from .browser_session import DEFAULT_CDP_PORT, DEFAULT_PROFILE_DIR, DEFAULT_START_URL, launch_chrome
 from .draft import generate_draft_from_brief, load_brief
@@ -48,6 +48,7 @@ def _split_urls(urls: Optional[str]) -> list[str]:
 def run_pipeline(
     req: SEORequest,
     *,
+    serp_provider: str | None = None,
     allow_forums: bool = False,
     allow_pdfs: bool = False,
     allow_social: bool = False,
@@ -55,7 +56,7 @@ def run_pipeline(
     allow_homepages: bool = False,
 ) -> tuple:
     collection_limit = max(req.top_n, len(req.urls)) if req.urls else req.top_n
-    urls = collect_serp_urls(req.query, collection_limit, req.urls, req.geo, req.language)
+    urls = collect_serp_urls(req.query, collection_limit, req.urls, req.geo, req.language, provider_name=serp_provider)
     source_filtering = filter_source_urls(
         urls,
         req.query,
@@ -99,10 +100,11 @@ def run_pipeline(
 
 
 def resolve_content_context(query: str, top_n: int, urls: Optional[str] = None,
-                            brief_path: Optional[str] = None) -> tuple:
+                            brief_path: Optional[str] = None,
+                            serp_provider: str | None = None) -> tuple:
     if urls:
         req = SEORequest(query=query, urls=_split_urls(urls), top_n=top_n)
-        _, comp, seo_brief, _, source_filtering, fetch_results, noisy_terms_rejected = run_pipeline(req)
+        _, comp, seo_brief, _, source_filtering, fetch_results, noisy_terms_rejected = run_pipeline(req, serp_provider=serp_provider)
         return comp, seo_brief, source_filtering, fetch_results, noisy_terms_rejected
 
     path = Path(brief_path) if brief_path else JSON_CACHE / f"brief-{slugify(query)}.json"
@@ -111,7 +113,7 @@ def resolve_content_context(query: str, top_n: int, urls: Optional[str] = None,
         return comp, seo_brief, load_source_filtering(path), load_fetch_results(path), load_noisy_terms_rejected(path)
 
     req = SEORequest(query=query, urls=[], top_n=top_n)
-    _, comp, seo_brief, _, source_filtering, fetch_results, noisy_terms_rejected = run_pipeline(req)
+    _, comp, seo_brief, _, source_filtering, fetch_results, noisy_terms_rejected = run_pipeline(req, serp_provider=serp_provider)
     return comp, seo_brief, source_filtering, fetch_results, noisy_terms_rejected
 
 
@@ -123,7 +125,9 @@ def brief_payload(
     fetch_results: list[SourceFetchResult] | None = None,
     noisy_terms_rejected: list[str] | None = None,
 ) -> dict:
+    serp_path = JSON_CACHE / f"serp-{slugify(seo_brief.primary_query)}.json"
     return {
+        "serp_path": str(serp_path) if serp_path.exists() else "",
         "source_urls": seo_brief.source_urls,
         "source_filtering": to_dict(source_filtering or SourceFilteringResult(included=seo_brief.source_urls)),
         "fetch_results": [to_dict(result) for result in (fetch_results or [])],
@@ -223,6 +227,7 @@ def _ignored_recommendations(analysis: dict, source_filtering: SourceFilteringRe
 def brief(
     query: str = typer.Option(...),
     urls: Optional[str] = typer.Option(None, help="Comma-separated URLs"),
+    serp_provider: Optional[str] = typer.Option(None, "--serp-provider", help="SERP provider: brave, serper, serpapi, google-chrome, or env default."),
     top_n: int = 8,
     geo: Optional[str] = None,
     language: str = "en",
@@ -236,6 +241,7 @@ def brief(
     req = SEORequest(query=query, geo=geo, language=language, urls=_split_urls(urls), top_n=top_n)
     _, comp, seo_brief, raw_comp, source_filtering, fetch_results, noisy_terms_rejected = run_pipeline(
         req,
+        serp_provider=serp_provider,
         allow_forums=allow_forums,
         allow_pdfs=allow_pdfs,
         allow_social=allow_social,
@@ -270,12 +276,19 @@ def analyze(
     draft: str = typer.Option(..., help="Path to markdown draft"),
     urls: Optional[str] = typer.Option(None),
     brief_path: Optional[str] = typer.Option(None, "--brief", help="Saved brief JSON. Defaults to data/json/brief-<query>.json when URLs are omitted."),
+    serp_provider: Optional[str] = typer.Option(None, "--serp-provider", help="SERP provider when a saved brief is missing."),
     title: Optional[str] = None,
     h1: Optional[str] = None,
     top_n: int = 8,
 ) -> None:
     ensure_dirs()
-    comp, seo_brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(query, top_n, urls=urls, brief_path=brief_path)
+    comp, seo_brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(
+        query,
+        top_n,
+        urls=urls,
+        brief_path=brief_path,
+        serp_provider=serp_provider,
+    )
     payload = analyze_payload(
         query,
         draft,
@@ -298,13 +311,20 @@ def rewrite(
     draft: str = typer.Option(...),
     urls: Optional[str] = typer.Option(None),
     brief_path: Optional[str] = typer.Option(None, "--brief", help="Saved brief JSON. Defaults to data/json/brief-<query>.json when URLs are omitted."),
+    serp_provider: Optional[str] = typer.Option(None, "--serp-provider", help="SERP provider when a saved brief is missing."),
     title: Optional[str] = None,
     h1: Optional[str] = None,
     top_n: int = 8,
     update_frontmatter: bool = typer.Option(False, help="Update Hugo SEO fields in front matter."),
     output: Optional[str] = typer.Option(None, "--output", "-o", help="Optional path for revised markdown."),
 ) -> None:
-    comp, seo_brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(query, top_n, urls=urls, brief_path=brief_path)
+    comp, seo_brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(
+        query,
+        top_n,
+        urls=urls,
+        brief_path=brief_path,
+        serp_provider=serp_provider,
+    )
     draft_doc = parse_markdown_document(load_text(draft))
     effective_title = title or title_from_document(draft_doc)
     effective_h1 = h1 or h1_from_body(draft_doc.body)
@@ -350,6 +370,7 @@ def optimize(
     draft: str = typer.Option(...),
     urls: Optional[str] = typer.Option(None),
     brief_path: Optional[str] = typer.Option(None, "--brief", help="Saved brief JSON. Defaults to data/json/brief-<query>.json when URLs are omitted."),
+    serp_provider: Optional[str] = typer.Option(None, "--serp-provider", help="SERP provider when a saved brief is missing."),
     iterations: int = 3,
     title: Optional[str] = None,
     h1: Optional[str] = None,
@@ -357,7 +378,13 @@ def optimize(
     update_frontmatter: bool = typer.Option(False, help="Update Hugo SEO fields in front matter."),
     output: Optional[str] = typer.Option(None, "--output", "-o", help="Optional path for revised markdown."),
 ) -> None:
-    comp, seo_brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(query, top_n, urls=urls, brief_path=brief_path)
+    comp, seo_brief, source_filtering, fetch_results, noisy_terms_rejected = resolve_content_context(
+        query,
+        top_n,
+        urls=urls,
+        brief_path=brief_path,
+        serp_provider=serp_provider,
+    )
     payload = optimize_payload(
         query,
         draft,
@@ -381,6 +408,7 @@ def optimize(
 def build_post(
     query: str = typer.Option(...),
     urls: Optional[str] = typer.Option(None, help="Comma-separated URLs"),
+    serp_provider: Optional[str] = typer.Option(None, "--serp-provider", help="SERP provider: brave, serper, serpapi, google-chrome, or env default."),
     output: Optional[str] = typer.Option(None, "--output", "-o", help="Canonical final article markdown path."),
     revised_output: Optional[str] = typer.Option(
         None,
@@ -413,6 +441,7 @@ def build_post(
         req = SEORequest(query=query, urls=_split_urls(urls), top_n=top_n)
         _, comp, seo_brief, raw_comp, source_filtering, fetch_results, noisy_terms_rejected = run_pipeline(
             req,
+            serp_provider=serp_provider,
             allow_forums=allow_forums,
             allow_pdfs=allow_pdfs,
             allow_social=allow_social,
@@ -497,6 +526,7 @@ def build_post(
     report = {
         "summary": "Guidance workflow completed. Markdown outputs may be scaffolds until an AI or editor completes the final pass.",
         "query": query,
+        "serp_path": str(JSON_CACHE / f"serp-{slug}.json") if (JSON_CACHE / f"serp-{slug}.json").exists() else "",
         "brief_path": str(saved_brief_path),
         "article_path": str(article_path),
         "revised_path": str(working_path),
@@ -532,6 +562,27 @@ def build_post(
     typer.echo(json.dumps(payload, indent=2))
 
 
+@app.command("discover-serp")
+def discover_serp(
+    query: str = typer.Option(...),
+    provider: Optional[str] = typer.Option(None, "--provider", "--serp-provider", help="SERP provider: brave, serper, serpapi, google-chrome, or env default."),
+    urls: Optional[str] = typer.Option(None, help="Optional comma-separated manual URLs to normalize and cache."),
+    top_n: int = typer.Option(10, help="Number of SERP URLs to return."),
+    geo: Optional[str] = typer.Option(None, help="Country/geo code such as US."),
+    language: str = typer.Option("en", help="Language code such as en."),
+) -> None:
+    ensure_dirs()
+    result = discover_serp_urls(
+        query=query,
+        top_n=top_n,
+        provider_name=provider,
+        geo=geo,
+        language=language,
+        manual_urls=_split_urls(urls),
+    )
+    typer.echo(json.dumps(to_dict(result), indent=2))
+
+
 @app.command()
 def launch_chrome_profile(
     profile_dir: str = typer.Option(str(DEFAULT_PROFILE_DIR), help="Persistent Chrome profile directory."),
@@ -547,12 +598,12 @@ def launch_chrome_profile(
     typer.echo(json.dumps(payload, indent=2))
 
 
-@app.command()
+@app.command(hidden=True)
 def yourtextguru_positioned_sites(
     keyword: str = typer.Option(..., help="Keyword to inspect in YourText.Guru positioning."),
     limit: int = typer.Option(10, help="Number of positioned sites to return."),
     lang: str = typer.Option("en_us", help="YourText.Guru language code."),
-    profile_dir: str = typer.Option(str(DEFAULT_PROFILE_DIR), help="Chrome profile directory with YourText.Guru auth."),
+    profile_dir: str = typer.Option("data/chrome/yourtextguru", help="Chrome profile directory with YourText.Guru auth."),
     port: Optional[int] = typer.Option(DEFAULT_CDP_PORT, help="Chrome DevTools remote debugging port. Omit to reuse the profile port or allocate a free one."),
     launch: bool = typer.Option(True, help="Launch Chrome if the DevTools endpoint is not already running."),
     headless: bool = typer.Option(False, help="Run Chrome headless if launched by this command."),

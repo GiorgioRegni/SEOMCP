@@ -12,9 +12,10 @@ from typing import Any
 import requests
 
 DEFAULT_CDP_PORT = None
-DEFAULT_PROFILE_DIR = Path("data/chrome/yourtextguru")
-DEFAULT_START_URL = "https://yourtext.guru/login"
+DEFAULT_PROFILE_DIR = Path("data/chrome/seo-writer")
+DEFAULT_START_URL = "about:blank"
 PORT_METADATA_FILE = ".seo-writer-chrome.json"
+CHROME_LOG_FILE = "chrome-launch.log"
 
 
 def find_chrome_binary() -> str:
@@ -63,6 +64,18 @@ def _metadata_path(profile_dir: str | Path) -> Path:
     return Path(profile_dir) / PORT_METADATA_FILE
 
 
+def _launch_log_path(profile_dir: str | Path) -> Path:
+    return Path(profile_dir) / CHROME_LOG_FILE
+
+
+def _read_log_tail(path: Path, max_chars: int = 4000) -> str:
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return ""
+    return text[-max_chars:]
+
+
 def read_profile_port(profile_dir: str | Path) -> int | None:
     path = _metadata_path(profile_dir)
     if not path.exists():
@@ -92,13 +105,26 @@ def wait_for_cdp(port: int, timeout: float = 15.0) -> dict[str, Any]:
     raise RuntimeError(f"Chrome DevTools endpoint did not become ready on port {port}.")
 
 
+def _ensure_process_still_running(process: subprocess.Popen, log_path: Path, port: int) -> None:
+    time.sleep(1.0)
+    exit_code = process.poll()
+    if exit_code is None:
+        return
+    log_tail = _read_log_tail(log_path)
+    detail = f" Chrome log tail:\n{log_tail}" if log_tail else ""
+    raise RuntimeError(
+        f"Chrome exited immediately after DevTools became available on port {port} "
+        f"with exit code {exit_code}.{detail}"
+    )
+
+
 def launch_chrome(
     profile_dir: str | Path = DEFAULT_PROFILE_DIR,
     port: int | None = DEFAULT_CDP_PORT,
     start_url: str = DEFAULT_START_URL,
     headless: bool = False,
 ) -> dict[str, Any]:
-    profile_path = Path(profile_dir)
+    profile_path = Path(profile_dir).expanduser().resolve()
     if port is None:
         saved_port = read_profile_port(profile_path)
         if saved_port and get_cdp_version(saved_port):
@@ -108,18 +134,19 @@ def launch_chrome(
 
     existing = get_cdp_version(port)
     if existing:
-        write_profile_port(profile_dir, port)
+        write_profile_port(profile_path, port)
         return {
             "started": False,
             "pid": None,
             "endpoint": cdp_endpoint(port),
             "port": port,
-            "profile_dir": str(profile_dir),
+            "profile_dir": str(profile_path),
             "browser": existing.get("Browser", ""),
             "message": "Chrome DevTools endpoint is already running.",
         }
 
     profile_path.mkdir(parents=True, exist_ok=True)
+    log_path = _launch_log_path(profile_path)
     chrome = find_chrome_binary()
     args = [
         chrome,
@@ -133,8 +160,23 @@ def launch_chrome(
         args.extend(["--headless=new", "--disable-gpu"])
     args.append(start_url)
 
-    process = subprocess.Popen(args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    version = wait_for_cdp(port)
+    with log_path.open("ab") as log_handle:
+        process = subprocess.Popen(
+            args,
+            stdout=log_handle,
+            stderr=subprocess.STDOUT,
+            start_new_session=True,
+        )
+    try:
+        version = wait_for_cdp(port)
+        _ensure_process_still_running(process, log_path, port)
+    except Exception as exc:
+        if process.poll() is None:
+            process.terminate()
+        log_tail = _read_log_tail(log_path)
+        if log_tail and "Chrome log tail" not in str(exc):
+            raise RuntimeError(f"{exc} Chrome log tail:\n{log_tail}") from exc
+        raise
     write_profile_port(profile_path, port)
     return {
         "started": True,
@@ -142,6 +184,7 @@ def launch_chrome(
         "endpoint": cdp_endpoint(port),
         "port": port,
         "profile_dir": str(profile_path),
+        "log_path": str(log_path),
         "browser": version.get("Browser", ""),
         "message": "Chrome launched. Log in once in this profile, then reuse it for authenticated tools.",
     }

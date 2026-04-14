@@ -10,7 +10,9 @@ This repo is a local SEO guidance prototype for helping an AI or human writer pr
 2. Look for an existing saved brief at `data/json/brief-<slug>.json`.
 3. If no saved brief exists, build one:
    - Use user-provided URLs if available.
-   - If URLs are not provided and a browser-authenticated keyword source is relevant, use the Chrome/YourText.Guru workflow documented in `README.md`.
+   - If URLs are not provided, use the configured SERP provider or `discover-serp`.
+   - Prefer API-backed discovery (`brave`, `serper`, or `serpapi`) when keys are configured.
+   - Use `google-chrome` only when explicitly selected or when the user accepts browser-backed Google SERP extraction.
    - Otherwise build the best available brief and clearly flag weak or missing source data.
 4. Generate or update a Hugo markdown scaffold when useful:
    - Canonical final article path: `examples/<slug>.md`.
@@ -121,15 +123,20 @@ If the score improves but the prose gets worse, reject the change. If the score 
 - Keep the author’s voice unless there is a clear readability or intent issue.
 - If results mix same-name entities, identify the target entity and keep mismatched entities only as "do not confuse with" context.
 
-## Browser-Backed Keyword Sources
+## SERP Discovery
 
-- Use browser-backed scraping only for authenticated tools such as YourText.Guru.
-- Launch Chrome with a persistent local profile:
-  - `python3 -m src.main launch-chrome-profile --profile-dir data/chrome/yourtextguru --start-url "https://yourtext.guru/login"`
-- After login, scrape positioned sites:
-  - `python3 -m src.main yourtextguru-positioned-sites --keyword "<keyword>" --limit 10 --lang en_us --profile-dir data/chrome/yourtextguru`
-- The Chrome profile is local session data and must not be committed.
-- Do not bypass login or authentication controls.
+- Manual URLs are still valid and should be used when the user supplies them.
+- If URLs are missing, discover candidate sources before building the brief:
+  - `python3 -m src.main discover-serp --query "<keyword>" --provider brave --top-n 10`
+- Supported providers:
+  - `brave` with `BRAVE_SEARCH_API_KEY`
+  - `serper` with `SERPER_API_KEY`
+  - `serpapi` with `SERPAPI_API_KEY`
+  - `google-chrome` with a local Chrome DevTools profile
+- The provider can also be selected with `SEO_WRITER_SERP_PROVIDER=brave|serper|serpapi|google-chrome`.
+- If no provider is configured, ask the user for URLs or proceed with a weak-source warning.
+- Chrome-backed Google extraction is a fallback, not the preferred default. It can hit consent pages, CAPTCHA, or unstable DOM changes.
+- Browser profiles are local session data and must not be committed.
 
 ## Final Response Checklist
 

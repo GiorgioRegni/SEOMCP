@@ -27,13 +27,29 @@ TOOLS: dict[str, dict[str, Any]] = {
         "handler": mcp_server.get_seo_writer_instructions,
         "inputSchema": _schema({}),
     },
+    "discover_serp_urls": {
+        "description": "Discover candidate SERP URLs using manual URLs, a configured API provider, or Chrome-backed Google search.",
+        "handler": mcp_server.discover_serp,
+        "inputSchema": _schema(
+            {
+                "query": {"type": "string"},
+                "urls": {"type": "array", "items": {"type": "string"}, "default": []},
+                "serp_provider": {"type": "string", "description": "brave, serper, serpapi, google-chrome, or env default"},
+                "geo": {"type": "string"},
+                "language": {"type": "string", "default": "en"},
+                "top_n": {"type": "integer", "default": 10},
+            },
+            ["query"],
+        ),
+    },
     "build_seo_brief": {
-        "description": "Build an SEO content brief and writer guidance from source URLs.",
+        "description": "Build an SEO content brief and writer guidance from source URLs or a configured SERP provider.",
         "handler": mcp_server.build_seo_brief,
         "inputSchema": _schema(
             {
                 "query": {"type": "string"},
                 "urls": {"type": "array", "items": {"type": "string"}, "default": []},
+                "serp_provider": {"type": "string", "description": "brave, serper, serpapi, google-chrome, or env default"},
                 "geo": {"type": "string"},
                 "language": {"type": "string", "default": "en"},
                 "top_n": {"type": "integer", "default": 8},
@@ -49,6 +65,7 @@ TOOLS: dict[str, dict[str, Any]] = {
                 "query": {"type": "string"},
                 "draft_markdown": {"type": "string"},
                 "urls": {"type": "array", "items": {"type": "string"}, "default": []},
+                "serp_provider": {"type": "string"},
                 "brief": {"type": "string"},
                 "title": {"type": "string"},
                 "h1": {"type": "string"},
@@ -65,6 +82,7 @@ TOOLS: dict[str, dict[str, Any]] = {
                 "query": {"type": "string"},
                 "draft_markdown": {"type": "string"},
                 "urls": {"type": "array", "items": {"type": "string"}, "default": []},
+                "serp_provider": {"type": "string"},
                 "brief": {"type": "string"},
                 "title": {"type": "string"},
                 "h1": {"type": "string"},
@@ -82,6 +100,7 @@ TOOLS: dict[str, dict[str, Any]] = {
                 "query": {"type": "string"},
                 "draft_markdown": {"type": "string"},
                 "urls": {"type": "array", "items": {"type": "string"}, "default": []},
+                "serp_provider": {"type": "string"},
                 "brief": {"type": "string"},
                 "top_n": {"type": "integer", "default": 8},
                 "iterations": {"type": "integer", "default": 3},
@@ -103,31 +122,15 @@ TOOLS: dict[str, dict[str, Any]] = {
         ),
     },
     "launch_chrome_profile": {
-        "description": "Launch a persistent Chrome profile for authenticated browser-backed services.",
+        "description": "Launch a persistent Chrome profile for browser-backed SERP discovery.",
         "handler": mcp_server.launch_chrome_profile,
         "inputSchema": _schema(
             {
-                "profile_dir": {"type": "string", "default": "data/chrome/yourtextguru"},
+                "profile_dir": {"type": "string", "default": "data/chrome/seo-writer"},
                 "port": {"type": "integer"},
-                "start_url": {"type": "string", "default": "https://yourtext.guru/login"},
+                "start_url": {"type": "string", "default": "about:blank"},
                 "headless": {"type": "boolean", "default": False},
             }
-        ),
-    },
-    "get_yourtextguru_positioned_sites": {
-        "description": "Scrape positioned sites from an authenticated YourText.Guru Chrome session.",
-        "handler": mcp_server.get_yourtextguru_positioned_sites,
-        "inputSchema": _schema(
-            {
-                "keyword": {"type": "string"},
-                "limit": {"type": "integer", "default": 10},
-                "lang": {"type": "string", "default": "en_us"},
-                "profile_dir": {"type": "string", "default": "data/chrome/yourtextguru"},
-                "port": {"type": "integer"},
-                "launch": {"type": "boolean", "default": True},
-                "headless": {"type": "boolean", "default": False},
-            },
-            ["keyword"],
         ),
     },
 }
@@ -163,7 +166,19 @@ def _handle_tool_call(request_id: Any, params: dict[str, Any]) -> None:
         _error(request_id, -32602, f"Unknown tool: {name}")
         return
     handler: Callable[[dict[str, Any]], dict[str, Any]] = TOOLS[name]["handler"]
-    result = handler(arguments)
+    try:
+        result = handler(arguments)
+    except Exception as exc:  # noqa: BLE001
+        message = f"{name} failed: {exc}"
+        _result(
+            request_id,
+            {
+                "content": [{"type": "text", "text": message}],
+                "structuredContent": {"ok": False, "error": message},
+                "isError": True,
+            },
+        )
+        return
     _result(
         request_id,
         {
@@ -216,10 +231,13 @@ def main() -> None:
         line = line.strip()
         if not line:
             continue
+        request_id = None
         try:
-            handle_message(json.loads(line))
+            message = json.loads(line)
+            request_id = message.get("id")
+            handle_message(message)
         except Exception as exc:  # noqa: BLE001
-            _error(None, -32603, str(exc))
+            _error(request_id, -32603, str(exc))
 
 
 if __name__ == "__main__":
